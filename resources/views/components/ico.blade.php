@@ -1,0 +1,30 @@
+@props(['name'])
+@php
+  $p = [
+    'live' => '<circle cx="12" cy="12" r="2.2"/><path d="M8.2 15.8a5.4 5.4 0 0 1 0-7.6M15.8 8.2a5.4 5.4 0 0 1 0 7.6M5.4 18.6a9.3 9.3 0 0 1 0-13.2M18.6 5.4a9.3 9.3 0 0 1 0 13.2"/>',
+    'coach' => '<circle cx="9" cy="7" r="3"/><path d="M3.5 20c.6-3.6 2.7-5.6 5.5-5.6 1.4 0 2.6.5 3.6 1.4"/><path d="m15 13 2 2 4-4.5"/><path d="M14 19.5h7"/>',
+    'ad' => '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7.5 15l2.2-6 2.2 6M8.3 13h2.8M14.5 9v6h1.3a2.5 2.5 0 0 0 0-5h-1.3"/>',
+    'tv' => '<rect x="3" y="6" width="18" height="12.5" rx="2.5"/><path d="m8.5 2.8 3.5 3.2 3.5-3.2M8 21h8"/>',
+    'stats' => '<path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 3 5-6"/>',
+    'card' => '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16.2c.6-1.6 1.8-2.4 3.2-2.4s2.6.8 3.2 2.4M14.5 10h4M14.5 13.5h3"/>',
+    'doc' => '<path d="M7 3h7l4 4v12.5A1.5 1.5 0 0 1 16.5 21h-9A1.5 1.5 0 0 1 6 19.5v-15A1.5 1.5 0 0 1 7.5 3"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+    'trophy' => '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>',
+    'calendar' => '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    'gift' => '<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-1.5H3zM12 7.5V20M12 7.5c-1.5-3-5-3.5-5-1s5 1 5 1zm0 0c1.5-3 5-3.5 5-1s-5 1-5 1z"/>',
+    'check' => '<path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m8.8 12 2.2 2.2 4.4-4.6"/>',
+    'star' => '<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
+    'stadium' => '<ellipse cx="12" cy="12" rx="9" ry="6.5"/><ellipse cx="12" cy="12" rx="4.5" ry="3"/><path d="M12 5.5v13"/>',
+    'party' => '<path d="m4 20 4.5-12 7.5 7.5z"/><path d="M14 4v2M19 9h2M17.5 6.5 19 5M15 10c1-1 2.5-1 3.5 0"/>',
+    'bell' => '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+    'megaphone' => '<path d="M4 10v4h3l7 4V6L7 10z"/><path d="M17.5 9.5a3.5 3.5 0 0 1 0 5M7 14l1 5h2.5"/>',
+    'tag' => '<path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/>',
+    'pencil' => '<path d="M4 20h4L19.5 8.5a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m14 6 4 4"/>',
+    'receipt' => '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+    'handshake' => '<path d="m3 12 4-4 4 2 3-2 3 1 4 4-5 5-3-2-2 2-4-3z"/><path d="m10.5 10 3 3"/>',
+    'sound' => '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',
+    'film' => '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m10 9.5 4.5 2.5-4.5 2.5z"/><path d="M3 9h2.5M3 15h2.5M18.5 9H21M18.5 15H21"/>',
+    'search' => '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+    'rocket' => '<path d="M12 15c-2-2-2.5-6 2-11 4.5 0 6.5 2 6.5 6.5-5 4.5-8.5 4.5-8.5 4.5z"/><path d="M9.5 12.5 6 12l2.5-3.5h3M11.5 14.5 12 18l3.5-2.5v-3M8 16c-1 1-1.5 3-1.5 3s2-.5 3-1.5"/><circle cx="15.5" cy="8.5" r="1.4"/>',
+  ][$name] ?? '<circle cx="12" cy="12" r="8"/>';
+@endphp
+<svg {{ $attributes->merge(['class' => 'ico']) }} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! $p !!}</svg>

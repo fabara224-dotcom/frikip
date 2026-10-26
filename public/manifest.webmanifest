@@ -1,0 +1,16 @@
+{
+  "name": "Frikip",
+  "short_name": "Frikip",
+  "description": "Montre ton talent en vidéo. Les clubs, agents et universités te trouvent.",
+  "start_url": "/fil",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0B2318",
+  "theme_color": "#0B7A4B",
+  "lang": "fr",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,2 @@
+{{-- Identité vérifiée par l'équipe (pièce d'identité). L'étoile bleue (x-star) dépend, elle, du nombre d'abonnés. --}}
+<svg class="ver" viewBox="0 0 24 24" fill="none" role="img" aria-label="{{ __('Identité vérifiée') }}"><title>{{ __('Identité vérifiée') }}</title><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.3l3 3 6-6.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
