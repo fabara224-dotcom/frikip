@@ -307,3 +307,72 @@ body.feedpage{background:var(--bg);padding-bottom:0}
 .moremenu nav a.menuhead span{width:auto;text-align:left}
 .menuhead span:last-child{flex:1}
 .menuhead .av{flex:none;width:46px!important;height:46px;text-align:center!important;font-size:17px;font-family:var(--f-body);font-weight:700}
+
+/* ---------------------------------------------------------------- Actu (côté « Facebook ») */
+.actu{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.vswitch{display:inline-flex;align-self:center;gap:4px;padding:4px;border-radius:999px;background:var(--sunk);border:1px solid var(--line)}
+.vswitch a{padding:7px 20px;border-radius:999px;color:var(--muted);text-decoration:none;font-weight:700;font-size:14.5px}
+.vswitch a:hover{color:var(--ink)}
+.vswitch a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+.tktop .vswitch.onvideo{align-self:center;background:rgba(9,15,12,.72);border-color:rgba(255,255,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.tktop .vswitch.onvideo a{padding:5px 16px;font-size:13.5px;color:#D5DED9}
+.tktop .vswitch.onvideo a[aria-current="page"]{color:var(--accent-ink)}
+.composer{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.composer-row{display:flex;gap:12px;align-items:flex-start}
+.composer-row textarea{min-height:48px;border-radius:24px;padding:12px 18px;resize:vertical;background:var(--sunk);border-color:transparent}
+.composer-preview{position:relative;align-self:flex-start}
+.composer-preview img{max-height:220px;border-radius:14px;display:block}
+.composer-preview .x{position:absolute;top:6px;right:6px}
+.composer-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.composer-acts .btn{margin-left:auto;min-width:110px}
+.composer-btn{display:inline-flex;flex-direction:row;align-items:center;gap:8px;padding:8px 14px;border-radius:12px;background:var(--sunk);color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none}
+.composer-btn:hover{background:var(--raise)}
+.composer-btn .ico{width:19px;height:19px;color:var(--accent)}
+.composer-btn:focus-within{box-shadow:var(--ring)}
+.composer-guest{flex-direction:row;align-items:center;justify-content:space-between;text-decoration:none;color:var(--muted)}
+.feedtabs{margin:2px 0 -2px}
+.post{display:flex;flex-direction:column;gap:12px;padding:16px 16px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.post-hd{display:flex;gap:12px;align-items:center}
+.post-hd .av,.composer .av,.cmt .av{width:46px;height:46px;font-family:var(--f-body);font-weight:700;font-size:16px;text-decoration:none;border:2px solid rgba(34,209,96,.5)}
+.post-who{display:flex;flex-direction:column;min-width:0;flex:1}
+.post-who a{color:var(--ink);text-decoration:none}
+.post-who b{font-size:15.5px}
+.post-who small{color:var(--muted);font-size:13px}
+.post-who small a{color:var(--muted)}
+.post-more{position:relative}
+.post-more summary{list-style:none;cursor:pointer;font-size:22px;line-height:1;color:var(--muted);padding:4px 8px;border-radius:10px}
+.post-more summary::-webkit-details-marker{display:none}
+.post-more summary:hover{background:var(--sunk);color:var(--ink)}
+.post-more .card{position:absolute;right:0;top:36px;z-index:5;padding:6px;min-width:170px;gap:0;background:var(--raise);border-color:var(--line-strong)}
+.post-more button{width:100%;text-align:left;border:0;background:none;color:var(--ink);font:inherit;font-weight:600;padding:9px 12px;border-radius:8px;cursor:pointer}
+.post-more button:hover{background:var(--sunk)}
+.post-more button.danger{color:var(--coral)}
+.post-body{margin:0;white-space:pre-line;overflow-wrap:anywhere;font-size:15.5px}
+.post-photo{display:block;margin:0 -16px;background:#000}
+.post-photo img{display:block;width:100%;max-height:640px;object-fit:contain}
+.post-stats{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;color:var(--muted)}
+.post-stats a{color:var(--muted);text-decoration:none}
+.post-stats .heart{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--coral);color:#fff;font-size:10px}
+.post-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-top:1px solid var(--line);padding-top:6px}
+.post-acts button,.post-acts a{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px;border:0;border-radius:10px;background:none;color:#C3CFC8;font:inherit;font-weight:600;font-size:14px;text-decoration:none;cursor:pointer}
+.post-acts button:hover,.post-acts a:hover{background:var(--sunk);color:#fff}
+.post-acts svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linejoin:round;stroke-linecap:round}
+.post-like.on{color:var(--coral)}
+.post-like.on svg{fill:var(--coral);stroke:var(--coral)}
+.post-cmts{display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.post-cmts p{margin:0;padding:8px 12px;border-radius:14px;background:var(--sunk);align-self:flex-start;max-width:100%;overflow-wrap:anywhere}
+.post-cmts .meta{font-size:13.5px;text-decoration:none}
+.post-reply{display:flex;gap:8px;align-items:center}
+.post-reply input{min-height:40px;border-radius:999px;padding:8px 16px;font-size:14.5px}
+.post-empty{align-items:center;text-align:center;padding:32px 20px}
+.post-empty b{font-family:var(--f-display);font-style:italic;font-weight:800;font-size:28px;text-transform:uppercase}
+.post-empty p{margin:0;max-width:30em}
+.post-thread{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.post-thread h2{margin:0;font-size:18px}
+.cmt{display:flex;gap:10px;align-items:flex-start}
+.cmt .av{width:36px;height:36px;font-size:14px}
+.cmt>div{padding:8px 12px;border-radius:14px;background:var(--sunk);min-width:0}
+.cmt p{margin:2px 0;overflow-wrap:anywhere}
+.backlink{color:var(--muted);text-decoration:none;font-weight:600}
+.pager{display:flex;gap:10px;justify-content:center}
+@media (max-width:520px){.post,.composer{border-radius:16px}.post-acts button,.post-acts a{font-size:13px;gap:6px}}

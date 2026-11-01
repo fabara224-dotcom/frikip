@@ -30,6 +30,7 @@
 @section('content')
 <div class="feedwrap">
   <div class="tktop">
+    <nav class="vswitch onvideo" aria-label="{{ __('Fil') }}"><a href="{{ route('feed') }}" aria-current="page">{{ __('Vidéos') }}</a><a href="{{ route('posts') }}">{{ __('Actu') }}</a></nav>
     @foreach ($onAir ?? [] as $st)
       <a class="tick onair" href="{{ route('live.show', $st->id) }}"><i aria-hidden="true"></i>{{ __('En direct') }} · @if (\App\Terrain\Growth\Live::hasScore($st)){{ $st->home }} {{ $st->home_score }}–{{ $st->away_score }} {{ $st->away }}@else{{ \Illuminate\Support\Str::limit(\App\Terrain\Growth\Live::label($st), 40) }}@endif</a>
     @endforeach

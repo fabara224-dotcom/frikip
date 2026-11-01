@@ -8,6 +8,6 @@
   </svg>
   <span class="fklogo-txt">
     <span class="fklogo-word">FRIK<em>IP</em></span>
-    @if ($tagline)<span class="fklogo-tag">{{ __('Le réseau sport') }}</span>@endif
+    @if ($tagline)<span class="fklogo-tag">{{ __('Le réseau foot') }}</span>@endif
   </span>
 </span>

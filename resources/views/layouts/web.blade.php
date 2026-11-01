@@ -33,9 +33,9 @@
     $active = fn ($name) => $current === $name || ($name === 'matches' && str_starts_with((string) $current, 'matches')) || ($name === 'search' && $current === 'compare')
         || ($name === 'challenges' && str_starts_with((string) $current, 'challenges')) || ($name === 'coaching' && str_starts_with((string) $current, 'coaching'))
         || ($name === 'live' && str_starts_with((string) $current, 'live')) || ($name === 'clubs' && str_starts_with((string) $current, 'clubs'))
-        || ($name === 'events' && str_starts_with((string) $current, 'events'));
+        || ($name === 'events' && str_starts_with((string) $current, 'events')) || ($name === 'posts' && str_starts_with((string) $current, 'posts'));
     // Menu latéral (ordinateur) : les rubriques principales, comme dans une appli de réseau social
-    $side = [['feed', __('Accueil'), 'home'], ['explore', __('Explorer'), 'compass'], ['matches', __('Matchs'), 'score'], ['live', __('En direct'), 'live'],
+    $side = [['feed', __('Accueil'), 'home'], ['posts', __('Actu'), 'news'], ['explore', __('Explorer'), 'compass'], ['matches', __('Matchs'), 'score'], ['live', __('En direct'), 'live'],
         ['challenges', __('Défis'), 'trophy'], ['rankings', __('Joueurs'), 'star'], ['clubs', __('Clubs'), 'stadium'], ['events', __('Détections'), 'calendar'],
         ['coaching', __('Coaching'), 'coach']];
     if ($me) {
@@ -57,7 +57,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>@yield('title', $app)</title>
 @stack('meta')
-<meta name="description" content="@yield('description', $app.' : compilations vidéo de sportifs, recrutement et scores en direct.')">
+<meta name="description" content="@yield('description', $app.' : le réseau social du foot. Vidéos, actu des joueurs et des clubs, recrutement et scores en direct.')">
 <link rel="preload" href="{{ asset('fonts/inter-var.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ asset('fonts/barlow-condensed-800-italic.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ asset('css/terrain.css') }}">
@@ -184,7 +184,7 @@
 </div>
 
 <nav class="tabbar" aria-label="Onglets">
-  <a href="{{ route('feed') }}" @if ($active('feed')) aria-current="page" @endif><x-ico name="home" />{{ __('Accueil') }}</a>
+  <a href="{{ route('feed') }}" @if ($active('feed') || $active('posts')) aria-current="page" @endif><x-ico name="home" />{{ __('Accueil') }}</a>
   <a href="{{ route('explore') }}" @if ($active('explore') || $active('search')) aria-current="page" @endif><x-ico name="compass" />{{ __('Explorer') }}</a>
   <a class="tabplus" href="{{ $plusUrl }}" aria-label="{{ $plusLabel }}"><span><x-ico name="plus" /></span></a>
   <a href="{{ route('matches') }}" @if ($active('matches')) aria-current="page" @endif><x-ico name="score" />{{ __('Matchs') }}</a>

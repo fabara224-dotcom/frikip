@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>@yield('title', $app)</title>
 @stack('meta')
-<meta name="description" content="@yield('description', $app.' : les sportifs publient leurs compilations vidéo, les clubs et agents les recrutent.')">
+<meta name="description" content="@yield('description', $app.' : le réseau social du foot. Les joueurs publient leurs vidéos et leur actu, les clubs et agents les recrutent.')">
 @hasSection('noindex')<meta name="robots" content="noindex, nofollow">@endif
 <link rel="preload" href="{{ asset('fonts/inter-var.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ asset('fonts/barlow-condensed-800-italic.woff2') }}" as="font" type="font/woff2" crossorigin>

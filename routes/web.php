@@ -24,6 +24,7 @@ use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PhoneAuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\PublishController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\VideoController;
@@ -110,6 +111,8 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/cv/{id}', [GrowthController::class, 'cv'])->name('athletes.cv');
     Route::get('/j/{id}', [GrowthController::class, 'short'])->name('athletes.short');
     Route::view('/explorer', 'web.explore')->name('explore');
+    Route::get('/actu', [PostController::class, 'index'])->name('posts');
+    Route::get('/actu/{id}', [PostController::class, 'show'])->whereNumber('id')->name('posts.show');
     Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
     Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
     Route::get('/detections', [EventController::class, 'index'])->name('events');
@@ -148,6 +151,11 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/sportifs/{athlete}/suivre', [FeedController::class, 'follow'])->name('athletes.follow');
         Route::post('/matchs/{id}/vote', [MatchController::class, 'vote'])->name('matches.vote');
         Route::get('/recherche', [AthleteController::class, 'search'])->name('search');
+        Route::post('/actu', [PostController::class, 'store'])->middleware(Throttle::class.':10,1')->name('posts.store');
+        Route::post('/actu/{id}/aime', [PostController::class, 'like'])->whereNumber('id')->middleware(Throttle::class.':60,1')->name('posts.like');
+        Route::post('/actu/{id}/commentaires', [PostController::class, 'comment'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('posts.comment');
+        Route::post('/actu/{id}/supprimer', [PostController::class, 'destroy'])->whereNumber('id')->name('posts.destroy');
+        Route::post('/actu/{id}/signaler', [PostController::class, 'report'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('posts.report');
         Route::get('/comparer', [AthleteController::class, 'compare'])->name('compare');
         Route::get('/offres', [OfferController::class, 'index'])->name('offers');
         Route::get('/messages', [MessageController::class, 'index'])->name('messages');
