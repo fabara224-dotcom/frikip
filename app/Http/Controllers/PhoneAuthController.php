@@ -32,7 +32,47 @@ class PhoneAuthController extends Controller
         if ($request->boolean('changer')) {
             session()->forget(['phone_auth.phone', 'phone_auth.demo_code']);
         }
-        return view('web.phone-login', ['phone' => session('phone_auth.phone'), 'demoCode' => session('phone_auth.demo_code')]);
+
+        return view('web.phone-login', ['phone' => session('phone_auth.phone'), 'demoCode' => session('phone_auth.demo_code'), 'withPassword' => $this->usesPassword()]);
+    }
+
+    /** Sans service SMS (ni Twilio, ni Supabase) sur le vrai site : connexion par numéro + mot de passe. */
+    private function usesPassword(): bool
+    {
+        return $this->data instanceof \App\Terrain\LocalData && ! Notifier::smsConfigured() && ! app()->environment('local');
+    }
+
+    /** Connexion ou création de compte avec numéro + mot de passe. */
+    public function password(Request $request): RedirectResponse
+    {
+        if (! $this->usesPassword()) {
+            return redirect()->route('phone.login');
+        }
+        $request->validate([
+            'phone' => ['required', 'string', 'max:30', function ($a, $v, $fail) {
+                if (strlen(preg_replace('/\D/', '', (string) $v)) < 8) {
+                    $fail('Numéro trop court.');
+                }
+            }],
+            'password' => ['required', 'string', 'min:6', 'max:100'],
+        ], ['phone.required' => 'Entre ton numéro de téléphone.', 'password.required' => 'Entre ton mot de passe.', 'password.min' => 'Le mot de passe doit faire au moins 6 caractères.']);
+        $country = isset(\App\Terrain\Region::COUNTRIES[$request->input('country')]) ? $request->input('country') : \App\Terrain\Region::viewer();
+        $phone = Notifier::e164($request->input('phone'), $country);
+        try {
+            $user = $this->data->signInByPhonePassword($phone, (string) $request->input('password'));
+        } catch (Throwable $e) {
+            return back()->withInput($request->except('password'))->withErrors(['password' => $e->getMessage()]);
+        }
+        if ($user) {
+            session()->forget(['phone_auth.phone', 'phone_auth.verified', 'phone_auth.password_hash']);
+
+            return redirect()->intended(route('feed'));
+        }
+        // Numéro inconnu : on crée le compte (dernière étape : profil et confirmation du mot de passe)
+        session(['phone_auth.country' => $country, 'phone_auth.phone' => $phone, 'phone_auth.verified' => $phone,
+            'phone_auth.password_hash' => Hash::make((string) $request->input('password'))]);
+
+        return redirect()->route('phone.profile');
     }
 
     public function send(Request $request, Notifier $notifier): RedirectResponse
@@ -145,12 +185,18 @@ class PhoneAuthController extends Controller
             'city' => ['nullable', 'string', 'max:120'],
             'guardian_phone' => [$athlete && (int) $request->input('age') < 18 ? 'required' : 'nullable', 'string', 'max:30'],
             'terms' => ['accepted'],
-        ], ['age.min' => "Il faut avoir au moins {$minAge} ans.", 'guardian_phone.required' => 'Moins de 18 ans : le téléphone d’un parent ou tuteur est obligatoire.', 'terms.accepted' => 'Accepte les conditions pour continuer.']);
+            'password_confirmation' => [session('phone_auth.password_hash') ? 'required' : 'nullable', 'string', function ($a, $v, $fail) {
+                if (session('phone_auth.password_hash') && ! Hash::check((string) $v, session('phone_auth.password_hash'))) {
+                    $fail('Les deux mots de passe ne sont pas identiques.');
+                }
+            }],
+        ], ['password_confirmation.required' => 'Retape ton mot de passe.', 'age.min' => "Il faut avoir au moins {$minAge} ans.", 'guardian_phone.required' => 'Moins de 18 ans : le téléphone d’un parent ou tuteur est obligatoire.', 'terms.accepted' => 'Accepte les conditions pour continuer.']);
         app(\App\Terrain\Growth\ContentGuard::class)->enforce(['name' => $data['name'], 'city' => $data['city'] ?? null], 'profile');
         $phone = session('phone_auth.phone');
         $country = $data['country'] ?? session('phone_auth.country') ?? \App\Terrain\Region::viewer();
         $profile = ['name' => $data['name'], 'sport' => $data['sport'] ?? null, 'age' => $data['age'] ?? null, 'country' => $country,
-            'city' => $data['city'] ?? null, 'guardian_phone' => $data['guardian_phone'] ?? null, 'fields' => [], 'phone' => $phone];
+            'city' => $data['city'] ?? null, 'guardian_phone' => $data['guardian_phone'] ?? null, 'fields' => [], 'phone' => $phone,
+            'password_hash' => session('phone_auth.password_hash')];
         try {
             if ($this->data instanceof SupabaseData) {
                 $this->data->phoneComplete($data['role'], $profile);
@@ -160,7 +206,7 @@ class PhoneAuthController extends Controller
         } catch (Throwable $e) {
             return back()->withInput()->withErrors(['name' => 'Inscription impossible : '.$e->getMessage()]);
         }
-        session()->forget(['phone_auth.verified']);
+        session()->forget(['phone_auth.verified', 'phone_auth.password_hash']);
         app(Members::class)->touch();
         app(Members::class)->updatePrefs(['phone' => $phone, 'notify_sms' => true]);
         app(Members::class)->setCountry($country);

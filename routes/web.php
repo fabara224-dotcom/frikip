@@ -79,6 +79,7 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/connexion/telephone', [PhoneAuthController::class, 'show'])->name('phone.login');
     Route::post('/connexion/telephone', [PhoneAuthController::class, 'send'])->middleware(Throttle::class.':5,10')->name('phone.send');
     Route::post('/connexion/telephone/code', [PhoneAuthController::class, 'verify'])->middleware(Throttle::class.':10,10')->name('phone.verify');
+    Route::post('/connexion/telephone/mot-de-passe', [PhoneAuthController::class, 'password'])->middleware(Throttle::class.':10,10')->name('phone.password');
     Route::get('/connexion/telephone/profil', [PhoneAuthController::class, 'profile'])->name('phone.profile');
     Route::post('/connexion/telephone/profil', [PhoneAuthController::class, 'complete'])->middleware(Throttle::class.':10,1');
     // Vrais comptes : mot de passe oublié

@@ -6,7 +6,11 @@
 <div class="page gut">
   <div class="narrow" style="max-width:520px">
     <h1>{{ __('Dernière étape') }}</h1>
-    <p class="meta">{{ __('Numéro vérifié') }} : {{ $phone }} ✓</p>
+    @if (session('phone_auth.password_hash'))
+      <p class="meta">{{ __('Nouveau compte pour le') }} <b>{{ $phone }}</b> · <a href="{{ route('phone.login') }}">{{ __('Changer de numéro') }}</a></p>
+    @else
+      <p class="meta">{{ __('Numéro vérifié') }} : {{ $phone }} ✓</p>
+    @endif
     <form method="POST" action="{{ route('phone.profile') }}" class="card" id="pf">@csrf
       <div class="seg" role="radiogroup" aria-label="{{ __('Je suis') }}">
         <label><input type="radio" name="role" value="athlete" @checked(old('role', 'athlete') === 'athlete')> {{ __('Sportif') }}</label>
@@ -22,8 +26,11 @@
         </div>
         <label for="guardian_phone" id="gp">{{ __('Téléphone d’un parent ou tuteur (obligatoire si moins de 18 ans)') }}<input id="guardian_phone" name="guardian_phone" type="tel" value="{{ old('guardian_phone') }}"></label>
       </div>
+      @if (session('phone_auth.password_hash'))
+        <label for="password_confirmation">{{ __('Retape ton mot de passe') }}<input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required></label>
+      @endif
       <label class="check"><input type="checkbox" name="terms" value="1" @checked(old('terms'))> {{ __('J’accepte les') }} <a href="{{ route('terms') }}" target="_blank">{{ __('conditions') }}</a> {{ __('et la') }} <a href="{{ route('privacy') }}" target="_blank">{{ __('politique de confidentialité') }}</a>.</label>
-      @foreach (['role', 'name', 'sport', 'age', 'country', 'guardian_phone', 'terms'] as $e)@error($e)<p class="field-error" style="margin:0">{{ $message }}</p>@enderror @endforeach
+      @foreach (['role', 'name', 'sport', 'age', 'country', 'guardian_phone', 'password_confirmation', 'terms'] as $e)@error($e)<p class="field-error" style="margin:0">{{ $message }}</p>@enderror @endforeach
       <button class="btn" type="submit">{{ __('Créer mon compte') }}</button>
     </form>
   </div>

@@ -92,6 +92,26 @@ class LocalData extends DemoData
         return $a ? $this->login($a) : null;
     }
 
+    /**
+     * Connexion avec numéro + mot de passe (quand aucun service SMS n'est branché).
+     * @return array|null null = numéro inconnu (nouveau compte à créer)
+     */
+    public function signInByPhonePassword(string $phone, string $password): ?array
+    {
+        $a = DB::table('accounts')->where('phone', $phone)->first();
+        if (! $a) {
+            return null;
+        }
+        if (! $a->password) {
+            throw new RuntimeException('Ce numéro n’a pas encore de mot de passe. Connecte-toi avec ton e-mail ou contacte l’aide.');
+        }
+        if (! Hash::check($password, $a->password)) {
+            throw new RuntimeException('Numéro ou mot de passe incorrect.');
+        }
+
+        return $this->login($a);
+    }
+
     public function demoLogin(string $role): array
     {
         throw new RuntimeException('Connexion de démonstration désactivée : le site utilise de vrais comptes.');
@@ -125,7 +145,8 @@ class LocalData extends DemoData
             }
             DB::table('accounts')->insert([
                 'id' => $id, 'role' => $role, 'name' => $name, 'email' => $email, 'phone' => $phone,
-                'password' => $email ? Hash::make($password) : null,   // compte par téléphone : connexion par code SMS
+                // compte par téléphone : connexion par code SMS, ou par numéro + mot de passe (déjà chiffré)
+                'password' => $email ? Hash::make($password) : ($profile['password_hash'] ?? null),
                 'athlete_id' => $athleteId, 'org_type' => $profile['org_type'] ?? null, 'created_at' => $now, 'updated_at' => $now,
             ]);
 
