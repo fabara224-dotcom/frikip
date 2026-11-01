@@ -5,6 +5,28 @@
 @section('fullbleed', '1')
 
 
+@section('rail')
+  <a class="railhero" href="{{ ($me['role'] ?? null) === 'athlete' ? route('publish') : route('phone.login') }}">
+    <span class="railhero-k">{{ __('Sur Frikip') }}</span>
+    <b>{{ __('Découvre les talents de demain') }}</b>
+    <small>{{ __('Entraînements · Matchs · Recrutement') }}</small>
+    <span class="btn sm">{{ ($me['role'] ?? null) === 'athlete' ? __('Publier ma vidéo') : __('Rejoindre la communauté') }}</span>
+  </a>
+  @if (! empty($challenge))
+    <section class="railbox">
+      <header><h2>{{ __('Défi en cours') }}</h2><a href="{{ route('challenges') }}">{{ __('Voir tout') }} →</a></header>
+      <a class="railrow" href="{{ route('challenges.show', $challenge->id) }}"><span class="lico"><x-ico name="trophy" /></span><span class="grow"><b>@td($challenge->title)</b><small>{{ __('Vote pour la meilleure action') }}</small></span></a>
+    </section>
+  @endif
+  <section class="railbox">
+    <header><h2>{{ __('À ne pas manquer') }}</h2><a href="{{ route('explore') }}">{{ __('Voir tout') }} →</a></header>
+    <a class="railrow" href="{{ route('matches') }}"><span class="lico"><x-ico name="score" /></span><span class="grow"><b>{{ __('Matchs du jour') }}</b><small>{{ __('Scores en direct et résultats') }}</small></span></a>
+    <a class="railrow" href="{{ route('rankings') }}"><span class="lico"><x-ico name="star" /></span><span class="grow"><b>{{ __('Classements') }}</b><small>{{ __('Les sportifs les plus suivis') }}</small></span></a>
+    <a class="railrow" href="{{ route('events') }}"><span class="lico"><x-ico name="calendar" /></span><span class="grow"><b>{{ __('Détections') }}</b><small>{{ __('Essais organisés par les clubs') }}</small></span></a>
+    <a class="railrow" href="{{ route('clubs') }}"><span class="lico"><x-ico name="stadium" /></span><span class="grow"><b>{{ __('Clubs et académies') }}</b><small>{{ __('Trouve une structure près de chez toi') }}</small></span></a>
+  </section>
+@endsection
+
 @section('content')
 <div class="feedwrap">
   <div class="tktop">

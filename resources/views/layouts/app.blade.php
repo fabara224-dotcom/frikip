@@ -2,7 +2,7 @@
     $app = config('terrain.app_name');
 @endphp
 <!doctype html>
-<html lang="{{ app()->getLocale() }}" data-theme="light">
+<html lang="{{ app()->getLocale() }}" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -10,12 +10,14 @@
 @stack('meta')
 <meta name="description" content="@yield('description', $app.' : les sportifs publient leurs compilations vidéo, les clubs et agents les recrutent.')">
 @hasSection('noindex')<meta name="robots" content="noindex, nofollow">@endif
-<link rel="preload" href="{{ asset('fonts/archivo-var.woff') }}" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="{{ asset('fonts/inter-var.woff2') }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ asset('fonts/barlow-condensed-800-italic.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ asset('css/terrain.css') }}">
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
+<link rel="stylesheet" href="{{ asset('css/frikip-pro.css') }}?v=1">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
-<meta name="theme-color" content="#0B2318">
+<meta name="theme-color" content="#07100B">
 </head>
 <body>
 @php
@@ -29,7 +31,7 @@
 @endphp
 <header class="top">
   <div class="wrap gut">
-    <a class="logo" href="{{ route('home') }}" aria-label="{{ $app }}"><img src="{{ asset('brand/logo.svg') }}" alt="{{ $app }}" width="120" height="32"></a>
+    <a class="logo" href="{{ route('home') }}" aria-label="{{ $app }}"><x-logo /></a>
     <a class="btn" href="{{ route('feed') }}" style="padding:8px 14px;font-size:14px">Ouvrir l'app web</a>
     <nav class="nav" aria-label="Pages">
       @foreach ($links as $name => $label)

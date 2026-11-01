@@ -108,6 +108,7 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/sportifs/{id}/carte.png', [GrowthController::class, 'cardImage'])->name('athletes.card.png');
     Route::get('/cv/{id}', [GrowthController::class, 'cv'])->name('athletes.cv');
     Route::get('/j/{id}', [GrowthController::class, 'short'])->name('athletes.short');
+    Route::view('/explorer', 'web.explore')->name('explore');
     Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
     Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
     Route::get('/detections', [EventController::class, 'index'])->name('events');
