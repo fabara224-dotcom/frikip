@@ -13,6 +13,7 @@
         ],
         'Contenus' => [
             ['admin.content', 'Vidéos, offres…', 'film', null],
+            ['admin.actu', 'Actu et stories', 'news', \App\Http\Controllers\AdminActuController::todo()],
             ['admin.live', 'Direct', 'live', $count('live_streams', fn ($q) => $q->where('approved', false))],
             ['admin.broadcasters', 'Diffuseurs', 'tv', null],
             ['admin.ads', 'Publicités', 'ad', null],

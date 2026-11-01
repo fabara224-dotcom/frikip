@@ -45,7 +45,7 @@ class PostController extends Controller
         return view('web.post', $this->extras([$post]) + ['post' => $post, 'allComments' => $comments]);
     }
 
-    public function store(Request $request, ContentGuard $guard): RedirectResponse
+    public function store(Request $request, ContentGuard $guard): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $me = $this->data->user();
         $data = $request->validate([
@@ -72,7 +72,9 @@ class PostController extends Controller
             if ($score !== null && $score >= 0.6) {
                 @unlink($path);
 
-                return back()->withInput()->withErrors(['photo' => 'Cette photo n’est pas autorisée sur '.config('terrain.app_name').'.']);
+                $msg = 'Cette photo n’est pas autorisée sur '.config('terrain.app_name').'.';
+
+                return $request->expectsJson() ? response()->json(['message' => $msg], 422) : back()->withInput()->withErrors(['photo' => $msg]);
             }
             $photo = 'uploads/posts/'.$name;
         }
@@ -83,7 +85,9 @@ class PostController extends Controller
             'country' => Region::viewer(), 'created_at' => now(), 'updated_at' => now(),
         ]);
 
-        return redirect()->route('posts')->with('status', 'Publication partagée.');
+        session()->flash('status', 'Publication partagée.');
+
+        return $request->expectsJson() ? response()->json(['redirect' => route('posts')]) : redirect()->route('posts');
     }
 
     public function like(int $id): JsonResponse
@@ -137,7 +141,7 @@ class PostController extends Controller
         abort_unless(DB::table('posts')->where('id', $id)->exists(), 404);
         DB::table('post_reports')->insertOrIgnore(['post_id' => $id, 'user_key' => $me['id'], 'created_at' => now(), 'updated_at' => now()]);
         $n = DB::table('post_reports')->where('post_id', $id)->count();
-        DB::table('posts')->where('id', $id)->update(['reports' => $n, 'hidden' => $n >= self::HIDE_AFTER_REPORTS]);
+        DB::table('posts')->where('id', $id)->update(['reports' => $n, 'hidden' => $n >= self::HIDE_AFTER_REPORTS, 'reviewed_at' => null]);
 
         return back()->with('status', 'Merci, la publication a été signalée.');
     }

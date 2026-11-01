@@ -25,6 +25,8 @@
     <a href="{{ route('posts') }}" aria-current="page">{{ __('Actu') }}</a>
   </nav>
 
+  @include('web.partials.stories')
+
   @if ($me)
     <form class="composer" method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">@csrf
       <div class="composer-row">

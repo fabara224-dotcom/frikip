@@ -155,6 +155,10 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/actu/{id}/aime', [PostController::class, 'like'])->whereNumber('id')->middleware(Throttle::class.':60,1')->name('posts.like');
         Route::post('/actu/{id}/commentaires', [PostController::class, 'comment'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('posts.comment');
         Route::post('/actu/{id}/supprimer', [PostController::class, 'destroy'])->whereNumber('id')->name('posts.destroy');
+        Route::post('/stories', [\App\Http\Controllers\StoryController::class, 'store'])->middleware(Throttle::class.':10,1')->name('fkstories.store');
+        Route::post('/stories/{id}/vue', [\App\Http\Controllers\StoryController::class, 'view'])->whereNumber('id')->middleware(Throttle::class.':120,1')->name('fkstories.view');
+        Route::post('/stories/{id}/supprimer', [\App\Http\Controllers\StoryController::class, 'destroy'])->whereNumber('id')->name('fkstories.destroy');
+        Route::post('/stories/{id}/signaler', [\App\Http\Controllers\StoryController::class, 'report'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('fkstories.report');
         Route::post('/actu/{id}/signaler', [PostController::class, 'report'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('posts.report');
         Route::get('/comparer', [AthleteController::class, 'compare'])->name('compare');
         Route::get('/offres', [OfferController::class, 'index'])->name('offers');
@@ -277,6 +281,10 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/membres/{key}/gerer', [\App\Http\Controllers\AdminManageController::class, 'memberManage'])->name('member.manage');
         Route::post('/videos/{id}/supprimer', [\App\Http\Controllers\AdminManageController::class, 'deleteVideo'])->name('videos.delete');
         Route::get('/contenus', [\App\Http\Controllers\AdminManageController::class, 'content'])->name('content');
+        Route::get('/actu', [\App\Http\Controllers\AdminActuController::class, 'index'])->name('actu');
+        Route::post('/actu/publications/{id}', [\App\Http\Controllers\AdminActuController::class, 'post'])->whereNumber('id')->name('actu.post');
+        Route::post('/actu/commentaires/{id}/supprimer', [\App\Http\Controllers\AdminActuController::class, 'deleteComment'])->whereNumber('id')->name('actu.comment');
+        Route::post('/actu/stories/{id}', [\App\Http\Controllers\AdminActuController::class, 'story'])->whereNumber('id')->name('actu.story');
         Route::post('/contenus/{type}/{id}/supprimer', [\App\Http\Controllers\AdminManageController::class, 'deleteContent'])->whereIn('type', ['offre', 'detection', 'commentaire', 'club'])->name('content.delete');
         Route::post('/paiements/{id}', [\App\Http\Controllers\AdminManageController::class, 'paymentAction'])->whereNumber('id')->name('payments.action');
         Route::get('/publicites', [AdminMediaController::class, 'ads'])->name('ads');
