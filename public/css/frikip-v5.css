@@ -1,21 +1,21 @@
 /* =====================================================================
-   FRIKIP — design « Pro clair » appliqué à toutes les pages du site :
-   blanc, vert, texte presque noir, police Inter ; traits fins gris, pas de lueurs.
+   FRIKIP — design « comme Instagram » appliqué à toutes les pages du site :
+   tout blanc, traits fins gris, texte noir, vert pour les boutons et ce qui est actif ; police Nunito.
    Chargé en dernier dans layouts/web.blade.php : il ne fait que remplacer les couleurs,
    les polices et la barre de navigation, sans toucher au fonctionnement des pages.
    ===================================================================== */
 :root, :root[data-theme], :root[data-theme="dark"], :root[data-theme="light"] {
-  --bg: #F7F8F7; --surface: #FFFFFF; --sunk: #F4F6F5; --ink: #0B1210; --muted: #5F6B65;
-  --line: #E5E8E6; --line-strong: #D5DAD7;
+  --bg: #FFFFFF; --surface: #FFFFFF; --sunk: #EFEFEF; --ink: #000000; --muted: #737373;
+  --line: #DBDBDB; --line-strong: #C7C7C7;
   --accent: #16A34A; --accent-ink: #FFFFFF;
   --sun: #16A34A; --sun-ink: #FFFFFF; --sun-soft: #ECF8F0;
-  --blue: #16A34A; --blue-deep: #15803D; --green: #16A34A; --pitch: #16A34A;
-  --coral: #E5243B; --coral-soft: #FDECEE; --signal: #E5243B; --danger: #D92D20;
+  --blue: #16A34A; --blue-deep: #128A3E; --green: #16A34A; --pitch: #16A34A;
+  --coral: #ED4956; --coral-soft: #FDECEE; --signal: #ED4956; --danger: #D92D20;
   --gold: #D99A00; --gold-bg: #FFF7E0; --trophy: #D99A00;
   --hero: #FFFFFF; --hero-ink: #0B1210;
-  --f-display: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
-  --f-body: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
-  --f-mono: "Inter", system-ui, sans-serif;
+  --f-display: "Nunito", -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-body: "Nunito", -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-mono: "Nunito", system-ui, sans-serif;
   --ring: 0 0 0 3px rgba(22, 163, 74, .25);
   --lift: 0 1px 2px rgba(16, 24, 20, .06), 0 8px 24px -12px rgba(16, 24, 20, .12);
   color-scheme: light;
@@ -23,7 +23,7 @@
 html, body.webapp { background: var(--bg) !important; color: var(--ink) !important; }
 body.webapp { font-family: var(--f-body); -webkit-font-smoothing: antialiased; letter-spacing: -.005em; }
 body.webapp h1, body.webapp h2, body.webapp h3, body.webapp .page-title {
-  font-family: var(--f-body) !important; text-transform: none !important; letter-spacing: -.02em !important; font-weight: 700 !important; font-style: normal !important; color: var(--ink);
+  font-family: var(--f-body) !important; text-transform: none !important; letter-spacing: 0 !important; font-weight: 800 !important; font-style: normal !important; color: var(--ink);
 }
 body.webapp h1 { font-size: clamp(24px, 4vw, 34px); line-height: 1.15; }
 body.webapp h2 { font-size: 19px; }
@@ -40,7 +40,7 @@ body.webapp input, body.webapp select, body.webapp textarea { background: #fff !
 body.webapp input::placeholder, body.webapp textarea::placeholder { color: #8A948F; }
 body.webapp input:focus, body.webapp select:focus, body.webapp textarea:focus { border-color: var(--accent) !important; box-shadow: var(--ring) !important; }
 body.webapp .btn { background: var(--accent) !important; color: #fff !important; border: 1px solid var(--accent) !important; border-radius: 10px; font-weight: 600; box-shadow: none !important; text-transform: none; }
-body.webapp .btn:hover { background: #15803D !important; }
+body.webapp .btn:hover { background: #128A3E !important; }
 body.webapp .btn.ghost, body.webapp .btn-ghost, body.webapp .btn.dark, body.webapp .btn.phonebtn { background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line-strong) !important; }
 body.webapp .btn.ghost:hover, body.webapp .btn.dark:hover { background: var(--sunk) !important; }
 body.webapp .pill, body.webapp .chip { background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line) !important; font-weight: 500; }
@@ -106,7 +106,7 @@ body.webapp video, body.webapp iframe { background: #000; }
 
 /* anciens titres en italique majuscule (frikip-pro.css) : même style sobre que le reste */
 body.webapp :is(.counter b, .mcard .tm b, .board .big, .price .amount, .fklogo-word, .fklogo-word em, .sidecard b, .railhero b, .feedempty b, .promo b, .foot b, .hero h1, .hero h1 em, .post-empty b) {
-  font-family: var(--f-body) !important; font-style: normal !important; text-transform: none !important; letter-spacing: -.02em !important; font-weight: 700 !important;
+  font-family: var(--f-body) !important; font-style: normal !important; text-transform: none !important; letter-spacing: 0 !important; font-weight: 800 !important;
 }
 body.webapp .post-empty b, body.webapp .feedempty b { font-size: 18px !important; line-height: 1.3; }
 .apptop .moremenu summary { border: 0 !important; background: transparent !important; border-radius: 50%; }
@@ -115,3 +115,26 @@ body.webapp .post-empty b, body.webapp .feedempty b { font-size: 18px !important
 .apptop .iconbtn:hover { background: var(--sunk) !important; }
 body.feedpage .apptop .moremenu summary, body.feedpage .apptop .iconbtn { color: var(--ink) !important; }
 body.webapp .apptop details.moremenu { border: 0 !important; background: transparent !important; box-shadow: none !important; }
+
+/* comme Instagram : pas d'ombres, coins à 8-12 px, logo = le nom seul */
+body.webapp .card, body.webapp .opt, body.webapp .kv > div, body.webapp .spec, body.webapp .thumb, body.webapp .extile, body.webapp details, body.webapp table,
+body.webapp .note, body.webapp .msg, body.webapp .listrow, body.webapp .mcard, body.webapp .deficard, body.webapp .perk, body.webapp .hof, body.webapp .bigm,
+body.webapp .plan-diag, body.webapp .livecard, body.webapp .defihero, body.webapp .probanner, body.webapp .pushbar, body.webapp .partnerbar { box-shadow: none !important; border-radius: 12px; }
+body.webapp .btn { border-radius: 8px; font-weight: 800; }
+body.webapp .btn.ghost, body.webapp .btn-ghost, body.webapp .btn.dark, body.webapp .btn.phonebtn { background: var(--sunk) !important; border-color: var(--sunk) !important; }
+body.webapp .pill, body.webapp .chip { background: var(--sunk) !important; border-color: var(--sunk) !important; border-radius: 8px; font-weight: 700; }
+body.webapp .chip[aria-current="true"], body.webapp .filters a[aria-current="true"] { background: #000 !important; border-color: #000 !important; color: #fff !important; }
+body.webapp .defihero { border-left: 1px solid var(--line) !important; }
+body.webapp .bub.me { background: var(--accent) !important; color: #fff !important; border: 0; }
+body.webapp .bub { background: var(--sunk); border: 0; border-radius: 18px; }
+.apptop { background: #fff !important; }
+.apptop .brand-ball { display: none; }
+.apptop .brand b { font: 900 27px/1 var(--f-body); letter-spacing: -.02em; color: #000; }
+.apptop .appnav a[aria-current="page"] { box-shadow: inset 0 -2px 0 #000; }
+.tabbar.v5tabs a { color: #000; font-weight: 600; }
+.tabbar.v5tabs a svg { width: 26px; height: 26px; stroke-width: 1.8; }
+.tabbar.v5tabs a[aria-current="page"] { color: var(--accent); font-weight: 800; }
+.tabbar.v5tabs a[aria-current="page"] svg { stroke-width: 2.6; }
+.tabbar.v5tabs a.v5plus span { width: 30px; height: 30px; border-radius: 9px; background: transparent; border: 2px solid #000; }
+.tabbar.v5tabs a.v5plus svg { width: 18px; height: 18px; color: #000 !important; }
+.apptop .badge, .tabbar .tbadge { background: #ED4956; }
