@@ -138,3 +138,19 @@ body.webapp .bub { background: var(--sunk); border: 0; border-radius: 18px; }
 .tabbar.v5tabs a.v5plus span { width: 30px; height: 30px; border-radius: 9px; background: transparent; border: 2px solid #000; }
 .tabbar.v5tabs a.v5plus svg { width: 18px; height: 18px; color: #000 !important; }
 .apptop .badge, .tabbar .tbadge { background: #ED4956; }
+
+/* mise en page Instagram : logo écrit, cœur + messagerie, barre du bas en icônes seules */
+.apptop .brand .ig-logo, .ig-logo { font: 400 32px/1 "Grand Hotel", "Brush Script MT", cursive !important; letter-spacing: .01em !important; color: #000 !important; }
+.apptop .iconbtn svg { width: 26px; height: 26px; stroke-width: 1.9; }
+.apptop .badge { min-width: 17px; height: 17px; font-size: 10px; line-height: 17px; box-shadow: 0 0 0 2px #fff; }
+.tabbar.v5tabs { align-items: center; }
+.tabbar.v5tabs a { color: #000; height: 50px; display: grid; place-items: center; font-size: 0; position: relative; }
+.tabbar.v5tabs a svg { width: 27px; height: 27px; stroke-width: 1.9; }
+.tabbar.v5tabs a[aria-current="page"] { color: #000; }
+.tabbar.v5tabs a[aria-current="page"] svg { stroke-width: 2.7; }
+.tabbar.v5tabs a[aria-current="page"] svg .fillable { fill: currentColor; }
+.tabbar.v5tabs a[aria-current="page"]::after { content: ""; position: absolute; bottom: 4px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.tabbar.v5tabs a[aria-current="page"]::before { display: none; }
+.tabbar.v5tabs a.v5plus span { width: auto; height: auto; border: 0; background: none; }
+.tabbar.v5tabs a.v5plus svg { width: 27px; height: 27px; color: #000 !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
