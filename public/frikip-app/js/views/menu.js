@@ -25,6 +25,7 @@ Frikip.views = Frikip.views || {};
       ['Activité', [
         ['bell', 'Notifications', '#notifications', 'notifications'],
         ['msg', 'Messages', '#messages', 'messages'],
+        ['msg', 'Actu et stories', 'url:posts'],
         ['film', 'Lives et directs', 'action:lives'],
         ['trophy', 'Défis', 'url:challenges'],
         ['dumbbell', 'Coaching', 'url:coaching'],

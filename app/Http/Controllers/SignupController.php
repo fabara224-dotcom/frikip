@@ -210,8 +210,12 @@ class SignupController extends Controller
             $this->link(session('signup.social.provider'), session('signup.social'), $user['id']);
         } else {
             app(Members::class)->updatePrefs(['phone' => $p['phone'], 'notify_sms' => true]);
+            // inscription par numéro + mot de passe (sans service SMS) : on garde le mot de passe choisi
+            if ($hash = session('phone_auth.password_hash')) {
+                DB::table('accounts')->where('id', $user['id'])->update(['password' => $hash, 'phone' => $p['phone']]);
+            }
         }
-        session()->forget(['signup.social', 'signup.type', 'phone_auth.verified', 'phone_auth.phone']);
+        session()->forget(['signup.social', 'signup.type', 'phone_auth.verified', 'phone_auth.phone', 'phone_auth.password_hash']);
         $this->afterSignup($d);
 
         return redirect()->route(Signup::landing($type))->with('status', Signup::welcome($type));

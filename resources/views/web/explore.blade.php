@@ -12,6 +12,7 @@
       ['matches', 'score', __('Matchs et scores'), __('Hier, aujourd’hui, demain : scores en direct')],
       ['live', 'live', __('En direct'), __('Matchs filmés et lives de supporters')],
       ['challenges', 'trophy', __('Défis'), __('Publie ta plus belle action, vote pour les autres')],
+      ['posts', 'news', __('Actu'), __('Publications texte et photo des membres')],
       ['coaching', 'coach', __('Coaching'), __('Ton programme d’entraînement gratuit, ou un coach')],
       ['discover', 'play', __('Découvrir'), $discover ? __(':n vidéos de foot pour apprendre et t’inspirer', ['n' => number_format($discover, 0, ',', ' ')]) : __('Vidéos de foot pour apprendre et t’inspirer')],
       ['stories', 'party', __('Ils ont été recrutés'), __('Des joueurs repérés grâce à Frikip')],

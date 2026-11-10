@@ -14,7 +14,7 @@
         ['profil', $me ? __('Profil') : __('Connexion'), 'user', '', $me ? $appUrl('profil') : route('login')],
     ];
     $more = [
-        ['live', __('Matchs en direct'), 'live'], ['matches', __('Matchs et scores'), 'score'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'], ['rankings', __('Meilleurs joueurs'), 'star'], ['events', __('Détections'), 'calendar'],
+        ['live', __('Matchs en direct'), 'live'], ['matches', __('Matchs et scores'), 'score'], ['posts', __('Actu'), 'news'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'], ['rankings', __('Meilleurs joueurs'), 'star'], ['events', __('Détections'), 'calendar'],
         ['clubs', __('Clubs et académies'), 'stadium'], ['stories', __('Ils ont été recrutés'), 'party'],
     ];
     if ($me) {
@@ -100,6 +100,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
 <link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=3">
+<link rel="stylesheet" href="{{ asset('css/frikip-pro.css') }}?v=1">
 {{-- Design Frikip (noir, vert vif, blanc) : le même que l'application /app --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

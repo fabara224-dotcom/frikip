@@ -24,6 +24,7 @@ use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PhoneAuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\PublishController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\VideoController;
@@ -117,6 +118,7 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/connexion/telephone', [PhoneAuthController::class, 'show'])->name('phone.login');
     Route::post('/connexion/telephone', [PhoneAuthController::class, 'send'])->middleware(Throttle::class.':5,10')->name('phone.send');
     Route::post('/connexion/telephone/code', [PhoneAuthController::class, 'verify'])->middleware(Throttle::class.':10,10')->name('phone.verify');
+    Route::post('/connexion/telephone/mot-de-passe', [PhoneAuthController::class, 'password'])->middleware(Throttle::class.':10,10')->name('phone.password');
     Route::get('/connexion/telephone/profil', [\App\Http\Controllers\SignupController::class, 'finish'])->name('phone.profile');
     Route::post('/connexion/telephone/profil', [\App\Http\Controllers\SignupController::class, 'finishStore'])->middleware(Throttle::class.':10,1');
     // Vrais comptes : mot de passe oublié
@@ -152,6 +154,8 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/salon/{room}', [\App\Http\Controllers\RoomController::class, 'index'])->middleware(Throttle::class.':120,1')->name('room');
     Route::post('/decouvrir/{id}/lecture', [\App\Http\Controllers\DiscoverController::class, 'play'])->whereNumber('id')->middleware(Throttle::class.':60,1')->name('discover.play');
     Route::get('/acteurs-du-foot', [\App\Http\Controllers\ExploreController::class, 'actors'])->name('actors');
+    Route::get('/actu', [PostController::class, 'index'])->name('posts');
+    Route::get('/actu/{id}', [PostController::class, 'show'])->whereNumber('id')->name('posts.show');
     Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
     Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
     Route::get('/detections', [EventController::class, 'index'])->name('events');
@@ -204,6 +208,15 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/sportifs/{athlete}/suivre', [FeedController::class, 'follow'])->name('athletes.follow');
         Route::post('/matchs/{id}/vote', [MatchController::class, 'vote'])->name('matches.vote');
         Route::get('/recherche', [AthleteController::class, 'search'])->name('search');
+        Route::post('/actu', [PostController::class, 'store'])->middleware(Throttle::class.':10,1')->name('posts.store');
+        Route::post('/actu/{id}/aime', [PostController::class, 'like'])->whereNumber('id')->middleware(Throttle::class.':60,1')->name('posts.like');
+        Route::post('/actu/{id}/commentaires', [PostController::class, 'comment'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('posts.comment');
+        Route::post('/actu/{id}/supprimer', [PostController::class, 'destroy'])->whereNumber('id')->name('posts.destroy');
+        Route::post('/stories', [\App\Http\Controllers\StoryController::class, 'store'])->middleware(Throttle::class.':10,1')->name('fkstories.store');
+        Route::post('/stories/{id}/vue', [\App\Http\Controllers\StoryController::class, 'view'])->whereNumber('id')->middleware(Throttle::class.':120,1')->name('fkstories.view');
+        Route::post('/stories/{id}/supprimer', [\App\Http\Controllers\StoryController::class, 'destroy'])->whereNumber('id')->name('fkstories.destroy');
+        Route::post('/stories/{id}/signaler', [\App\Http\Controllers\StoryController::class, 'report'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('fkstories.report');
+        Route::post('/actu/{id}/signaler', [PostController::class, 'report'])->whereNumber('id')->middleware(Throttle::class.':10,1')->name('posts.report');
         Route::get('/comparer', [AthleteController::class, 'compare'])->name('compare');
         Route::get('/offres', [OfferController::class, 'index'])->name('offers');
         Route::get('/messages', [MessageController::class, 'index'])->name('messages');
@@ -333,6 +346,10 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/membres/{key}/gerer', [\App\Http\Controllers\AdminManageController::class, 'memberManage'])->name('member.manage');
         Route::post('/videos/{id}/supprimer', [\App\Http\Controllers\AdminManageController::class, 'deleteVideo'])->name('videos.delete');
         Route::get('/contenus', [\App\Http\Controllers\AdminManageController::class, 'content'])->name('content');
+        Route::get('/actu', [\App\Http\Controllers\AdminActuController::class, 'index'])->name('actu');
+        Route::post('/actu/publications/{id}', [\App\Http\Controllers\AdminActuController::class, 'post'])->whereNumber('id')->name('actu.post');
+        Route::post('/actu/commentaires/{id}/supprimer', [\App\Http\Controllers\AdminActuController::class, 'deleteComment'])->whereNumber('id')->name('actu.comment');
+        Route::post('/actu/stories/{id}', [\App\Http\Controllers\AdminActuController::class, 'story'])->whereNumber('id')->name('actu.story');
         Route::post('/contenus/{type}/{id}/supprimer', [\App\Http\Controllers\AdminManageController::class, 'deleteContent'])->whereIn('type', ['offre', 'detection', 'commentaire', 'club'])->name('content.delete');
         Route::post('/paiements/{id}', [\App\Http\Controllers\AdminManageController::class, 'paymentAction'])->whereNumber('id')->name('payments.action');
         Route::get('/publicites', [AdminMediaController::class, 'ads'])->name('ads');
