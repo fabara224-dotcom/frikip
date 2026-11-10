@@ -1,99 +1,117 @@
 /* =====================================================================
-   FRIKIP — design de l'application (/app) appliqué à toutes les pages du site :
-   noir profond, vert vif, blanc ; polices Big Shoulders Display (titres) et Figtree (texte).
+   FRIKIP — design « Pro clair » appliqué à toutes les pages du site :
+   blanc, vert, texte presque noir, police Inter ; traits fins gris, pas de lueurs.
    Chargé en dernier dans layouts/web.blade.php : il ne fait que remplacer les couleurs,
    les polices et la barre de navigation, sans toucher au fonctionnement des pages.
    ===================================================================== */
 :root, :root[data-theme], :root[data-theme="dark"], :root[data-theme="light"] {
-  --bg: #050706; --surface: #0E1311; --sunk: #161D1A; --ink: #F4F7F5; --muted: #95A39C;
-  --line: #232C28; --line-strong: #34403A;
-  --accent: #1FE064; --accent-ink: #03140A;
-  --sun: #1FE064; --sun-ink: #03140A; --sun-soft: rgba(31, 224, 100, .14);
-  --blue: #1FE064; --blue-deep: #12B04C; --green: #1FE064; --pitch: #1FE064;
-  --coral: #FF4545; --coral-soft: rgba(255, 69, 69, .14); --signal: #FF4545; --danger: #FF5A5A;
-  --gold: #FFC83D; --gold-bg: rgba(255, 200, 61, .14); --trophy: #FFC83D;
-  --hero: #050706; --hero-ink: #F4F7F5;
-  --f-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
-  --f-body: "Figtree", "Segoe UI", Roboto, system-ui, sans-serif;
-  --f-mono: "Figtree", system-ui, sans-serif;
-  --ring: 0 0 0 3px rgba(31, 224, 100, .35);
-  --lift: 0 18px 40px -20px rgba(0, 0, 0, .6);
-  color-scheme: dark;
+  --bg: #F7F8F7; --surface: #FFFFFF; --sunk: #F4F6F5; --ink: #0B1210; --muted: #5F6B65;
+  --line: #E5E8E6; --line-strong: #D5DAD7;
+  --accent: #16A34A; --accent-ink: #FFFFFF;
+  --sun: #16A34A; --sun-ink: #FFFFFF; --sun-soft: #ECF8F0;
+  --blue: #16A34A; --blue-deep: #15803D; --green: #16A34A; --pitch: #16A34A;
+  --coral: #E5243B; --coral-soft: #FDECEE; --signal: #E5243B; --danger: #D92D20;
+  --gold: #D99A00; --gold-bg: #FFF7E0; --trophy: #D99A00;
+  --hero: #FFFFFF; --hero-ink: #0B1210;
+  --f-display: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-body: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-mono: "Inter", system-ui, sans-serif;
+  --ring: 0 0 0 3px rgba(22, 163, 74, .25);
+  --lift: 0 1px 2px rgba(16, 24, 20, .06), 0 8px 24px -12px rgba(16, 24, 20, .12);
+  color-scheme: light;
 }
-html, body.webapp { background: var(--bg); color: var(--ink); }
-body.webapp { font-family: var(--f-body); -webkit-font-smoothing: antialiased; }
-body.webapp h1, body.webapp h2, body.webapp .page-title { font-family: var(--f-display); text-transform: uppercase; letter-spacing: .02em; font-weight: 900; }
+html, body.webapp { background: var(--bg) !important; color: var(--ink) !important; }
+body.webapp { font-family: var(--f-body); -webkit-font-smoothing: antialiased; letter-spacing: -.005em; }
+body.webapp h1, body.webapp h2, body.webapp h3, body.webapp .page-title {
+  font-family: var(--f-body) !important; text-transform: none !important; letter-spacing: -.02em !important; font-weight: 700 !important; font-style: normal !important; color: var(--ink);
+}
+body.webapp h1 { font-size: clamp(24px, 4vw, 34px); line-height: 1.15; }
+body.webapp h2 { font-size: 19px; }
 body.webapp a { color: var(--accent); }
 body.webapp :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* cartes, champs et boutons */
 body.webapp .card, body.webapp .opt, body.webapp .kv > div, body.webapp .spec, body.webapp .thumb, body.webapp .extile,
-body.webapp details, body.webapp table, body.webapp .note, body.webapp .msg { background: var(--surface); color: var(--ink); border-color: var(--line); }
-body.webapp input, body.webapp select, body.webapp textarea { background: var(--sunk); color: var(--ink); border-color: var(--line); }
-body.webapp input::placeholder, body.webapp textarea::placeholder { color: var(--muted); }
-body.webapp input:focus, body.webapp select:focus, body.webapp textarea:focus { border-color: var(--accent); }
-body.webapp .btn { background: var(--sun); color: var(--sun-ink); border-color: var(--sun); border-radius: 999px; font-weight: 800; }
-body.webapp .btn:hover { filter: brightness(1.08); }
-body.webapp .btn.ghost, body.webapp .btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
-body.webapp .pill, body.webapp .chip { background: var(--sunk); color: var(--ink); border-color: var(--line); }
+body.webapp details, body.webapp table, body.webapp .note, body.webapp .msg, body.webapp .listrow, body.webapp .mcard,
+body.webapp .deficard, body.webapp .perk, body.webapp .hof, body.webapp .bigm {
+  background: var(--surface) !important; color: var(--ink) !important; border: 1px solid var(--line) !important; box-shadow: 0 1px 2px rgba(16, 24, 20, .05) !important;
+}
+body.webapp input, body.webapp select, body.webapp textarea { background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line-strong) !important; border-radius: 10px; }
+body.webapp input::placeholder, body.webapp textarea::placeholder { color: #8A948F; }
+body.webapp input:focus, body.webapp select:focus, body.webapp textarea:focus { border-color: var(--accent) !important; box-shadow: var(--ring) !important; }
+body.webapp .btn { background: var(--accent) !important; color: #fff !important; border: 1px solid var(--accent) !important; border-radius: 10px; font-weight: 600; box-shadow: none !important; text-transform: none; }
+body.webapp .btn:hover { background: #15803D !important; }
+body.webapp .btn.ghost, body.webapp .btn-ghost, body.webapp .btn.dark, body.webapp .btn.phonebtn { background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line-strong) !important; }
+body.webapp .btn.ghost:hover, body.webapp .btn.dark:hover { background: var(--sunk) !important; }
+body.webapp .pill, body.webapp .chip { background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line) !important; font-weight: 500; }
 body.webapp .meta, body.webapp small { color: var(--muted); }
 body.webapp th, body.webapp td { border-color: var(--line); }
 body.webapp hr { border-color: var(--line); }
-body.webapp .flash span { background: var(--ink); color: var(--bg); border-radius: 999px; font-weight: 750; }
+body.webapp .flash span, body.webapp .toast { background: var(--ink) !important; color: #fff !important; border-radius: 10px; font-weight: 600; }
 
-/* barre du haut : logo ballon + éclair, comme l'application */
-.apptop { background: color-mix(in srgb, var(--bg) 92%, transparent) !important; border-bottom: 1px solid var(--line) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); color: var(--ink); }
-.apptop .brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink); }
-.apptop .brand-ball { width: 32px; height: 32px; flex: none; filter: drop-shadow(0 2px 6px rgba(31, 224, 100, .35)); }
-.apptop .brand span { display: flex; flex-direction: column; line-height: .85; }
-.apptop .brand b { font: italic 900 25px/.9 var(--f-display); letter-spacing: .02em; color: #fff; text-shadow: 2px 2px 0 rgba(31, 224, 100, .55); }
-.apptop .brand small { font: 800 8.5px/1 var(--f-body); letter-spacing: .24em; text-transform: uppercase; color: var(--accent); margin-top: 4px; }
-.apptop .appnav a { color: var(--muted); font-weight: 750; }
-.apptop .appnav a[aria-current="page"] { color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+/* sélection (onglets, filtres, puces) : vert, texte blanc */
+body.webapp .dcswitch a[aria-current="page"], body.webapp .edtabs button[aria-selected="true"], body.webapp .chip[aria-current="true"],
+body.webapp .filters a[aria-current="true"], body.webapp .langs a[aria-current="true"], body.webapp .seg button[aria-pressed="true"],
+body.webapp .recfilters button[aria-pressed="true"] {
+  background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important;
+}
+body.webapp .dcswitch a, body.webapp .filters a, body.webapp .seg button { color: var(--ink); }
+body.webapp .seg, body.webapp .dcswitch { background: var(--sunk) !important; border-color: var(--line) !important; }
+
+/* bandeaux (défi de la semaine, direct, Pro, partenaires) : blancs, liseré vert */
+body.webapp .plan-diag, body.webapp .livecard, body.webapp .defihero, body.webapp .probanner, body.webapp .pushbar, body.webapp .partnerbar {
+  background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line) !important; box-shadow: 0 1px 2px rgba(16, 24, 20, .05) !important;
+}
+body.webapp .defihero { border-left: 4px solid var(--accent) !important; }
+body.webapp .defihero::after, body.webapp .defihero::before { display: none !important; }
+body.webapp .livecard small, body.webapp .defihero p, body.webapp .defihero .dh-kind { color: var(--muted) !important; }
+body.webapp .defihero h1, body.webapp .livecard b { color: var(--ink) !important; }
+body.webapp .bub.me { background: var(--sun-soft) !important; color: var(--ink) !important; border: 1px solid #CDEBD8; }
+body.webapp .bub { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+body.webapp .fabara-ico .ico { background: var(--sunk) !important; color: var(--ink) !important; }
+
+/* barre du haut */
+.apptop { background: rgba(255, 255, 255, .94) !important; border-bottom: 1px solid var(--line) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--ink); }
+.apptop .brand { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); }
+.apptop .brand-ball { width: 32px; height: 32px; flex: none; }
+.apptop .brand b { font: 700 21px/1 var(--f-body); letter-spacing: -.03em; color: var(--ink); }
+.apptop .appnav a { color: var(--muted) !important; font-weight: 500; background: transparent !important; }
+.apptop .appnav a[aria-current="page"] { color: var(--ink) !important; font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); }
 .apptop .iconbtn { color: var(--ink); }
-.apptop .rolechip { background: var(--sunk); color: var(--ink); border: 1px solid var(--line); }
-.apptop .moremenu nav.card { background: var(--surface); border: 1px solid var(--line); }
+.apptop .iconbtn:hover { background: var(--sunk); }
+.apptop .rolechip { background: var(--sunk); color: var(--ink); border: 1px solid var(--line); font-weight: 500; }
+.apptop .moremenu nav.card { background: #fff !important; border: 1px solid var(--line) !important; box-shadow: 0 12px 32px -12px rgba(16, 24, 20, .2) !important; }
 .apptop .moremenu nav.card a { color: var(--ink); }
-.apptop .badge, .tabbar .tbadge { background: #FF4545; color: #fff; }
+.apptop .moremenu nav.card a:hover { background: var(--sunk); }
+.apptop .badge, .tabbar .tbadge { background: #E5243B; color: #fff; }
 
-/* barre du bas : identique à l'application, bouton « + » vert au centre */
-.tabbar.v5tabs { background: var(--bg) !important; border-top: 1px solid var(--line) !important; backdrop-filter: none; grid-template-columns: repeat(6, 1fr); align-items: end; }
-.tabbar.v5tabs a { color: var(--muted); font-weight: 700; font-size: 11.5px; position: relative; }
-.tabbar.v5tabs a svg { width: 26px; height: 26px; padding: 0; background: none !important; color: currentColor !important; }
-.tabbar.v5tabs a[aria-current="page"] { color: var(--accent); }
-.tabbar.v5tabs a[aria-current="page"]::before { content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+/* barre du bas : identique à l'application, bouton « + » vert */
+.tabbar.v5tabs { background: #fff !important; border-top: 1px solid var(--line) !important; backdrop-filter: none; grid-template-columns: repeat(6, 1fr); align-items: end; }
+.tabbar.v5tabs a { color: var(--muted); font-weight: 500; font-size: 11.5px; position: relative; }
+.tabbar.v5tabs a svg { width: 24px; height: 24px; padding: 0; background: none !important; color: currentColor !important; }
+.tabbar.v5tabs a[aria-current="page"] { color: var(--accent); font-weight: 600; }
 .tabbar.v5tabs a.v5plus { justify-content: center; }
-.tabbar.v5tabs a.v5plus::before { display: none; }
-.tabbar.v5tabs a.v5plus span { width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; box-shadow: 0 0 0 5px var(--bg), 0 8px 24px rgba(31, 224, 100, .55); transform: translateY(-10px); }
-.tabbar.v5tabs a.v5plus svg { width: 26px; height: 26px; color: var(--accent-ink) !important; }
+.tabbar.v5tabs a.v5plus span { width: 46px; height: 46px; border-radius: 14px; background: var(--accent); color: #fff; display: grid; place-items: center; box-shadow: none; transform: none; }
+.tabbar.v5tabs a.v5plus svg { width: 24px; height: 24px; color: #fff !important; }
 
 /* pied de page */
-.appfoot { border-top: 1px solid var(--line); color: var(--muted); }
+.appfoot { border-top: 1px solid var(--line); color: var(--muted); background: #fff; }
 .appfoot a { color: var(--muted); }
 
-/* direct, salon et lives des membres */
-body.webapp .pill-live, body.webapp .live-dot { background: #FF2D55; }
+/* direct */
+body.webapp .pill-live, body.webapp .live-dot { background: #E5243B; }
 body.webapp video, body.webapp iframe { background: #000; }
 
 @media (prefers-reduced-motion: reduce) { body.webapp * { transition: none !important; animation-duration: .001ms !important; } }
 
-/* Composants « foncés » du site (fond = encre) : avec le thème sombre, ils deviennent des cartes vertes/sombres lisibles */
-body.webapp .plan-diag, body.webapp .livecard, body.webapp .defihero, body.webapp .probanner, body.webapp .pushbar, body.webapp .partnerbar {
-  background: radial-gradient(130% 140% at 0% 0%, rgba(31, 224, 100, .22), transparent 55%), linear-gradient(160deg, #0F1D16, #070A09) !important;
-  color: #fff !important; border: 1px solid rgba(31, 224, 100, .28);
+/* anciens titres en italique majuscule (frikip-pro.css) : même style sobre que le reste */
+body.webapp :is(.counter b, .mcard .tm b, .board .big, .price .amount, .fklogo-word, .fklogo-word em, .sidecard b, .railhero b, .feedempty b, .promo b, .foot b, .hero h1, .hero h1 em, .post-empty b) {
+  font-family: var(--f-body) !important; font-style: normal !important; text-transform: none !important; letter-spacing: -.02em !important; font-weight: 700 !important;
 }
-body.webapp .livecard small, body.webapp .defihero p, body.webapp .defihero .dh-kind { color: rgba(255, 255, 255, .78) !important; }
-body.webapp .defihero h1 { color: #fff !important; }
-body.webapp .defihero::after { background: radial-gradient(circle, rgba(31, 224, 100, .45), transparent 70%) !important; }
-/* éléments sélectionnés (onglets, filtres, puces) : vert vif, texte foncé */
-body.webapp .dcswitch a[aria-current="page"], body.webapp .edtabs button[aria-selected="true"], body.webapp .chip[aria-current="true"],
-body.webapp .filters a[aria-current="true"], body.webapp .langs a[aria-current="true"], body.webapp .seg button[aria-pressed="true"],
-body.webapp .chips.dark .chip[aria-current="true"], body.webapp .recfilters button[aria-pressed="true"] {
-  background: var(--accent) !important; color: var(--accent-ink) !important; border-color: var(--accent) !important;
-}
-body.webapp .dcswitch a, body.webapp .seg, body.webapp .filters a, body.webapp .chips .chip { color: var(--ink); border-color: var(--line); }
-body.webapp .btn.dark, body.webapp .btn.phonebtn { background: var(--surface) !important; color: var(--ink) !important; border: 1px solid var(--line) !important; }
-body.webapp .bub.me { background: var(--accent) !important; color: var(--accent-ink) !important; }
-body.webapp .toast { background: var(--ink) !important; color: var(--bg) !important; }
-body.webapp .appnav a[aria-current="page"] { background: transparent !important; color: var(--ink) !important; }
-body.webapp .fabara-ico .ico { background: var(--sunk) !important; color: var(--ink) !important; }
+body.webapp .post-empty b, body.webapp .feedempty b { font-size: 18px !important; line-height: 1.3; }
+.apptop .moremenu summary { border: 0 !important; background: transparent !important; border-radius: 50%; }
+.apptop .moremenu summary:hover { background: var(--sunk) !important; }
+.apptop .iconbtn, .apptop summary.iconbtn { border: 0 !important; background: transparent !important; box-shadow: none !important; color: var(--ink) !important; }
+.apptop .iconbtn:hover { background: var(--sunk) !important; }
+body.feedpage .apptop .moremenu summary, body.feedpage .apptop .iconbtn { color: var(--ink) !important; }
+body.webapp .apptop details.moremenu { border: 0 !important; background: transparent !important; box-shadow: none !important; }

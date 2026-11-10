@@ -81,7 +81,7 @@
         || ($name === 'publish' && in_array($current, ['publish', 'create'], true));
 @endphp
 <!doctype html>
-<html lang="{{ app()->getLocale() }}" data-theme="dark">
+<html lang="{{ app()->getLocale() }}" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -93,7 +93,7 @@
 <link rel="stylesheet" href="{{ asset('css/terrain.css') }}">
 <link rel="stylesheet" href="{{ asset('css/web.css') }}">
 <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
-<meta name="theme-color" content="#050706">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="icon" href="{{ asset('icons/favicon-32.png') }}" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
@@ -104,13 +104,13 @@
 {{-- Design Frikip (noir, vert vif, blanc) : le même que l'application /app --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="{{ asset('css/frikip-v5.css') }}?v={{ @filemtime(public_path('css/frikip-v5.css')) }}">
 </head>
 <body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }} {{ \App\Terrain\InApp::active() ? 'in-app in-app-'.\App\Terrain\InApp::platform() : '' }}">
 <header class="apptop">
   <div class="apptop-in gut">
-    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#fff"/><path d="M20 11l7 5-2.7 8.3h-8.6L13 16z" fill="#0a0d0b"/><path d="M20 3v8M27 16l7.5-3M24.3 24.3l4.7 7M15.7 24.3L11 31.3M13 16l-7.5-3" stroke="#0a0d0b" stroke-width="2.2"/><path d="M3 23c6-1 12 2 17 7 5-6 11-9 17-9" stroke="#1FE064" stroke-width="3.4" fill="none" stroke-linecap="round"/></svg><span><b>FRIKIP</b><small>{{ __('Le réseau foot') }}</small></span></a>
+    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#16A34A"/><circle cx="20" cy="20" r="11.5" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M20 14.2l5.4 3.9-2.1 6.3h-6.6l-2.1-6.3z" fill="#fff"/></svg><span><b>Frikip</b></span></a>
     <nav class="appnav" aria-label="Application">
       @foreach ($tabs as $t)
         @continue(($t[3] ?? '') === 'pub')
