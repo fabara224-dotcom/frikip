@@ -41,6 +41,7 @@ class LiveController extends Controller
     public function index(): View
     {
         app(\App\Terrain\Growth\LiveFinder::class)->maybeSync();
+        app(\App\Terrain\Growth\UserLive::class)->sweep();
         $country = Region::viewer();
         $base = fn () => DB::table('live_streams')->where('approved', true)->orderByRaw('case when country = ? then 0 else 1 end', [$country]);
         $me = $this->data->user();
@@ -87,7 +88,9 @@ class LiveController extends Controller
         $me = $this->data->user();
 
         return view('web.live-show', [
-            's' => $s, 'player' => Live::embed($s->status === 'termine' && $s->replay_url ? $s->replay_url : $s->stream_url),
+            's' => $s, 'player' => ($s->kind ?? null) === 'membre' && $s->whep_url && $s->status !== 'termine'
+                ? ['type' => 'whep', 'src' => $s->whep_url]
+                : Live::embed($s->status === 'termine' && $s->replay_url ? $s->replay_url : $s->stream_url),
             'preroll' => $preroll, 'viewers' => $this->live->viewers($id), 'owner' => $me && $s->owner_key === $me['id'],
             'others' => DB::table('live_streams')->where('approved', true)->where('status', 'direct')->where('id', '!=', $id)->limit(4)->get(),
         ]);

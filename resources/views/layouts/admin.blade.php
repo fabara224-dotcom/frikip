@@ -15,6 +15,7 @@
             ['admin.content', 'Vidéos, offres…', 'film', null],
             ['admin.live', 'Direct', 'live', $count('live_streams', fn ($q) => $q->where('approved', false))],
             ['admin.broadcasters', 'Diffuseurs', 'tv', null],
+            ['admin.discover', 'Découvrir', 'film', null],
             ['admin.ads', 'Publicités', 'ad', null],
             ['admin.challenges', 'Défis', 'trophy', null],
             ['admin.coaching', 'Coaching', 'coach', $count('coaching_requests', fn ($q) => $q->where('status', 'payee'))],
@@ -46,7 +47,7 @@
 <link rel="preload" href="{{ asset('fonts/archivo-var.woff') }}" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="{{ asset('css/terrain.css') }}">
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
-<link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=1">
+<link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=3">
 <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=1">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <meta name="theme-color" content="#0B2318">

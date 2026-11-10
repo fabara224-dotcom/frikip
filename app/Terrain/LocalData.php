@@ -56,6 +56,8 @@ class LocalData extends DemoData
         return [
             'id' => $a->id, 'role' => $a->role, 'email' => $a->email, 'phone' => $a->phone, 'name' => $a->name,
             'athlete_id' => $a->athlete_id, 'org_type' => $a->org_type,
+            'profession' => $a->profession ?? null, 'organization' => $a->organization ?? null, 'favorite_club' => $a->favorite_club ?? null,
+            'avatar_url' => $a->avatar_url ?? null,
             'premium' => $m && $m->premium_until && Carbon::parse($m->premium_until)->isFuture(),
             'verified' => $verif->isVerified($a->id) || ($a->athlete_id && $verif->isVerified($a->athlete_id)),
             'real' => true,
@@ -92,6 +94,14 @@ class LocalData extends DemoData
         return $a ? $this->login($a) : null;
     }
 
+    /** Connexion d'un compte déjà identifié (Google, Facebook, TikTok). */
+    public function signInById(string $accountId): ?array
+    {
+        $a = DB::table('accounts')->where('id', $accountId)->first();
+
+        return $a ? $this->login($a) : null;
+    }
+
     public function demoLogin(string $role): array
     {
         throw new RuntimeException('Connexion de démonstration désactivée : le site utilise de vrais comptes.');
@@ -100,7 +110,8 @@ class LocalData extends DemoData
     public function signUp(string $email, string $password, string $role, array $profile): array
     {
         $phone = $profile['phone'] ?? null;
-        $email = str_ends_with($email, '@telephone.local') ? null : Str::lower(trim($email));
+        // Comptes par téléphone ou par réseau social sans e-mail : pas d'adresse enregistrée
+        $email = (str_ends_with($email, '@telephone.local') || str_ends_with($email, '@social.local')) ? null : Str::lower(trim($email));
         if ($email && DB::table('accounts')->where('email', $email)->exists()) {
             throw new RuntimeException('Cet e-mail est déjà utilisé. Connecte-toi ou utilise « Mot de passe oublié ».');
         }
@@ -118,15 +129,20 @@ class LocalData extends DemoData
                     'id' => $athleteId, 'account_id' => $id, 'name' => $name, 'sport' => $profile['sport'] ?? 'Football',
                     'age' => (int) ($profile['age'] ?? 18), 'country' => $profile['country'] ?? 'Guinée', 'city' => $profile['city'] ?? null,
                     'fields' => json_encode($profile['fields'] ?? [], JSON_UNESCAPED_UNICODE), 'guardian_phone' => $profile['guardian_phone'] ?? null,
+                    'managed_by' => $profile['managed_by'] ?? null, 'manager_name' => $profile['manager_name'] ?? null,
+                    'kind' => $profile['kind'] ?? 'joueur', 'profession' => $profile['profession'] ?? null, 'club' => ($profile['club'] ?? null) ?: null,
                     'level' => 'Amateur', 'availability' => 'Immédiate', 'created_at' => $now, 'updated_at' => $now,
                 ]);
             } else {
-                $id = 'r-'.Str::lower(Str::random(10));
+                $id = ($role === 'fan' ? 'f-' : 'r-').Str::lower(Str::random(10));
             }
             DB::table('accounts')->insert([
                 'id' => $id, 'role' => $role, 'name' => $name, 'email' => $email, 'phone' => $phone,
                 'password' => $email ? Hash::make($password) : null,   // compte par téléphone : connexion par code SMS
-                'athlete_id' => $athleteId, 'org_type' => $profile['org_type'] ?? null, 'created_at' => $now, 'updated_at' => $now,
+                'athlete_id' => $athleteId, 'org_type' => $profile['org_type'] ?? null,
+                'profession' => $profile['profession'] ?? null, 'organization' => $profile['organization'] ?? null,
+                'licence_number' => $profile['licence_number'] ?? null, 'favorite_club' => $profile['favorite_club'] ?? null,
+                'avatar_url' => $profile['avatar_url'] ?? null, 'created_at' => $now, 'updated_at' => $now,
             ]);
 
             return DB::table('accounts')->where('id', $id)->first();
@@ -247,6 +263,8 @@ class LocalData extends DemoData
                     'club' => $r->club ?: 'Sans club', 'availability' => $r->availability ?: 'Immédiate', 'specialty' => $r->specialty,
                     'verified' => false, 'score' => min(90, 55 + $filled * 3), 'fields' => $fields, 'videos' => [], 'real' => true,
                     'guardian_phone' => $r->guardian_phone,
+                    'managed_by' => $r->managed_by ?? null, 'manager_name' => $r->manager_name ?? null,
+                    'kind' => $r->kind ?? 'joueur', 'profession' => $r->profession ?? null,
                 ];
             }
         } catch (Throwable) {
@@ -267,6 +285,7 @@ class LocalData extends DemoData
             $me = $this->user()['id'] ?? null;
             $rows = DB::table('live_streams')->where(fn ($q) => $q->where('approved', true)->when($me, fn ($q2) => $q2->orWhere('owner_key', $me)))
                 ->where(fn ($q) => $q->whereNull('source')->orWhere('source', '!=', 'youtube'))
+                ->where(fn ($q) => $q->whereNull('kind')->orWhere('kind', '!=', 'membre'))   // les lives des membres ne sont pas des matchs
                 ->where('starts_at', '>', now()->subDays(30))->orderByDesc('starts_at')->limit(60)->get();
         } catch (Throwable) {
             return [];
@@ -339,11 +358,11 @@ class LocalData extends DemoData
     public function person(string $id): array
     {
         try {
-            $a = DB::table('accounts')->where('id', $id)->where('role', 'recruiter')->first();
+            $a = DB::table('accounts')->where('id', $id)->whereIn('role', ['recruiter', 'fan'])->first();
             if ($a) {
                 $v = app(Verifications::class)->isVerified($a->id);
 
-                return ['id' => $id, 'name' => $a->name, 'sport' => $a->org_type ?: '', 'verified' => $v, 'minor' => false, 'real' => true];
+                return ['id' => $id, 'name' => $a->name, 'sport' => $a->role === 'fan' ? __('Fan') : ($a->org_type ?: ''), 'verified' => $v, 'minor' => false, 'real' => true];
             }
         } catch (Throwable) {
         }

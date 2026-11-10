@@ -16,7 +16,7 @@
     @forelse ($rows as $v)
       <tr>
         <td>{{ $v->id }}<br><span class="meta">{{ \Illuminate\Support\Carbon::parse($v->created_at)->format('d/m') }}</span></td>
-        <td><b>{{ $v->full_name }}</b><br><span class="meta">{{ $v->role === 'recruiter' ? 'Recruteur' : 'Sportif' }} · {{ $v->user_key }}</span>
+        <td><b>{{ $v->full_name }}</b><br><span class="meta">{{ \App\Terrain\Roles::label($v->role) }} · {{ $v->user_key }}</span>
           @if ($v->organization)<br>{{ $v->organization }}@endif @if ($v->licence_number)<br><span class="meta">Licence : {{ $v->licence_number }}</span>@endif</td>
         <td>{{ $v->document_type }}@if ($v->document_path)<br><a href="{{ route('admin.file', [$v->id, 'piece']) }}" target="_blank">Ouvrir la pièce</a>@endif</td>
         <td>@if ($v->guardian_name){{ $v->guardian_name }} · {{ $v->guardian_phone }}<br>{{ $v->guardian_consent ? '✓ accord donné' : '✕ pas d’accord' }}

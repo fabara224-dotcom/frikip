@@ -2,28 +2,35 @@
 @php
     $app = config('terrain.app_name');
     $isRecruiter = ($me['role'] ?? null) === 'recruiter';
-    // Défis et Coaching côte à côte dans la barre
-    $tabs = [['feed', __('Fil'), 'home'], ['matches', __('Matchs'), 'score'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach']];
-    if ($me) {
-        $tabs[] = $isRecruiter ? ['search', __('Recherche'), 'search'] : ['publish', __('Publier'), 'plus'];
-        $tabs[] = ['me', $isRecruiter ? __('Compte') : __('Profil'), 'user'];
-    } else {
-        $tabs[] = ['login', __('Connexion'), 'user'];
-    }
+    $isFan = ($me['role'] ?? null) === 'fan';
+    // 5 onglets : Accueil, Explorer, Publier (au centre), Messages, Profil
+    $publishTo = $me ? (($me['role'] ?? null) === 'athlete' ? 'publish' : 'create') : 'register';
+    $tabs = [
+        ['feed', __('Accueil'), 'home'],
+        ['explore', __('Explorer'), 'compass'],
+        [$publishTo, __('Publier'), 'plus', 'pub'],
+        [$me ? 'messages' : 'login', __('Messages'), 'msg', 'msgs'],
+        [$me ? 'me' : 'login', $me ? __('Profil') : __('Connexion'), 'user'],
+    ];
     $more = [
-        ['live', __('Matchs en direct'), 'live'], ['rankings', __('Classements'), 'star'], ['events', __('Détections'), 'calendar'],
+        ['live', __('Matchs en direct'), 'live'], ['matches', __('Matchs et scores'), 'score'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'], ['rankings', __('Meilleurs joueurs'), 'star'], ['events', __('Détections'), 'calendar'],
         ['clubs', __('Clubs et académies'), 'stadium'], ['stories', __('Ils ont été recrutés'), 'party'],
     ];
     if ($me) {
         $more[] = ['referral', __('Inviter mes amis'), 'gift'];
         $more[] = ['notifications', __('Notifications'), 'bell'];
+        $more[] = ['videos.saved', __('Vidéos enregistrées'), 'star'];
         if ($isRecruiter) {
             $more[] = ['alerts', __('Mes alertes'), 'megaphone'];
+            $more[] = ['shortlists', __('Mes listes de joueurs'), 'star'];
+            $more[] = ['contacts', __('Historique de mes contacts'), 'doc'];
             $more[] = ['clubs.edit', __('Ma page club'), 'tag'];
-        } else {
+        } elseif (! $isFan) {
             $more[] = ['stats', __('Mes statistiques'), 'stats'];
         }
-        $more[] = ['verification', __('Vérifier mon compte'), 'check'];
+        if (! $isFan) {
+            $more[] = ['verification', __('Vérifier mon compte'), 'check'];
+        }
         if ($realAccounts ?? false) {
             $more[] = ['profile.edit', __('Modifier mon profil'), 'pencil'];
         }
@@ -46,11 +53,17 @@
         'msg' => '<path d="M4 5h16v11H8l-4 4z"/>',
         'bell' => '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
         'trophy' => '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/>',
+        'compass' => '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+        'star' => '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
         'coach' => '<circle cx="9" cy="7" r="3.2"/><path d="M3 21c.5-4 2.8-6.3 6-6.3 1.5 0 2.9.5 4 1.5"/><path d="m14.5 14.5 2.2 2.2 4.3-4.7"/>',
     ];
     $current = request()->route()?->getName();
     $active = fn ($name) => $current === $name || ($name === 'matches' && str_starts_with((string) $current, 'matches')) || ($name === 'search' && $current === 'compare')
-        || ($name === 'challenges' && str_starts_with((string) $current, 'challenges')) || ($name === 'coaching' && str_starts_with((string) $current, 'coaching'));
+        || ($name === 'challenges' && str_starts_with((string) $current, 'challenges')) || ($name === 'coaching' && str_starts_with((string) $current, 'coaching'))
+        // Explorer reste allumé sur toutes les pages qu'il ouvre
+        || ($name === 'explore' && preg_match('/^(matches|challenges|coaching|live|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', (string) $current))
+        || ($name === 'messages' && str_starts_with((string) $current, 'messages'))
+        || ($name === 'publish' && in_array($current, ['publish', 'create'], true));
 @endphp
 <!doctype html>
 <html lang="{{ app()->getLocale() }}" data-theme="light">
@@ -71,15 +84,16 @@
 <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
-<link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=1">
+<link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=3">
 </head>
-<body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }}">
+<body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }} {{ \App\Terrain\InApp::active() ? 'in-app in-app-'.\App\Terrain\InApp::platform() : '' }}">
 <header class="apptop">
   <div class="apptop-in gut">
     <a class="logo" href="{{ route('feed') }}" aria-label="{{ $app }}"><img src="{{ asset('brand/logo.svg') }}" alt="{{ $app }}" width="112" height="30"></a>
     <nav class="appnav" aria-label="Application">
-      @foreach ($tabs as [$name, $label, $icon])
-        <a href="{{ route($name) }}" @if ($active($name)) aria-current="page" @endif>{{ $label }}</a>
+      @foreach ($tabs as $t)
+        @continue(($t[3] ?? '') === 'msgs' || ($t[0] === 'login' && ($t[3] ?? '') === ''))
+        <a href="{{ route($t[0]) }}" class="{{ ($t[3] ?? '') === 'pub' ? 'navpub' : '' }}" @if ($active($t[0])) aria-current="page" @endif>{{ $t[1] }}</a>
       @endforeach
     </nav>
     <div class="apptop-actions">
@@ -105,7 +119,7 @@
       @if ($me)
         <a class="iconbtn msgbtn" href="{{ route('notifications') }}" aria-label="{{ __('Notifications') }}" title="{{ __('Notifications') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['bell'] !!}</svg><span class="badge" id="bell-badge" @unless ($bell ?? 0) hidden @endunless>{{ $bell ?? 0 }}</span></a>
         <a class="iconbtn msgbtn" href="{{ route('messages') }}" aria-label="Messages{{ ($unread ?? 0) ? ' ('.$unread.' non lus)' : '' }}" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['msg'] !!}</svg><span class="badge" id="unread-badge" @unless ($unread ?? 0) hidden @endunless>{{ $unread ?? 0 }}</span></a>
-        <span class="rolechip">{{ $isRecruiter ? 'Recruteur' : 'Sportif' }}@if ($demo) · démo @endif</span>
+        <span class="rolechip">{{ \App\Terrain\Roles::labelFor($me) }}@if ($demo) · démo @endif</span>
       @else
         <a class="btn sm" href="{{ route('phone.login') }}">{{ __('Créer un compte') }}</a>
       @endif
@@ -138,9 +152,14 @@
 @endunless
 
 <nav class="tabbar" aria-label="Onglets">
-  @foreach ($tabs as [$name, $label, $icon])
-    <a href="{{ route($name) }}" @if ($active($name)) aria-current="page" @endif>
+  @foreach ($tabs as $t)
+    @php
+      [$name, $label, $icon] = $t;
+      $kind = $t[3] ?? '';
+    @endphp
+    <a href="{{ route($name) }}" class="{{ $kind === 'pub' ? 'tabpub' : '' }}" @if ($active($name) && ! ($kind === 'msgs' && $name === 'login')) aria-current="page" @endif>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons[$icon] !!}</svg>{{ $label }}
+      @if ($kind === 'msgs' && ($unread ?? 0))<span class="tbadge">{{ $unread }}</span>@endif
     </a>
   @endforeach
 </nav>

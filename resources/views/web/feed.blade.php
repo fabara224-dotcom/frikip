@@ -94,6 +94,19 @@
   </div>
 </div>
 
+{{-- Options d'une vidéo : enregistrer, signaler, bloquer, supprimer la sienne --}}
+<div class="sheet-ov" id="vopts" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="vopts-title">
+    <div class="hd"><b id="vopts-title">{{ __('Options') }}</b><button class="x" type="button" data-close aria-label="{{ __('Fermer') }}">×</button></div>
+    <div class="bd vopts">
+      <button type="button" data-act="save"><span>🔖</span><b data-save-label>{{ __('Enregistrer la vidéo') }}</b></button>
+      <button type="button" data-act="report"><span>🚩</span><b>{{ __('Signaler la vidéo') }}</b></button>
+      <button type="button" data-act="block"><span>⛔</span><b>{{ __('Bloquer ce membre') }}</b></button>
+      <button type="button" data-act="delete" class="danger"><span>🗑️</span><b>{{ __('Supprimer ma vidéo') }}</b></button>
+    </div>
+  </div>
+</div>
+
 {{-- Partage --}}
 <div class="sheet-ov" id="shr" hidden>
   <div class="sheet" role="dialog" aria-labelledby="shr-title">
@@ -116,7 +129,9 @@
     'author' => __('Auteur'), 'recruiter' => __('Recruteur'), 'none' => __('Aucun commentaire. Sois le premier.'),
     'loading' => __('Chargement…'), 'replyTo' => __('Réponse à'), 'deleteQ' => __('Supprimer ce commentaire ?'),
     'notSent' => __('Commentaire non envoyé'), 'follow' => __('Abonné'), 'soundOn' => __('Son activé'), 'soundOff' => __('Son coupé'),
-    'copied' => __('Lien copié'), 'reported' => __('Signalement envoyé à la modération'), 'share' => __('Partager'),
+    'copied' => __('Lien copié'), 'reported' => __('Signalement envoyé à la modération'),
+    'save' => __('Enregistrer la vidéo'), 'unsave' => __('Retirer des vidéos enregistrées'), 'blockQ' => __('Bloquer ce membre ? Il ne pourra plus t’écrire et tu ne verras plus ses vidéos.'),
+    'blocked' => __('Membre bloqué.'), 'deleteVideoQ' => __('Supprimer définitivement cette vidéo ?'), 'deleted' => __('Vidéo supprimée.'), 'share' => __('Partager'),
     'ccOff' => __('Sous-titres désactivés'), 'ccOn' => __('Sous-titres'), 'no' => __('Non'), 'justNow' => __('à l’instant'),
   ];
 @endphp
@@ -132,8 +147,8 @@
     like: @json(route('videos.like', '__ID__')), comments: @json(route('videos.comments', '__ID__')),
     comment: @json(route('videos.comment', '__ID__')), follow: @json(route('athletes.follow', '__ID__')),
     clike: @json(route('comments.like', '__ID__')), cdel: @json(route('comments.delete', '__ID__')), cpin: @json(route('comments.pin', '__ID__')),
-    share: @json(route('videos.share', '__ID__')), view: @json(route('videos.view', '__ID__')),
-    report: @json(route('report')), ticker: @json(route('matches.ticker')), adSeen: @json(route('ads.seen', '__ID__'))
+    share: @json(route('videos.share', '__ID__')), view: @json(route('videos.view', '__ID__')), time: @json(route('videos.time', '__ID__')),
+    report: @json(route('report')), save: @json(route('videos.save', '__ID__')), destroy: @json(route('videos.destroy', '__ID__')), block: @json(route('block', '__ID__')), ticker: @json(route('matches.ticker')), adSeen: @json(route('ads.seen', '__ID__'))
   };
   var u = function (k, id) { return urls[k].replace('__ID__', encodeURIComponent(id)); };
 
@@ -176,13 +191,14 @@
     entries.forEach(function (e) {
       var v = e.target.querySelector('video');
       if (e.target.dataset.live) { liveCard(e.target, e.isIntersecting && e.intersectionRatio > 0.6); return; }
+      if (!v) return;   // carte sans vidéo (meilleurs sportifs)
       if (e.isIntersecting && e.intersectionRatio > 0.6) {
         if (e.target.dataset.ad && !e.target._seen) { e.target._seen = true; fetch(urls.adSeen.replace('__ID__', e.target.dataset.ad), { method: 'POST', headers: { 'X-CSRF-TOKEN': T.csrf } }).catch(function () {}); }
         if (T.lite) { e.target.classList.add('paused'); return; }   // économie de données : lecture au toucher
         v.muted = muted; v.play().catch(function () {}); e.target.classList.remove('paused');
         var hint = e.target.querySelector('.tap-sound'); if (hint && muted) hint.hidden = false;
       }
-      else { v.pause(); }
+      else { v.pause(); if (e.target._sendTime) e.target._sendTime(); }
     });
   }, { root: tk, threshold: [0, 0.6, 1] });
 
@@ -196,7 +212,15 @@
     io.observe(s);
     if (s.dataset.live) return;
     if (s.dataset.ad) return;   // publicité : pas de vue, pas de sous-titres
+    if (!s.querySelector('video')) return;
     var v = s.querySelector('video'), bar = s.querySelector('.prog i'), counted = false, played = 0, last = null;
+    // Réglages de l'éditeur (si la vidéo n'a pas été refaite sur le serveur) : début, fin, vitesse
+    var st = parseFloat(v.dataset.start || 0), en = parseFloat(v.dataset.end || 0), sp = parseFloat(v.dataset.speed || 1);
+    if (st || en || sp !== 1) {
+      v.addEventListener('loadedmetadata', function () { if (st) v.currentTime = st; });
+      v.addEventListener('play', function () { if (sp !== 1) v.playbackRate = sp; });
+      v.addEventListener('timeupdate', function () { if ((en && v.currentTime >= en) || v.currentTime < st - 0.3) v.currentTime = st; });
+    }
     setSubs(s, s.dataset.subs || '');
     // Une vue compte après 2 secondes de lecture réelle
     v.addEventListener('timeupdate', function () {
@@ -209,7 +233,17 @@
       }
     });
     v.addEventListener('seeked', function () { last = v.currentTime; });
+    // Durée de visionnage : envoyée quand la vidéo sort de l'écran (et quand on quitte la page)
+    s._sendTime = function () {
+      var sec = Math.round(played);
+      if (!counted || sec <= (s._sent || 0)) return;
+      s._sent = sec;
+      var fd = new FormData(); fd.append('_token', T.csrf); fd.append('seconds', sec);
+      if (navigator.sendBeacon) navigator.sendBeacon(u('time', s.dataset.video), fd);
+      else fetch(u('time', s.dataset.video), { method: 'POST', body: fd, keepalive: true }).catch(function () {});
+    };
   }
+  window.addEventListener('pagehide', function () { tk.querySelectorAll('.tki').forEach(function (s) { if (s._sendTime) s._sendTime(); }); });
   tk.querySelectorAll('.tki').forEach(watch);
 
   // Défilement infini : 20 vidéos de plus quand on approche de la fin
@@ -268,11 +302,7 @@
       T.toast(muted ? L.soundOff : L.soundOn);
     }
     else if (t.hasAttribute('data-cc')) cycleSubs(s);
-    else if (t.dataset.report) {
-      if (!T.loggedIn) { location.href = T.loginUrl; return; }
-      T.post(urls.report, { reason: 'Vidéo signalée depuis le fil', target_type: 'video', target_id: t.dataset.report })
-        .then(function () { T.toast(L.reported); }, function () { T.toast(L.reported); });
-    }
+    else if (t.dataset.vopts) openOpts(t);
   });
 
   // ---------------------------------------------------------------- partage (compté pour de vrai)
@@ -393,6 +423,33 @@
   if (/[?&]commentaires=1/.test(location.search)) {
     var first = tk.querySelector('[data-comments]'); if (first) openComments(first.dataset.comments, first);
   }
+
+  // ---------------------------------------------------------------- menu ••• d'une vidéo
+  var vopts = document.getElementById('vopts'), optBtn = null;
+  function openOpts(btn) {
+    if (!T.loggedIn) { location.href = T.loginUrl; return; }
+    optBtn = btn;
+    vopts.querySelector('[data-save-label]').textContent = btn.dataset.saved === '1' ? L.unsave : L.save;
+    vopts.querySelector('[data-act=delete]').hidden = btn.dataset.mine !== '1';
+    vopts.querySelector('[data-act=block]').hidden = btn.dataset.mine === '1';
+    vopts.hidden = false;
+  }
+  vopts.addEventListener('click', function (e) {
+    if (e.target === vopts || e.target.closest('[data-close]')) { vopts.hidden = true; return; }
+    var b = e.target.closest('[data-act]'); if (!b || !optBtn) return;
+    var id = optBtn.dataset.vopts, act = b.dataset.act; vopts.hidden = true;
+    if (act === 'save') {
+      T.post(u('save', id), {}).then(function (d) { optBtn.dataset.saved = d && d.saved ? '1' : '0'; T.toast(d && d.message ? d.message : L.save); }, function () {});
+    } else if (act === 'report') {
+      T.post(urls.report, { reason: 'Vidéo signalée depuis le fil', target_type: 'video', target_id: id }).then(function () { T.toast(L.reported); }, function () { T.toast(L.reported); });
+    } else if (act === 'block') {
+      if (!confirm(L.blockQ)) return;
+      T.post(u('block', optBtn.dataset.athlete), {}).then(function (d) { T.toast(d && d.message ? d.message : L.blocked); var s = optBtn.closest('.tki'); if (s) s.remove(); }, function () {});
+    } else if (act === 'delete') {
+      if (!confirm(L.deleteVideoQ)) return;
+      T.post(u('destroy', id), {}).then(function (d) { var s = optBtn.closest('.tki'); if (s) s.remove(); T.toast(d && d.message ? d.message : L.deleted); }, function () {});
+    }
+  });
 
   // ---------------------------------------------------------------- score choisi par le visiteur, en haut du fil (toutes les 15 s)
   var ticker = document.getElementById('ticker'), pick = document.getElementById('scorepick');

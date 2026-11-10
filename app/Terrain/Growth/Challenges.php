@@ -20,13 +20,14 @@ class Challenges
         'but' => ['Plus beau but de la semaine', 'Football', 'Frappe, lob, tête, retourné… montre ton plus beau but.'],
         'dribble' => ['Meilleur dribble', 'Football', 'Petit pont, crochet, roulette : élimine ton adversaire.'],
         'arret' => ['Arrêt de la semaine', 'Football', 'Gardiens : votre plus bel arrêt ou votre meilleure sortie.'],
-        'panier' => ['Plus beau panier', 'Basket', 'Dunk, tir à 3 points, contre spectaculaire.'],
-        'vitesse' => ['Le plus rapide', 'Athlétisme', 'Départ, sprint final : montre ta vitesse.'],
-        'combat' => ['Plus belle projection', null, 'Judo, lutte : ta plus belle technique.'],
-        'libre' => ['Action de la semaine', null, 'Tous sports : ta meilleure action.'],
+        'coupfranc' => ['Plus beau coup franc', 'Football', 'Enroulé, puissant, par-dessus le mur : montre ton meilleur coup franc.'],
+        'jonglage' => ['Défi jonglage', 'Football', 'Le plus de jongles sans faire tomber le ballon, ou ta plus belle figure.'],
+        'defense' => ['Meilleure action défensive', 'Football', 'Tacle propre, interception, retour décisif : la défense aussi fait gagner.'],
+        'passe' => ['Plus belle passe décisive', 'Football', 'Une passe qui met ton coéquipier seul face au but.'],
+        'libre' => ['Action de la semaine', 'Football', 'Ta meilleure action de foot de la semaine, à l’entraînement ou en match.'],
     ];
 
-    private const ROTATION = ['but', 'panier', 'dribble', 'vitesse', 'arret', 'combat', 'libre'];
+    private const ROTATION = ['but', 'dribble', 'arret', 'coupfranc', 'jonglage', 'defense', 'passe', 'libre'];
 
     public function __construct(private DataSource $data)
     {

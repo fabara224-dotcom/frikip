@@ -172,6 +172,7 @@ class PublishController extends Controller
                 'sub_fr' => ['nullable', 'file', 'max:512'],
                 'sub_en' => ['nullable', 'file', 'max:512'],
                 'challenge_id' => ['nullable', 'integer'],
+                'edit' => ['nullable', 'string', 'max:2000'],   // réglages de l'éditeur (JSON)
             ], [
                 'title.required' => __('Donne un titre à ta vidéo.'),
                 'video.required' => __('Choisis une vidéo.'),
@@ -209,6 +210,20 @@ class PublishController extends Controller
             }
         }
 
+        // Éditeur : réglages enregistrés, puis vidéo refaite et compressée par ffmpeg après la réponse (s'il est installé)
+        if ($id) {
+            try {
+                $edit = \App\Terrain\Growth\VideoEditor::sanitize((array) json_decode((string) ($data['edit'] ?? ''), true));
+                if ($edit) {
+                    DB::table('local_videos')->where('id', $id)->update(['edit' => json_encode($edit)]);
+                }
+                if (\App\Terrain\Growth\VideoEditor::ffmpeg()) {
+                    app()->terminating(fn () => app(\App\Terrain\Growth\VideoEditor::class)->process($id));
+                }
+            } catch (Throwable $e) {
+                report($e);
+            }
+        }
         $next = route('feed', $id ? ['v' => $id] : []);
         // Algorithme : analyse d'image (nudité) et validation des vidéos des nouveaux comptes
         $held = null;

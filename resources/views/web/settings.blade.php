@@ -25,6 +25,9 @@
       <button class="btn ghost" type="submit">Enregistrer</button>
     </form>
 
+    <div class="section-label" id="securite">{{ __('Sécurité') }}</div>
+    <a class="listrow" href="{{ route('blocks') }}"><span><b>🚫 {{ __('Personnes bloquées') }}</b><small>{{ __('Voir et débloquer') }}</small></span><span class="btn sm ghost">{{ __('Ouvrir') }}</span></a>
+
     <div class="section-label" id="push">{{ __('Notifications sur ce téléphone') }}</div>
     <div class="card" id="push-card">
       @if (\App\Terrain\Growth\WebPush::configured())
@@ -70,7 +73,7 @@
 @endsection
 
 @push('scripts')
-@php($pl = ['on' => __('Activées sur cet appareil ✅'), 'off' => __('Pas encore activées sur cet appareil.'), 'denied' => __('Bloquées dans les réglages du navigateur : autorise les notifications pour ce site.'), 'unsupported' => __('Ce navigateur ne prend pas en charge les notifications. Utilise Chrome, ou ajoute le site à l’écran d’accueil sur iPhone.'), 'insecure' => __('Les notifications demandent une adresse sécurisée (https://).'), 'sent' => __('Notification envoyée à :n appareil(s).'), 'none' => __('Aucun appareil abonné : active d’abord les notifications.')])
+@php $pl = ['on' => __('Activées sur cet appareil ✅'), 'off' => __('Pas encore activées sur cet appareil.'), 'denied' => __('Bloquées dans les réglages du navigateur : autorise les notifications pour ce site.'), 'unsupported' => __('Ce navigateur ne prend pas en charge les notifications. Utilise Chrome, ou ajoute le site à l’écran d’accueil sur iPhone.'), 'insecure' => __('Les notifications demandent une adresse sécurisée (https://).'), 'sent' => __('Notification envoyée à :n appareil(s).'), 'none' => __('Aucun appareil abonné : active d’abord les notifications.')]; @endphp
 <script>
 (function () {
   var st = document.getElementById('push-state'); if (!st) return;

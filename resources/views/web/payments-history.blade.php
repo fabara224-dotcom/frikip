@@ -19,7 +19,7 @@
     @endif
     <div class="list">
       @forelse ($rows as $p)
-        @php([$st, $cls] = $labels[$p->status] ?? [$p->status, ''])
+        @php [$st, $cls] = $labels[$p->status] ?? [$p->status, '']; @endphp
         <a class="li" href="{{ route('payments.return', $p->reference) }}">
           <span class="grow"><span class="t">{{ \App\Terrain\Growth\Payments::label($p->product) }}@if ($p->months) · {{ $p->months }} {{ __('jours') }}@endif · <b>{{ number_format($p->amount, 0, ',', ' ') }} {{ $p->currency }}</b></span>
             <span class="s">{{ \Illuminate\Support\Carbon::parse($p->created_at)->translatedFormat('j M Y, H:i') }} · {{ $methods[$p->method] ?? $p->method }} · {{ __('réf.') }} {{ $p->reference }}@if ($p->provider === 'simulation') · {{ __('simulation') }}@endif</span></span>

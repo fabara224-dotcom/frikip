@@ -1,15 +1,16 @@
 @extends('layouts.web')
 
-@section('title', __('Classements').' – '.config('terrain.app_name'))
+@section('title', __('Meilleurs sportifs').' – '.config('terrain.app_name'))
+@section('description', __('Le classement des meilleurs sportifs de Guinée et d’Afrique de l’Ouest, par sport, poste, âge et ville.'))
 
 @section('content')
 <div class="page gut">
-  <h1>{{ __('Classements') }}</h1>
-  <p class="meta">{{ __('Top') }} {{ $f['poste'] ? mb_strtolower($f['poste']).'s' : __('joueurs') }} {{ $f['sport'] }} {{ $f['cat'] !== 'Tous' ? $f['cat'] : '' }} {{ $f['city'] ? __('de').' '.$f['city'] : ($f['country'] !== 'Tous' ? '– '.$f['country'] : '') }}.
-    {{ __('Note calculée avec la fiche, les vues, les « j’aime » et la vérification du profil.') }}</p>
+  <h1>{{ __('Meilleurs sportifs') }}</h1>
+  <p class="meta">{{ __('Top') }} {{ $f['poste'] ? mb_strtolower($f['poste']).'s' : ($f['sport'] === 'Tous' ? __('sportifs') : __('joueurs')) }} {{ $f['sport'] !== 'Tous' ? $f['sport'] : '' }} {{ $f['cat'] !== 'Tous' ? $f['cat'] : '' }} {{ $f['city'] ? __('de').' '.$f['city'] : ($f['country'] !== 'Tous' ? '– '.$f['country'] : '') }}.
+    {{ __('Note sur 100 calculée par l’algorithme : vues, « j’aime », partages, abonnés, régularité, défis gagnés, profil complet et vérifié.') }}</p>
 
   <form method="GET" action="{{ route('rankings') }}" class="filterbar">
-    <select name="sport" aria-label="{{ __('Sport') }}" onchange="this.form.submit()">@foreach ($sports as $s)<option @selected($f['sport'] === $s)>{{ $s }}</option>@endforeach</select>
+    @unless (\App\Terrain\SportFields::single())    <select name="sport" aria-label="{{ __('Sport') }}" onchange="this.form.submit()"><option value="Tous">{{ __('Tous les sports') }}</option>@foreach ($sports as $s)<option @selected($f['sport'] === $s)>{{ $s }}</option>@endforeach</select>@endunless
     <select name="country" aria-label="{{ __('Pays') }}" onchange="this.form.submit()"><option value="Tous">{{ __('Tous pays') }}</option>@foreach ($countries as $c)<option @selected($f['country'] === $c)>{{ $c }}</option>@endforeach</select>
     <select name="city" aria-label="{{ __('Ville') }}" onchange="this.form.submit()"><option value="">{{ __('Toutes villes') }}</option>@foreach ($cities as $c)<option @selected($f['city'] === $c)>{{ $c }}</option>@endforeach</select>
     @if ($postes)<select name="poste" aria-label="{{ __('Poste') }}" onchange="this.form.submit()"><option value="">{{ __('Tous postes') }}</option>@foreach ($postes as $p)<option @selected($f['poste'] === $p)>{{ $p }}</option>@endforeach</select>@endif
@@ -23,7 +24,7 @@
         <span class="pos">{{ $i + 1 }}</span>
         <x-av :name="$a['name']" :sport="$a['sport']" />
         <a class="grow" href="{{ route('athletes.show', $a['id']) }}"><span class="t">{{ $a['name'] }} @if (! empty($a['star']))<x-star />@endif</span>
-          <span class="s">{{ \Illuminate\Support\Arr::first($a['fields']) }} · {{ $a['age'] }} {{ __('ans') }} · {{ $a['city'] }}@if (! empty($a['specialty'])) · ★ {{ $a['specialty'] }}@endif</span></a>
+          <span class="s">@if ($f['sport'] === 'Tous')@td($a['sport']) · @endif{{ \Illuminate\Support\Arr::first($a['fields']) }} · {{ $a['age'] }} {{ __('ans') }} · {{ $a['city'] }}@if (! empty($a['specialty'])) · ★ {{ $a['specialty'] }}@endif</span></a>
         <b class="rating">{{ round($a['rating']) }}</b>
       </li>
     @empty

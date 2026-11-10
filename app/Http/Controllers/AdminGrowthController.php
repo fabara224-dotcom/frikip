@@ -85,6 +85,19 @@ class AdminGrowthController extends Controller
         $v = DB::table('verification_requests')->find($id);
         abort_unless($v, 404);
         DB::table('verification_requests')->where('id', $id)->update(['status' => $data['status'], 'admin_note' => $data['note'] ?? null, 'updated_at' => now()]);
+        // Statuts distincts : identité (tout le monde) et, pour les recruteurs, « Recruteur vérifié »
+        $badges = app(\App\Terrain\Growth\Badges::class);
+        $admin = app(\App\Terrain\Growth\AdminAuth::class)->current()->name ?? 'Admin';
+        if ($data['status'] === 'validee') {
+            $badges->grant($v->user_key, 'identite', 'Pièce d’identité contrôlée par l’équipe Frikip (demande n°'.$id.')', $admin);
+            if (($v->role ?? null) === 'recruiter') {
+                $badges->grant($v->user_key, 'recruteur', trim('Affiliation confirmée'.(! empty($v->organization) ? ' : '.$v->organization : '')), $admin);
+            }
+        } elseif ($data['status'] === 'refusee') {
+            foreach ($badges->active([$v->user_key]) as $b) {
+                $badges->revoke($b->id, $data['note'] ?? 'Vérification refusée');
+            }
+        }
         if ($data['status'] !== 'en_attente') {
             $ok = $data['status'] === 'validee';
             $this->notifier->send($v->user_key, 'verification', $ok ? 'Ton compte est vérifié ✓' : 'Vérification refusée',
@@ -275,5 +288,34 @@ class AdminGrowthController extends Controller
         }
         // Les rushs sont effacés 30 jours après la livraison (voir la commande terrain:paiements)
         return back()->with('saved', 'Commande '.$o->reference.' mise à jour.');
+    }
+
+    // ------------------------------------------------------------------ badges de vérification (statuts distincts)
+
+    public function grantBadge(Request $request, string $key): RedirectResponse
+    {
+        $d = $request->validate(['type' => ['required', 'in:'.implode(',', array_keys(\App\Terrain\Growth\Badges::TYPES))], 'source' => ['required', 'string', 'max:200']],
+            ['source.required' => 'Indique la source de la vérification (ex. Répertoire FIFA des agents, Ligue de Conakry, licence n°…).']);
+        $m = DB::table('members')->where('user_key', $key)->first();
+        abort_unless($m, 404);
+        $subject = $d['type'] === 'enregistrement' && $m->athlete_id ? $m->athlete_id : $key;
+        app(\App\Terrain\Growth\Badges::class)->grant($subject, $d['type'], $d['source'], app(\App\Terrain\Growth\AdminAuth::class)->current()->name ?? 'Admin');
+        $this->notifier->send($key, 'verification', 'Nouveau badge : '.\App\Terrain\Growth\Badges::label($d['type']), 'Il apparaît maintenant sur ton profil.', route('verification'));
+
+        return back()->with('saved', 'Badge « '.\App\Terrain\Growth\Badges::label($d['type']).' » ajouté.');
+    }
+
+    public function revokeBadge(Request $request, int $id): RedirectResponse
+    {
+        $d = $request->validate(['reason' => ['required', 'string', 'max:300']], ['reason.required' => 'Indique pourquoi le badge est retiré.']);
+        $b = DB::table('verification_badges')->find($id);
+        abort_unless($b, 404);
+        app(\App\Terrain\Growth\Badges::class)->revoke($id, $d['reason']);
+        $key = DB::table('members')->where('user_key', $b->subject)->orWhere('athlete_id', $b->subject)->value('user_key');
+        if ($key) {
+            $this->notifier->send($key, 'verification', 'Badge retiré : '.\App\Terrain\Growth\Badges::label($b->type), $d['reason'].' Tu peux contester depuis la page Vérification.', route('verification'));
+        }
+
+        return back()->with('saved', 'Badge retiré.');
     }
 }

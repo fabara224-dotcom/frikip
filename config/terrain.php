@@ -8,6 +8,10 @@
  */
 
 return [
+
+    // Sports ouverts sur le site (séparés par des virgules). Frikip est 100 % football.
+    'sports' => env('TERRAIN_SPORTS', 'Football'),
+
     'app_name' => env('TERRAIN_APP_NAME', 'Frikip'),
     'editor' => env('TERRAIN_EDITOR', 'Fabara'),
     'editor_address' => env('TERRAIN_EDITOR_ADDRESS', ''),
@@ -144,6 +148,21 @@ return [
         'header' => env('LIVE_PARTNER_HEADER', 'Authorization'),
         'field' => env('LIVE_PARTNER_FIELD', 'url'),
     ],
+    // Connexion avec Google, Facebook et TikTok : chaque bouton apparaît quand ses deux clés sont dans .env
+    // (adresse de retour à déclarer chez chaque service : https://TON-SITE/connexion/google/retour, …/facebook/retour, …/tiktok/retour)
+    'social' => [
+        'google' => ['id' => env('GOOGLE_CLIENT_ID', ''), 'secret' => env('GOOGLE_CLIENT_SECRET', '')],
+        'facebook' => ['id' => env('FACEBOOK_CLIENT_ID', ''), 'secret' => env('FACEBOOK_CLIENT_SECRET', '')],
+        'tiktok' => ['id' => env('TIKTOK_CLIENT_KEY', ''), 'secret' => env('TIKTOK_CLIENT_SECRET', '')],
+    ],
+
+    // Lives des membres depuis leur téléphone (Cloudflare Stream, WebRTC) : https://dash.cloudflare.com > Stream
+    // Jeton API avec la permission « Stream: Edit ». Sans ces deux clés, le bouton « Lancer un live » explique que c'est bientôt.
+    'cloudflare' => [
+        'account' => env('CLOUDFLARE_ACCOUNT_ID', ''),
+        'token' => env('CLOUDFLARE_STREAM_TOKEN', ''),
+    ],
+
     'youtube' => [
         'key' => env('YOUTUBE_API_KEY', ''),
     ],

@@ -24,7 +24,7 @@
         <div class="row" style="margin-top:14px">
           <a class="btn" href="{{ route('publish') }}">{{ __('Publier une vidéo') }}</a>
           <a class="btn ghost" href="{{ route('athletes.show', $a['id']) }}">{{ __('Mon profil public') }}</a>
-          <a class="btn ghost" href="{{ route('premium', 'boost') }}">{{ __('Booster mon profil') }}</a>
+          @buyable<a class="btn ghost" href="{{ route('premium', 'boost') }}">{{ __('Booster mon profil') }}</a>@endbuyable
         </div>
         <div class="quick">
           <a href="{{ route('stats') }}"><x-ico name="stats" /><span>Statistiques</span></a>

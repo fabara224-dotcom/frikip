@@ -29,9 +29,10 @@ class AlertController extends Controller
         $f = $request->validate([
             'q' => ['nullable', 'string', 'max:100'], 'sport' => ['nullable', 'string', 'max:30'], 'country' => ['nullable', 'string', 'max:60'],
             'age' => ['nullable', 'in:Tous,-18,18-21,22+'], 'verified' => ['nullable', 'boolean'],
+            'poste' => ['nullable', 'string', 'max:40'], 'pied' => ['nullable', 'string', 'max:20'],
         ]);
         $f = array_filter($f, fn ($v) => $v !== null && $v !== '' && $v !== 'Tous');
-        $label = implode(' · ', array_filter([$f['sport'] ?? 'Tous sports', $f['q'] ?? null, $f['country'] ?? null,
+        $label = implode(' · ', array_filter([$f['poste'] ?? ($f['sport'] ?? 'Tous postes'), isset($f['pied']) ? 'pied '.mb_strtolower($f['pied']) : null, $f['q'] ?? null, $f['country'] ?? null,
             isset($f['age']) ? ['-18' => 'moins de 18 ans', '18-21' => '18-21 ans', '22+' => '22 ans et +'][$f['age']] : null, ! empty($f['verified']) ? 'vérifiés' : null]));
         $members->touch();
         // Les profils actuels sont « déjà vus » : on ne préviendra que des nouveaux

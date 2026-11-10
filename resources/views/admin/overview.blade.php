@@ -19,6 +19,20 @@
     <small>@if ($revenue){{ collect($revenue)->sum('n') }} paiement(s) réel(s)@else aucun paiement réel @endif @if ($simulated) · {{ $simulated }} simulé(s) non comptés @endif</small></a>
 </div>
 
+@php
+  $gb = $health['storage'] / 1073741824;
+  $mins = intdiv($health['watch'], 60); $secs = $health['watch'] % 60;
+  $types = ['athlete' => 'joueurs et acteurs du foot', 'fan' => 'supporters', 'recruiter' => 'clubs, recruteurs et agents'];
+@endphp
+<div class="kpis">
+  <div class="kpi"><span>Visionnages (30 jours)</span><b>{{ $fmt($health['views30']) }}</b><small>vues de plus de 2 secondes</small></div>
+  <div class="kpi"><span>Durée moyenne regardée</span><b>{{ $health['watch'] ? ($mins ? $mins.' min '.$secs.' s' : $secs.' s') : '–' }}</b><small>par vue, sur 30 jours</small></div>
+  <div class="kpi"><span>Rétention</span><b>{{ $health['retention'] !== null ? $health['retention'].' %' : '–' }}</b><small>@if ($health['cohort']) inscrits il y a 1 à 2 mois revenus cette semaine ({{ $health['cohort'] }} membres)@else pas encore assez d’ancienneté @endif</small></div>
+  <a class="kpi" href="{{ route('admin.moderation') }}"><span>Signalements ouverts</span><b>{{ $health['reports'] }}</b><small>à examiner</small></a>
+  <div class="kpi"><span>Stockage utilisé</span><b>{{ $gb >= 1 ? number_format($gb, 1, ',', ' ').' Go' : number_format($health['storage'] / 1048576, 0, ',', ' ').' Mo' }}</b><small>vidéos et fichiers sur le serveur</small></div>
+</div>
+<p class="meta" style="margin:-6px 0 16px">@foreach ($types as $k => $l){{ $fmt((int) ($health['byType'][$k] ?? 0)) }} {{ $l }}@if (! $loop->last) · @endif @endforeach</p>
+
 <div class="adm-grid">
   <section class="panel">
     <h2>À traiter</h2>

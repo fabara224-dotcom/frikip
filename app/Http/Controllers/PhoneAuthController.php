@@ -135,9 +135,13 @@ class PhoneAuthController extends Controller
             return redirect()->route('phone.login');
         }
         $minAge = (int) config('terrain.min_age', 13);
-        $athlete = $request->input('role') === 'athlete';
+        $choice = (string) $request->input('role');
+        $proche = $choice === 'proche';
+        $athlete = $choice === 'athlete' || $proche;
         $data = $request->validate([
-            'role' => ['required', Rule::in(['athlete', 'recruiter'])],
+            'role' => ['required', Rule::in(['athlete', 'recruiter', 'fan', 'proche'])],
+            'relation' => [$proche ? 'required' : 'nullable', Rule::in(\App\Terrain\Roles::RELATIONS)],
+            'manager_name' => [$proche ? 'required' : 'nullable', 'string', 'max:120'],
             'name' => ['required', 'string', 'max:120'],
             'sport' => [$athlete ? 'required' : 'nullable', Rule::in(SportFields::sports())],
             'age' => [$athlete ? 'required' : 'nullable', 'integer', "min:{$minAge}", 'max:60'],
@@ -145,12 +149,16 @@ class PhoneAuthController extends Controller
             'city' => ['nullable', 'string', 'max:120'],
             'guardian_phone' => [$athlete && (int) $request->input('age') < 18 ? 'required' : 'nullable', 'string', 'max:30'],
             'terms' => ['accepted'],
-        ], ['age.min' => "Il faut avoir au moins {$minAge} ans.", 'guardian_phone.required' => 'Moins de 18 ans : le téléphone d’un parent ou tuteur est obligatoire.', 'terms.accepted' => 'Accepte les conditions pour continuer.']);
+        ], ['age.min' => "Il faut avoir au moins {$minAge} ans.", 'guardian_phone.required' => 'Moins de 18 ans : le téléphone d’un parent ou tuteur est obligatoire.', 'terms.accepted' => 'Accepte les conditions pour continuer.', 'relation.required' => 'Indique ton lien avec le sportif.', 'manager_name.required' => 'Indique ton nom.']);
+        $data['role'] = $athlete ? 'athlete' : $choice;
         app(\App\Terrain\Growth\ContentGuard::class)->enforce(['name' => $data['name'], 'city' => $data['city'] ?? null], 'profile');
         $phone = session('phone_auth.phone');
         $country = $data['country'] ?? session('phone_auth.country') ?? \App\Terrain\Region::viewer();
         $profile = ['name' => $data['name'], 'sport' => $data['sport'] ?? null, 'age' => $data['age'] ?? null, 'country' => $country,
             'city' => $data['city'] ?? null, 'guardian_phone' => $data['guardian_phone'] ?? null, 'fields' => [], 'phone' => $phone];
+        if ($proche) {
+            $profile += ['managed_by' => $data['relation'], 'manager_name' => $data['manager_name']];
+        }
         try {
             if ($this->data instanceof SupabaseData) {
                 $this->data->phoneComplete($data['role'], $profile);
@@ -165,6 +173,6 @@ class PhoneAuthController extends Controller
         app(Members::class)->updatePrefs(['phone' => $phone, 'notify_sms' => true]);
         app(Members::class)->setCountry($country);
 
-        return redirect()->route($data['role'] === 'athlete' ? 'publish' : 'search')->with('status', 'Bienvenue ! Ton compte est créé.');
+        return redirect()->route(['athlete' => 'publish', 'recruiter' => 'search'][$data['role']] ?? 'rankings')->with('status', 'Bienvenue ! Ton compte est créé.');
     }
 }

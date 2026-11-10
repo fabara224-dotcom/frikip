@@ -6,7 +6,7 @@
 <form method="GET" action="{{ route('admin.members') }}" class="adm-filters">
   <input type="search" name="q" value="{{ $f['q'] }}" placeholder="Nom, e-mail, téléphone" aria-label="Rechercher un membre">
   <select name="country" aria-label="Pays"><option value="">Tous les pays</option>@foreach ($countries as $c)<option @selected($f['country'] === $c)>{{ $c }}</option>@endforeach</select>
-  <select name="role" aria-label="Rôle"><option value="">Tous les rôles</option><option value="athlete" @selected($f['role'] === 'athlete')>Sportifs</option><option value="recruiter" @selected($f['role'] === 'recruiter')>Recruteurs</option></select>
+  <select name="role" aria-label="Rôle"><option value="">Tous les rôles</option><option value="athlete" @selected($f['role'] === 'athlete')>Sportifs</option><option value="recruiter" @selected($f['role'] === 'recruiter')>Recruteurs</option><option value="fan" @selected($f['role'] === 'fan')>Fans</option></select>
   <select name="state" aria-label="État">
     @foreach (['' => 'Tous les états', 'actif' => 'Actifs', 'averti' => 'Avec avertissement', 'suspendu' => 'Suspendus', 'bloque' => 'Bloqués', 'payant' => 'Clients payants'] as $k => $l)<option value="{{ $k }}" @selected($f['state'] === $k)>{{ $l }}</option>@endforeach
   </select>
@@ -25,7 +25,7 @@
     <tr>
       <td><a class="mname" href="{{ route('admin.member', $m->user_key) }}">{{ $m->name ?: $m->user_key }}</a><span class="meta">{{ $m->email ?: $m->phone }}</span></td>
       <td>{{ $m->country ?: '–' }}</td>
-      <td>{{ $m->role === 'recruiter' ? 'Recruteur' : 'Sportif' }}</td>
+      <td>{{ \App\Terrain\Roles::label($m->role) }}</td>
       <td class="num">@if ($m->role === 'athlete')<span class="score" style="--v:{{ (int) $m->score }}">{{ round($m->score) }}</span>@else – @endif</td>
       <td>
         @if ($s && $s->type === 'block_account')<span class="pill danger">Bloqué</span>

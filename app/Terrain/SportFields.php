@@ -25,8 +25,11 @@ class SportFields
         'Football' => [
             ['label' => 'Poste', 'type' => 'choice', 'options' => ['Gardien', 'Défenseur central', 'Latéral', 'Milieu défensif', 'Milieu offensif', 'Ailier', 'Attaquant']],
             ['label' => 'Pied fort', 'type' => 'choice', 'options' => ['Droit', 'Gauche', 'Les deux']],
+            ['label' => 'Matchs joués cette saison', 'type' => 'number'],
             ['label' => 'Buts cette saison', 'type' => 'number'],
             ['label' => 'Passes décisives', 'type' => 'number'],
+            ['label' => 'Parcours (clubs et saisons)', 'type' => 'text'],
+            ['label' => 'Disponible pour des essais', 'type' => 'choice', 'options' => ['Oui, j’accepte d’être contacté', 'Pas pour le moment']],
         ],
         'Basket' => [
             ['label' => 'Poste', 'type' => 'choice', 'options' => ['Meneur', 'Arrière', 'Ailier', 'Ailier fort', 'Pivot']],
@@ -77,10 +80,28 @@ class SportFields
     public const COUNTRIES = ['Guinée', 'Sénégal', "Côte d'Ivoire", 'Mali', 'Burkina Faso', 'Bénin', 'Togo', 'Ghana', 'Nigeria', 'Niger', 'Libéria',
         'Sierra Leone', 'Gambie', 'Guinée-Bissau', 'Cap-Vert', 'Mauritanie', 'Cameroun', 'Maroc', 'RDC'];
 
-    /** @return list<string> */
+    /**
+     * Sports ouverts sur le site. Frikip est 100 % football : les autres sports restent dans la base
+     * (anciens profils) mais ne s'affichent plus nulle part. Réglage : TERRAIN_SPORTS dans .env.
+     *
+     * @return list<string>
+     */
     public static function sports(): array
     {
-        return array_keys(self::FIELDS);
+        $on = array_values(array_filter(array_map('trim', explode(',', (string) config('terrain.sports', 'Football')))));
+
+        return array_values(array_intersect(array_keys(self::FIELDS), $on ?: ['Football'])) ?: ['Football'];
+    }
+
+    public static function enabled(?string $sport): bool
+    {
+        return in_array((string) $sport, self::sports(), true);
+    }
+
+    /** Un seul sport ouvert : on n'affiche plus les choix de sport. */
+    public static function single(): bool
+    {
+        return count(self::sports()) === 1;
     }
 
     /** @return array{0: string, 1: string} */

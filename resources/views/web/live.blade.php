@@ -14,7 +14,10 @@
       <h1>{{ __('En direct') }}</h1>
       <p class="pub-lead">{{ __('Les matchs des clubs, académies et tournois de la région, en vidéo et avec le score en direct.') }}</p>
     </div>
-    @if ($canPublish)<a class="btn" href="{{ route('live.create') }}">{{ __('Diffuser un match') }}</a>@endif
+    <span class="row" style="gap:8px;flex-wrap:wrap">
+      @if ($me)<a class="btn live" href="{{ route('live.go') }}">● {{ __('Lancer un live') }}</a>@endif
+      @if ($canPublish)<a class="btn ghost" href="{{ route('live.create') }}">{{ __('Diffuser un match de mon club') }}</a>@endif
+    </span>
   </div>
 
   @php

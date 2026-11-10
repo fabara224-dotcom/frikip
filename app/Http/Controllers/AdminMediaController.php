@@ -128,7 +128,7 @@ class AdminMediaController extends Controller
     /** Réglages des pubs et des directs (enregistrés avec ceux de l'algorithme, donc dans le journal). */
     public function saveSettings(Request $request, Algorithm $algo): RedirectResponse
     {
-        $group = in_array($request->input('group'), ['pub', 'direct', 'defis', 'partenaire'], true) ? $request->input('group') : 'pub';
+        $group = in_array($request->input('group'), ['pub', 'direct', 'defis', 'partenaire', 'decouvrir', 'lives'], true) ? $request->input('group') : 'pub';
         $input = $request->all();
         if ($group === 'partenaire') {
             $input['partner_url'] = trim((string) ($input['partner_url'] ?? ''));
@@ -418,5 +418,49 @@ class AdminMediaController extends Controller
         }
 
         return redirect()->route('admin.coaching', ['statut' => 'coachs'])->with('saved', $msg);
+    }
+
+    // ================================================================== Découvrir (vidéos YouTube créditées)
+
+    public function discover(Request $request, \App\Terrain\Growth\Algorithm $algo): View
+    {
+        $q = trim((string) $request->query('q', ''));
+        $rows = DB::table('discover_videos')->when($q !== '', fn ($x) => $x->where(fn ($w) => $w->where('title', 'like', "%{$q}%")->orWhere('channel', 'like', "%{$q}%")))
+            ->orderByDesc('id')->paginate(40)->withQueryString();
+
+        return view('admin.discover', [
+            'rows' => $rows, 'q' => $q, 'settings' => \App\Terrain\Growth\Algorithm::SETTINGS, 'values' => $algo->all(),
+            'ready' => \App\Terrain\Growth\Discover::configured(), 'total' => \App\Terrain\Growth\Discover::count(),
+            'hidden' => (int) DB::table('discover_videos')->where('hidden', true)->count(), 'last' => \Illuminate\Support\Facades\Cache::get('frikip.disc.last'),
+            'plays' => (int) DB::table('discover_videos')->sum('plays'),
+        ]);
+    }
+
+    public function discoverImport(\App\Terrain\Growth\Discover $d): RedirectResponse
+    {
+        if (! \App\Terrain\Growth\Discover::configured()) {
+            return back()->withErrors(['yt' => 'Ajoute d’abord YOUTUBE_API_KEY dans le fichier .env.']);
+        }
+        @set_time_limit(300);
+        $r = $d->import(null, 1);
+        if ($r['error'] && ! $r['added']) {
+            return back()->withErrors(['yt' => 'YouTube : '.$r['error']]);
+        }
+
+        return back()->with('saved', "{$r['added']} vidéo(s) ajoutée(s). {$r['total']} au total.".($r['error'] ? ' YouTube : '.$r['error'] : ''));
+    }
+
+    public function discoverAction(Request $request, int $id): RedirectResponse
+    {
+        $v = DB::table('discover_videos')->find($id);
+        abort_unless($v, 404);
+        if ($request->input('action') === 'supprimer') {
+            DB::table('discover_videos')->where('id', $id)->delete();
+
+            return back()->with('saved', 'Vidéo retirée.');
+        }
+        DB::table('discover_videos')->where('id', $id)->update(['hidden' => ! $v->hidden, 'updated_at' => now()]);
+
+        return back()->with('saved', $v->hidden ? 'Vidéo de nouveau visible.' : 'Vidéo cachée.');
     }
 }

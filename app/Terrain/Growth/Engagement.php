@@ -115,6 +115,37 @@ class Engagement
         }
     }
 
+    /** Durée réellement regardée pendant la dernière vue de ce visiteur (on garde le maximum, plafonné à 10 minutes). */
+    public function watchTime(string $videoId, string $viewerKey, int $seconds): void
+    {
+        try {
+            $row = DB::table('video_views')->where('video_id', $videoId)->where('viewer_key', $viewerKey)
+                ->where('created_at', '>', now()->subMinutes(30))->orderByDesc('id')->first();
+            if ($row) {
+                DB::table('video_views')->where('id', $row->id)->update(['seconds' => max((int) ($row->seconds ?? 0), min(600, max(0, $seconds)))]);
+            }
+        } catch (Throwable) {
+        }
+    }
+
+    /** Durée moyenne regardée (secondes) pour une liste de vidéos, ou pour tout le site. */
+    public static function averageWatch(?array $videoIds = null, int $days = 30): int
+    {
+        try {
+            $q = DB::table('video_views')->where('created_at', '>=', now()->subDays($days))->where('seconds', '>', 0);
+            if ($videoIds !== null) {
+                if (! $videoIds) {
+                    return 0;
+                }
+                $q->whereIn('video_id', $videoIds);
+            }
+
+            return (int) round((float) $q->avg('seconds'));
+        } catch (Throwable) {
+            return 0;
+        }
+    }
+
     /** Identifiant du visiteur : son compte, sinon une empreinte anonyme (IP + navigateur). */
     public static function viewerKey(?array $user): string
     {
@@ -322,11 +353,12 @@ class Engagement
         $mine = ($ids && $me) ? DB::table('comment_likes')->whereIn('comment_id', $ids)->where('user_key', $me['id'])->pluck('comment_id')->all() : [];
         $iAmOwner = $me && $ownerAthleteId && ($me['athlete_id'] ?? null) === $ownerAthleteId;
         $members = app(Members::class);
+        $blocked = $me ? app(Blocks::class)->blockedBy($me['id']) : [];
 
         $byId = [];
         foreach ($rows as $r) {
             $m = $meta[$r['id']] ?? null;
-            if ($m && $m->hidden) {
+            if (($m && $m->hidden) || in_array($r['user_key'], $blocked, true)) {
                 continue;
             }
             if (($r['role'] ?? null) === null || ($r['athlete_id'] ?? null) === null) {

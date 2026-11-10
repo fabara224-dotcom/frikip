@@ -2,13 +2,35 @@
 
 @section('title', 'Vérifier mon compte – '.config('terrain.app_name'))
 
-@php($isRecruiter = $me['role'] === 'recruiter')
+@php $isRecruiter = $me['role'] === 'recruiter'; @endphp
 
 @section('content')
 <div class="page gut">
   <div class="narrow" style="max-width:620px">
     <h1>Vérifier mon compte</h1>
     <p class="meta">Le badge <x-ver /> rassure les clubs et les familles. Tes documents restent privés : seule l'équipe de vérification les voit, puis ils sont supprimés après la décision.</p>
+
+    @php
+      $hist = app(\App\Terrain\Growth\Badges::class)->history(array_filter([$me['id'], $me['athlete_id'] ?? null]));
+    @endphp
+    @if ($hist)
+      <div class="section-label">{{ __('Mes badges') }}</div>
+      @foreach ($hist as $b)
+        <div class="listrow {{ $b->revoked_at ? 'muted' : '' }}"><span><b>{{ \App\Terrain\Growth\Badges::TYPES[$b->type][1] ?? '' }} {{ \App\Terrain\Growth\Badges::label($b->type) }}</b>
+          <small>{{ __('Vérifié le :d', ['d' => \Illuminate\Support\Carbon::parse($b->verified_at)->format('d/m/Y')]) }}@if ($b->source) · {{ $b->source }}@endif @if ($b->revoked_at) · {{ __('retiré le :d : :r', ['d' => \Illuminate\Support\Carbon::parse($b->revoked_at)->format('d/m/Y'), 'r' => $b->revoked_reason]) }}@endif</small></span>
+          <span class="pill {{ $b->revoked_at ? 'warn' : 'ok' }}">{{ $b->revoked_at ? __('Retiré') : __('Actif') }}</span></div>
+      @endforeach
+    @endif
+    @if (collect($hist)->whereNotNull('revoked_at')->count() || ($last && $last->status === 'refusee'))
+      <details class="card" style="margin:10px 0">
+        <summary><b>{{ __('Contester une décision') }}</b></summary>
+        <form method="POST" action="{{ route('report') }}" style="display:flex;flex-direction:column;gap:8px;margin-top:8px">@csrf
+          <input type="hidden" name="target_type" value="app"><input type="hidden" name="target_id" value="verification">
+          <label for="dispute">{{ __('Explique pourquoi c’est une erreur (tu peux envoyer un nouveau document ensuite)') }}<textarea id="dispute" name="reason" rows="3" maxlength="2000" required></textarea></label>
+          <button class="btn ghost" type="submit">{{ __('Envoyer ma contestation') }}</button>
+        </form>
+      </details>
+    @endif
 
     @if ($alreadyVerified)
       <div class="card"><b>Ton compte est vérifié <x-ver /></b><span class="meta">Le badge apparaît sur ton profil et tes messages.</span></div>

@@ -23,6 +23,9 @@ class AthleteController extends Controller
             'age' => (string) $request->query('age', 'Tous'),
             'verified' => $request->boolean('verified'),
             'sort' => (string) $request->query('sort', 'score'),
+            'poste' => in_array($request->query('poste'), SportFields::FIELDS['Football'][0]['options'], true) ? (string) $request->query('poste') : '',
+            'pied' => in_array($request->query('pied'), SportFields::FIELDS['Football'][1]['options'], true) ? (string) $request->query('pied') : '',
+            'dispo' => $request->boolean('dispo'),
         ];
 
         $all = $this->data->athletes($filters);
@@ -34,6 +37,8 @@ class AthleteController extends Controller
             'filters' => $filters, 'results' => array_slice($all, ($page - 1) * $per, $per), 'total' => count($all), 'page' => $page, 'pages' => $pages,
             'sports' => SportFields::sports(), 'countries' => SportFields::COUNTRIES,
             'selected' => array_filter(explode(',', (string) $request->query('cmp', ''))),
+            'postes' => SportFields::FIELDS['Football'][0]['options'], 'pieds' => SportFields::FIELDS['Football'][1]['options'],
+            'lists' => ($me = $this->data->user()) && $me['role'] === 'recruiter' ? app(\App\Terrain\Growth\Shortlists::class)->of($me['id']) : [],
         ]);
     }
 

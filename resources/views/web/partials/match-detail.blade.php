@@ -61,7 +61,7 @@
     @if (count($m['stats']) && $m['status'] !== 'upcoming')
       <div class="section-label">Statistiques</div>
       @foreach ($m['stats'] as $label => $pair)
-        @php($t = max(1, $pair[0] + $pair[1]))
+        @php $t = max(1, $pair[0] + $pair[1]); @endphp
         <div class="sbar"><span class="lab">{{ $label }}</span><span class="v">{{ $pair[0] }}</span>
           <div class="tr"><i style="width:{{ $pair[0] / $t * 100 }}%"></i><i style="width:{{ $pair[1] / $t * 100 }}%"></i></div><span class="v">{{ $pair[1] }}</span></div>
       @endforeach
@@ -74,7 +74,7 @@
       <div class="list">
         @foreach ($m['ratings'] as $r)
           @if ($a = $athletes[$r['athlete_id']] ?? null)
-            @php($n = $r['note'])
+            @php $n = $r['note']; @endphp
             <a class="li" href="{{ route('athletes.show', $a['id']) }}">
               <span class="note10" style="background:{{ $n >= 8.5 ? 'var(--pitch)' : ($n >= 7 ? 'var(--accent)' : 'var(--gold)') }}">{{ str_replace('.', ',', number_format($n, 1)) }}</span>
               <span class="grow"><span class="t">{{ $a['name'] }} @if (! empty($a['star']))<x-star />@endif</span><span class="s">{{ $r['detail'] }}</span></span>
@@ -97,7 +97,7 @@
         @endif
       @else
         @foreach ($m['candidates'] as $i => $c)
-          @php($pct = $total ? round($m['votes'][$i] / $total * 100) : 0)
+          @php $pct = $total ? round($m['votes'][$i] / $total * 100) : 0; @endphp
           <div style="margin-bottom:10px">
             <div style="display:flex;justify-content:space-between;font-weight:{{ $m['my_vote'] === $i ? 700 : 500 }}"><span>{{ $c }}{{ $m['my_vote'] === $i ? ' · ton vote' : '' }}</span><span>{{ $pct }} %</span></div>
             <div class="meter"><i style="width:{{ $pct }}%"></i></div>

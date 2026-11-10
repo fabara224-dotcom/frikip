@@ -92,7 +92,7 @@
         <div class="card"><h3>Scores en direct</h3>
           <ul><li>Championnats jeunes et locaux</li><li>Classements mis à jour pendant les matchs</li><li>Notes des joueurs reliées à leur profil</li><li>Vote du joueur du match</li></ul></div>
       </div>
-      <div class="sports" aria-label="Sports couverts"><span>Football</span><span>Basket</span><span>Athlétisme</span><span>Lutte</span><span>Judo</span><span>Handball</span><span>Tennis</span><span>Natation</span></div>
+      <div class="sports" aria-label="Le football, tous ses acteurs"><span>Joueurs</span><span>Clubs et académies</span><span>Recruteurs</span><span>Agents</span><span>Entraîneurs</span><span>Arbitres</span><span>Médecins et kinés</span><span>Supporters</span></div>
     </div>
   </section>
 

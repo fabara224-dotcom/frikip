@@ -37,7 +37,7 @@
           @endforeach
         </fieldset>
       @else
-        <label for="org_type">{{ __('Type de structure') }}<select id="org_type" name="org_type">@foreach ($orgTypes as $t)<option @selected(old('org_type', $u['org_type'] ?? '') === $t)>{{ $t }}</option>@endforeach</select></label>
+        @if (($u['role'] ?? '') === 'recruiter')<label for="org_type">{{ __('Type de structure') }}<select id="org_type" name="org_type">@foreach ($orgTypes as $t)<option @selected(old('org_type', $u['org_type'] ?? '') === $t)>{{ __($t) }}</option>@endforeach</select></label>@endif
         <label for="country">{{ __('Pays') }}<select id="country" name="country">@foreach ($countries as $c)<option @selected(old('country', \App\Terrain\Region::viewer()) === $c)>{{ $c }}</option>@endforeach</select></label>
       @endif
       @if ($errors->any() && ! $errors->has('current') && ! $errors->has('password'))<div class="msg err">@foreach ($errors->all() as $e)<div>{{ $e }}</div>@endforeach</div>@endif

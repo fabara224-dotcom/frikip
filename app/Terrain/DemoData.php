@@ -171,6 +171,7 @@ class DemoData implements DataSource
                     'id' => $r->id, 'athlete_id' => $r->athlete_id, 'title' => $r->title, 'caption' => $r->caption ?: $r->title,
                     'duration' => $r->duration ?: '', 'url' => str_starts_with($r->url, 'http') ? $r->url : asset($r->url),
                     'poster' => $r->poster ? asset($r->poster) : null, 'views' => 0, 'likes' => 0, 'created_at' => (string) $r->created_at,
+                    'edit' => \App\Terrain\Growth\VideoEditor::playback(\App\Terrain\Growth\VideoEditor::decode($r->edit ?? null)),
                 ];
             }
         } catch (\Throwable) {
@@ -192,7 +193,10 @@ class DemoData implements DataSource
         if ($this->cache !== null) {
             return $this->cache;
         }
-        $list = $this->sourceAthletes();
+        // 100 % football : les profils des autres sports sont cachés (sauf pour leur propriétaire, qui peut changer de sport)
+        $own = $this->user()['athlete_id'] ?? null;
+        $blocked = ($uid = $this->user()['id'] ?? null) ? app(\App\Terrain\Growth\Blocks::class)->blockedBy($uid) : [];
+        $list = array_values(array_filter($this->sourceAthletes(), fn ($a) => (SportFields::enabled($a['sport'] ?? 'Football') || $a['id'] === $own) && ! in_array($a['id'], $blocked, true)));
         $published = $this->publishedVideos();
         $boosted = app(\App\Terrain\Growth\Members::class)->boostedAthletes();
 
@@ -211,9 +215,21 @@ class DemoData implements DataSource
         return $this->cache = app(\App\Terrain\Growth\Moderation::class)->filterAthletes(app(\App\Terrain\Growth\Verifications::class)->applyToAthletes($list));
     }
 
+    /**
+     * Joueurs (recherche, classements). Les autres acteurs du foot (entraîneurs, arbitres, médecins…) ont aussi un profil
+     * et des vidéos, mais n'apparaissent que si on les demande : ['kind' => 'pro'] (ou 'tous').
+     */
     public function athletes(array $filters = []): array
     {
-        return Filters::apply($this->allAthletes(), $filters);
+        $kind = $filters['kind'] ?? 'joueur';
+        unset($filters['kind']);
+        $list = $kind === 'tous' ? $this->allAthletes() : array_values(array_filter($this->allAthletes(), fn ($a) => ($a['kind'] ?? 'joueur') === $kind));
+        if (! empty($filters['profession'])) {
+            $list = array_values(array_filter($list, fn ($a) => ($a['profession'] ?? '') === $filters['profession']));
+        }
+        unset($filters['profession']);
+
+        return Filters::apply($list, $filters);
     }
 
     public function athlete(string $id): ?array
@@ -233,7 +249,7 @@ class DemoData implements DataSource
         // Chaque visiteur a son propre ordre (stable pendant sa visite) pour que le fil ne soit pas toujours le même.
         $seed = $this->s('seed', null) ?? tap((string) random_int(1, PHP_INT_MAX), fn ($v) => $this->put('seed', $v));
         foreach ($this->allAthletes() as $a) {
-            if ($sport !== 'Tous' && $a['sport'] !== $sport) {
+            if (($sport !== 'Tous' && $a['sport'] !== $sport) || ! SportFields::enabled($a['sport'])) {
                 continue;
             }
             $hero = (int) substr($a['id'], 1) <= 20 ? 2.5 : 1;   // les 20 profils détaillés remontent plus souvent

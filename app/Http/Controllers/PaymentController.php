@@ -21,6 +21,9 @@ class PaymentController extends Controller
     public function show(string $product): View
     {
         $this->allowed($product);
+        if (! \App\Terrain\InApp::canBuyDigital()) {
+            return view('web.payment-in-app', ['product' => $product]);
+        }
         $m = $this->members->current();
 
         return view('web.payment', ['product' => $product, 'plans' => Payments::plans($product), 'live' => Payments::live(), 'member' => $m,
@@ -60,6 +63,7 @@ class PaymentController extends Controller
     public function start(Request $request, string $product): RedirectResponse
     {
         $this->allowed($product);
+        abort_unless(\App\Terrain\InApp::canBuyDigital(), 403);
         $data = $request->validate([
             'plan' => ['required', 'integer', 'min:0', 'max:'.(count(Payments::plans($product)) - 1)],
             'method' => ['required', 'in:om,momo,card'],

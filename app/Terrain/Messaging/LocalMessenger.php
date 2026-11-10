@@ -73,6 +73,9 @@ class LocalMessenger extends DemoMessenger
         if (! $this->isLive($partnerId)) {
             return [false, 'Ce profil est un exemple fictif : il ne reçoit pas de messages. Écris à un vrai membre.'];
         }
+        if (app(\App\Terrain\Growth\Blocks::class)->between($me, $partnerId)) {
+            return [false, 'Vous ne pouvez plus vous écrire : l’un de vous a bloqué l’autre.'];
+        }
         // On peut toujours répondre à quelqu'un qui nous a écrit
         if (DB::table('demo_messages')->where('room', self::ROOM)->where('sender', $partnerId)->where('recipient', $me)->exists()) {
             return [true, ''];
@@ -81,6 +84,9 @@ class LocalMessenger extends DemoMessenger
         $partner = $this->data->person($partnerId);
         $myAthlete = ! empty($u['athlete_id']) ? $this->data->athlete($u['athlete_id']) : null;
         $partnerIsAthlete = (bool) $this->data->athlete($partnerId);
+        if ($u['role'] === 'fan') {
+            return [false, 'Un compte fan peut suivre, aimer, commenter et voter. Pour écrire en premier à un sportif, il faut un compte recruteur.'];
+        }
         if ($partner['minor'] && ! ($u['role'] === 'recruiter' && ! empty($u['verified']))) {
             return [false, 'Ce sportif a moins de 18 ans : seuls les recruteurs vérifiés peuvent lui écrire en premier.'];
         }
