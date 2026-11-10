@@ -56,12 +56,16 @@ class AuthController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $minAge = (int) config('terrain.min_age', 13);
-        $isAthlete = $request->input('role') === 'athlete';
+        // « proche » = profil d'un sportif tenu par son frère, un parent, un ami… (compte sportif)
+        $choice = (string) $request->input('role');
+        $isProche = $choice === 'proche';
+        $isAthlete = $choice === 'athlete' || $isProche;
+        $isRecruiter = $choice === 'recruiter';
         $sport = (string) $request->input('sport');
 
         $rules = [
             'country' => ['required', Rule::in(SportFields::COUNTRIES)],
-            'role' => ['required', Rule::in(['athlete', 'recruiter'])],
+            'role' => ['required', Rule::in(['athlete', 'recruiter', 'fan', 'proche'])],
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:200'],
             'password' => ['required', 'string', 'min:8'],
@@ -76,16 +80,29 @@ class AuthController extends Controller
                 'guardian_phone' => [Rule::requiredIf(fn () => (int) $request->input('age') < 18), 'nullable', 'string', 'max:30'],
             ];
         }
+        if ($isProche) {
+            $rules += [
+                'relation' => ['required', Rule::in(\App\Terrain\Roles::RELATIONS)],
+                'manager_name' => ['required', 'string', 'max:120'],
+            ];
+        }
+        if ($isRecruiter) {
+            $rules += ['org_type' => ['required', Rule::in(\App\Terrain\Roles::ORG_TYPES)]];
+        }
         $data = $request->validate($rules, [
             'name.required' => 'Indique ton nom.',
             'password.min' => 'Le mot de passe doit faire au moins 8 caractères.',
             'terms.accepted' => "Accepte les conditions d'utilisation et la politique de confidentialité.",
             'age.min' => "Il faut avoir au moins {$minAge} ans.",
             'guardian_phone.required' => 'Moins de 18 ans : le téléphone du parent ou tuteur est obligatoire.',
-            'sport.required' => 'Choisis ton sport.',
+            'sport.required' => 'Choisis le sport.',
+            'relation.required' => 'Indique ton lien avec le sportif (frère, mère, ami…).',
+            'manager_name.required' => 'Indique ton nom : il apparaît sur le profil (« profil tenu par … »).',
+            'org_type.required' => 'Indique le type de structure (club, académie, agent…).',
         ]);
+        $role = $isAthlete ? 'athlete' : $choice;
 
-        app(\App\Terrain\Growth\ContentGuard::class)->enforce(['name' => $data['name'], 'city' => $data['city'] ?? null], 'profile');
+        app(\App\Terrain\Growth\ContentGuard::class)->enforce(['name' => $data['name'], 'city' => $data['city'] ?? null, 'manager_name' => $data['manager_name'] ?? null], 'profile');
         $profile = ['name' => $data['name']];
         if ($isAthlete) {
             $fields = [];
@@ -97,11 +114,17 @@ class AuthController extends Controller
                 'age' => $data['age'], 'country' => $data['country'], 'city' => $data['city'] ?? '',
                 'sport' => $sport, 'fields' => $fields, 'guardian_phone' => $data['guardian_phone'] ?? null,
             ];
+            if ($isProche) {
+                $profile += ['managed_by' => $data['relation'], 'manager_name' => $data['manager_name']];
+            }
+        }
+        if ($isRecruiter) {
+            $profile['org_type'] = $data['org_type'];
         }
 
         $profile['country'] ??= $data['country'] ?? \App\Terrain\Region::viewer();
         try {
-            $this->data->signUp($data['email'], $data['password'], $data['role'], $profile);
+            $this->data->signUp($data['email'], $data['password'], $role, $profile);
             app(\App\Terrain\Growth\Members::class)->touch();
             app(\App\Terrain\Growth\Members::class)->setCountry($profile['country']);
         } catch (ConfirmEmailException $e) {
@@ -110,7 +133,11 @@ class AuthController extends Controller
             return back()->withInput($request->except('password'))->withErrors(['email' => 'Inscription impossible : '.$e->getMessage()]);
         }
 
-        return redirect()->route($isAthlete ? 'me' : 'feed')->with('status', 'Bienvenue sur '.config('terrain.app_name').' !');
+        // Sportif : son tableau de bord ; recruteur : la recherche de talents ; fan : les meilleurs sportifs
+        $to = $isAthlete ? 'me' : ($isRecruiter ? 'search' : 'rankings');
+        $hello = $role === 'fan' ? __('Bienvenue ! Suis tes sportifs préférés et vote pour eux dans les défis.') : 'Bienvenue sur '.config('terrain.app_name').' !';
+
+        return redirect()->route($to)->with('status', $hello);
     }
 
     public function logout(Request $request): RedirectResponse

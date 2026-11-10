@@ -9,10 +9,12 @@
     @if ($me && $me['role'] === 'recruiter')<a class="btn sm" href="{{ route('clubs.edit') }}">{{ __('Organiser une détection') }}</a>@endif
   </div>
   <p class="meta">{{ __('Inscris-toi en ligne, reçois ton billet avec QR code et présente-le le jour J. Les détections sont toujours gratuites.') }}</p>
+  @unless (\App\Terrain\SportFields::single())
   <nav class="chips" aria-label="{{ __('Sport') }}">
     <a class="chip" href="{{ route('events') }}" aria-current="{{ $sport ? 'false' : 'true' }}">{{ __('Tous') }}</a>
     @foreach ($sports as $s)<a class="chip" href="{{ route('events', ['sport' => $s]) }}" aria-current="{{ $sport === $s ? 'true' : 'false' }}">{{ $s }}</a>@endforeach
   </nav>
+  @endunless
   <div class="list" style="margin-top:10px">
     @forelse ($rows as $e)
       @php

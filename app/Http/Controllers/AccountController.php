@@ -45,7 +45,7 @@ class AccountController extends Controller
         $a = $u['athlete_id'] ? $this->data->athlete($u['athlete_id']) : null;
 
         return view('web.profile-edit', ['u' => $u, 'a' => $a, 'sports' => SportFields::FIELDS, 'countries' => SportFields::COUNTRIES,
-            'orgTypes' => ['Club', 'Académie', 'Agent', 'Université', 'Fédération', 'Autre']]);
+            'orgTypes' => \App\Terrain\Roles::ORG_TYPES]);
     }
 
     public function update(Request $request): RedirectResponse

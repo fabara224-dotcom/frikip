@@ -52,7 +52,7 @@
           <h3 style="margin:0">Publier une offre</h3>
           <label for="title">Titre<input id="title" name="title" value="{{ old('title') }}" placeholder="Ex. : Détection U17 – milieux" required></label>
           @error('title')<p class="field-error" style="margin:0">{{ $message }}</p>@enderror
-          <label for="sport">Sport<select id="sport" name="sport">@foreach ($sports as $s)<option @selected(old('sport') === $s)>{{ $s }}</option>@endforeach</select></label>
+          @if (! \App\Terrain\SportFields::single())<label for="sport">Sport<select id="sport" name="sport">@foreach ($sports as $s)<option @selected(old('sport') === $s)>{{ $s }}</option>@endforeach</select></label>@else<input type="hidden" name="sport" value="Football">@endif
           <label for="place">Lieu<input id="place" name="place" value="{{ old('place', 'Conakry') }}"></label>
           <label for="deadline">Date limite<input id="deadline" name="deadline" value="{{ old('deadline') }}" placeholder="Ex. : 15 déc. 2026"></label>
           <label for="criteria">Critères<input id="criteria" name="criteria" value="{{ old('criteria') }}" placeholder="Ex. : nés en 2009 ou 2010"></label>

@@ -8,7 +8,7 @@
   $fmt = fn ($v) => number_format($v, 0, ',', ' ');
 @endphp
 <p class="meta" style="margin:0 0 6px"><a href="{{ route('admin.members') }}">Membres</a></p>
-@include('admin._nav', ['title' => $m->name ?: $m->user_key, 'lead' => ($m->role === 'recruiter' ? 'Recruteur' : 'Sportif').' · '.($m->country ?: 'pays inconnu').' · inscrit '.\App\Http\Controllers\AdminSupervisionController::since($m->created_at).' · '.($m->email ?: $m->phone ?: 'sans contact')])
+@include('admin._nav', ['title' => $m->name ?: $m->user_key, 'lead' => \App\Terrain\Roles::label($m->role).' · '.($m->country ?: 'pays inconnu').' · inscrit '.\App\Http\Controllers\AdminSupervisionController::since($m->created_at).' · '.($m->email ?: $m->phone ?: 'sans contact')])
 
 <div class="adm-grid">
   <section class="panel">
@@ -36,6 +36,29 @@
         <button class="btn sm ghost" name="action" value="{{ $verified ? 'unverify' : 'verify' }}" type="submit">{{ $verified ? 'Retirer le badge vérifié' : 'Marquer comme vérifié' }}</button>
       </div>
       <p class="meta" style="margin:0">Le membre reçoit un message qui dit quelle règle il a enfreinte. Nudité et mise en danger de mineurs : blocage immédiat.</p>
+    </form>
+  </section>
+
+  @php
+    $bdg = app(\App\Terrain\Growth\Badges::class)->history(array_filter([$m->user_key, $m->athlete_id]));
+  @endphp
+  <section class="panel">
+    <h2>Badges de vérification</h2>
+    <p class="meta" style="margin:-4px 0 10px">Trois contrôles différents : identité, affiliation du recruteur, licence d’agent FIFA (répertoire officiel de la FIFA), et enregistrement sportif du joueur. Chaque badge garde sa date et sa source.</p>
+    @forelse ($bdg as $b)
+      <div class="line {{ $b->revoked_at ? 'muted' : '' }}"><span><b>{{ \App\Terrain\Growth\Badges::TYPES[$b->type][1] ?? '' }} {{ \App\Terrain\Growth\Badges::label($b->type) }}</b>
+        <small>{{ \Illuminate\Support\Carbon::parse($b->verified_at)->format('d/m/Y') }} · {{ $b->source }} · {{ $b->admin_name }}@if ($b->revoked_at) · retiré le {{ \Illuminate\Support\Carbon::parse($b->revoked_at)->format('d/m/Y') }} ({{ $b->revoked_reason }})@endif</small></span>
+        @unless ($b->revoked_at)
+          <form method="POST" action="{{ route('admin.badges.revoke', $b->id) }}" class="row" style="gap:6px">@csrf<input name="reason" placeholder="Raison du retrait" required aria-label="Raison"><button class="btn ghost sm" type="submit">Retirer</button></form>
+        @endunless
+      </div>
+    @empty
+      <p class="meta">Aucun badge.</p>
+    @endforelse
+    <form method="POST" action="{{ route('admin.badges.grant', $m->user_key) }}" class="formbar" style="flex-wrap:wrap;margin-top:10px">@csrf
+      <select name="type" aria-label="Type de badge">@foreach (\App\Terrain\Growth\Badges::TYPES as $k => [$l])<option value="{{ $k }}">{{ $l }}</option>@endforeach</select>
+      <input name="source" required placeholder="Source : Répertoire FIFA, Ligue de Conakry, licence n°…" aria-label="Source" style="flex:1;min-width:200px">
+      <button class="btn sm" type="submit">Ajouter le badge</button>
     </form>
   </section>
 

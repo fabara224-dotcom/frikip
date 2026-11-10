@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 use App\Terrain\DataSource;
 use App\Terrain\Growth\Engagement;
 use App\Terrain\Growth\Subtitles;
@@ -132,5 +134,53 @@ class VideoController extends Controller
         }
 
         return $errors;
+    }
+
+    // ------------------------------------------------------------------ favoris et suppression par l'auteur
+
+    /** Enregistrer une vidéo dans ses favoris (ou la retirer). */
+    public function save(string $video): JsonResponse
+    {
+        $me = $this->data->user();
+        abort_unless(preg_match('/^[A-Za-z0-9\-_]{2,64}$/', $video), 404);
+        $q = DB::table('video_saves')->where('user_key', $me['id'])->where('video_id', $video);
+        if ($q->exists()) {
+            $q->delete();
+
+            return response()->json(['ok' => true, 'saved' => false, 'message' => __('Retirée de tes vidéos enregistrées.')]);
+        }
+        DB::table('video_saves')->insert(['user_key' => $me['id'], 'video_id' => $video, 'created_at' => now()]);
+
+        return response()->json(['ok' => true, 'saved' => true, 'message' => __('Vidéo enregistrée : retrouve-la dans Profil > Vidéos enregistrées.')]);
+    }
+
+    /** Mes vidéos enregistrées. */
+    public function saved(): View
+    {
+        $me = $this->data->user();
+        $ids = DB::table('video_saves')->where('user_key', $me['id'])->orderByDesc('created_at')->pluck('video_id')->all();
+        $byId = [];
+        foreach ($this->data->athletes([]) as $a) {
+            foreach ($a['videos'] as $v) {
+                $byId[$v['id']] = ['video' => $v, 'athlete' => $a];
+            }
+        }
+        $items = array_values(array_filter(array_map(fn ($id) => $byId[$id] ?? null, $ids)));
+
+        return view('web.saved', ['items' => $items]);
+    }
+
+    /** Le joueur supprime une de ses propres vidéos. */
+    public function destroyMine(Request $request, string $video): RedirectResponse|JsonResponse
+    {
+        $me = $this->data->user();
+        $v = DB::table('local_videos')->where('id', $video)->first();
+        abort_unless($v && ! empty($me['athlete_id']) && $v->athlete_id === $me['athlete_id'], 403, __('Tu peux supprimer seulement tes propres vidéos.'));
+        AdminManageController::purgeVideo($v);
+        if ($request->expectsJson()) {
+            return response()->json(['ok' => true, 'message' => __('Vidéo supprimée.')]);
+        }
+
+        return redirect()->route('me')->with('status', __('Vidéo supprimée.'));
     }
 }

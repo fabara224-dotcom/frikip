@@ -14,8 +14,20 @@ class Filters
         $country = $f['country'] ?? 'Tous';
         $age = $f['age'] ?? 'Tous';
         $verified = ! empty($f['verified']);
+        $poste = (string) ($f['poste'] ?? '');
+        $pied = (string) ($f['pied'] ?? '');
+        $dispo = ! empty($f['dispo']);
 
-        $out = array_values(array_filter($athletes, function ($a) use ($q, $sport, $country, $age, $verified) {
+        $out = array_values(array_filter($athletes, function ($a) use ($q, $sport, $country, $age, $verified, $poste, $pied, $dispo) {
+            if ($poste !== '' && ($a['fields']['Poste'] ?? '') !== $poste) {
+                return false;
+            }
+            if ($pied !== '' && ($a['fields']['Pied fort'] ?? '') !== $pied && ! ($pied !== 'Les deux' && ($a['fields']['Pied fort'] ?? '') === 'Les deux')) {
+                return false;
+            }
+            if ($dispo && ! str_starts_with((string) ($a['fields']['Disponible pour des essais'] ?? ''), 'Oui')) {
+                return false;
+            }
             $hay = Str::lower($a['name'].' '.$a['city'].' '.$a['club'].' '.$a['country'].' '.($a['specialty'] ?? '').' '.implode(' ', $a['fields']));
             if ($q !== '' && ! str_contains($hay, $q)) {
                 return false;

@@ -12,6 +12,9 @@
     <div class="player" id="player" data-type="{{ $player['type'] }}">
       @if ($player['type'] === 'iframe')
         <iframe id="stream" @if ($preroll) data-src="{{ $player['src'] }}" @else src="{{ $player['src'] }}" @endif title="{{ $s->title }}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+      @elseif ($player['type'] === 'whep')
+        <video id="stream" class="whep" data-whep="{{ $player['src'] }}" autoplay playsinline muted controls></video>
+        <p class="player-msg" id="whep-wait">{{ __('Le live va commencer…') }}</p>
       @elseif ($player['type'] === 'hls' || $player['type'] === 'video')
         <video id="stream" controls playsinline muted data-src="{{ $player['src'] }}"></video>
       @else
@@ -28,7 +31,7 @@
             <button type="button" id="pr-skip" disabled>{{ __('Passer dans') }} <b>5</b></button></div>
           <div class="pr-bot">
             @if ($preroll['link'])<a class="btn sm" href="{{ $preroll['link'] }}" target="_blank" rel="noopener sponsored">{{ __($preroll['cta']) }}</a>@endif
-            <a class="pr-nopub" href="{{ route('premium', 'sans_pub') }}">{{ __('Retirer les pubs') }}</a>
+            @buyable<a class="pr-nopub" href="{{ route('premium', 'sans_pub') }}">{{ __('Retirer les pubs') }}</a>@endbuyable
           </div>
         </div>
       @endif
@@ -53,6 +56,8 @@
       @if ($owner)<a class="btn sm" href="{{ route('live.manage', $s->id) }}">{{ __('Gérer le score') }}</a>@endif
     </div>
 
+    @include('web.partials.room', ['room' => 'l-'.$s->id, 'roomTitle' => ($s->kind ?? null) === 'membre' ? __('Commentaires du live') : __('Salon du match')])
+
     @if ($others->count())
       <h2>{{ __('Autres matchs en direct') }}</h2>
       <div class="livelist">
@@ -64,6 +69,18 @@
   </div>
 </div>
 @endsection
+
+@if ($player['type'] === 'whep')
+@push('scripts')
+<script src="{{ asset('js/frikip-live.js') }}?v=1"></script>
+<script>
+(function () {
+  var v = document.getElementById('stream'), wait = document.getElementById('whep-wait');
+  window.FrikipLive.whep(v.dataset.whep, v, function (st) { if (wait) wait.hidden = st === 'connected'; });
+})();
+</script>
+@endpush
+@endif
 
 @push('scripts')
 @if ($player['type'] === 'hls')

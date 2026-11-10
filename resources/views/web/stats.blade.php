@@ -12,7 +12,7 @@
 <div class="page gut">
   <div class="row" style="justify-content:space-between;align-items:center">
     <h1>{{ __('Mes statistiques') }}</h1>
-    <a class="btn ghost sm" href="{{ route('premium', 'boost') }}">{{ __('Booster mon profil') }}</a>
+    @buyable<a class="btn ghost sm" href="{{ route('premium', 'boost') }}">{{ __('Booster mon profil') }}</a>@endbuyable
   </div>
   @if (count($badges))<div class="badges">@foreach ($badges as [$ico, $label, $why])<span class="bdg" title="{{ $why }}"><i>{{ $ico }}</i>{{ $label }}</span>@endforeach</div>@endif
 
@@ -21,6 +21,8 @@
     <div class="card kpi"><b>{{ $s['clubs'] }}</b><span class="meta">{{ __('recruteurs ont vu ton profil') }}</span></div>
     <div class="card kpi"><b>{{ number_format(array_sum(array_column($a['videos'], 'views')) + array_sum(array_column($s['videos'], 'site_views')), 0, ',', ' ') }}</b><span class="meta">{{ __('vues des vidéos') }}</span></div>
     <div class="card kpi"><b>{{ $s['followers'] }}</b><span class="meta">{{ __('abonnés') }}</span></div>
+    @php $avgWatch = \App\Terrain\Growth\Engagement::averageWatch(array_column($a['videos'], 'id'), 30); @endphp
+    <div class="card kpi"><b>{{ $avgWatch ? $avgWatch.' s' : '–' }}</b><span class="meta">{{ __('regardées en moyenne par vue') }}</span></div>
   </div>
 
   <div class="section-label">{{ __('Vues du profil, 30 derniers jours') }}</div>

@@ -11,7 +11,7 @@
       <label for="name">{{ __('Nom') }}<input id="name" name="name" value="{{ old('name', $o->name ?? $me['name']) }}" required></label>
       <div class="grid-form">
         <label for="type">{{ __('Type') }}<select id="type" name="type">@foreach ($types as $k => $l)<option value="{{ $k }}" @selected(old('type', $o->type ?? 'club') === $k)>{{ __($l) }}</option>@endforeach</select></label>
-        <label for="sport">{{ __('Sport principal') }}<select id="sport" name="sport">@foreach ($sports as $s)<option @selected(old('sport', $o->sport ?? 'Football') === $s)>{{ $s }}</option>@endforeach</select></label>
+        @if (! \App\Terrain\SportFields::single())<label for="sport">{{ __('Sport principal') }}<select id="sport" name="sport">@foreach ($sports as $s)<option @selected(old('sport', $o->sport ?? 'Football') === $s)>{{ $s }}</option>@endforeach</select></label>@else<input type="hidden" name="sport" value="Football">@endif
         <label for="city">{{ __('Ville') }}<input id="city" name="city" value="{{ old('city', $o->city ?? 'Conakry') }}" required></label>
         <label for="country">{{ __('Pays') }}<select id="country" name="country">@foreach (\App\Terrain\Region::names() as $c)<option @selected(old('country', $o->country ?? \App\Terrain\Region::viewer()) === $c)>{{ $c }}</option>@endforeach</select></label>
       </div>
@@ -30,7 +30,7 @@
         <form method="POST" action="{{ route('events.store') }}" style="display:flex;flex-direction:column;gap:10px">@csrf
           <label for="e-title">{{ __('Titre') }}<input id="e-title" name="title" placeholder="{{ __('Ex. : Détection U17 – milieux') }}" required></label>
           <div class="grid-form">
-            <label for="e-sport">{{ __('Sport') }}<select id="e-sport" name="sport">@foreach ($sports as $s)<option @selected($o->sport === $s)>{{ $s }}</option>@endforeach</select></label>
+            @if (! \App\Terrain\SportFields::single())<label for="e-sport">{{ __('Sport') }}<select id="e-sport" name="sport">@foreach ($sports as $s)<option @selected($o->sport === $s)>{{ $s }}</option>@endforeach</select></label>@else<input type="hidden" name="sport" value="Football">@endif
             <label for="e-date">{{ __('Date') }}<input id="e-date" name="date" type="date" min="{{ today()->toDateString() }}" required></label>
             <label for="e-time">{{ __('Heure') }}<input id="e-time" name="time" type="time" value="09:00"></label>
             <label for="e-cap">{{ __('Places') }}<input id="e-cap" name="capacity" type="number" min="1" value="50" required></label>

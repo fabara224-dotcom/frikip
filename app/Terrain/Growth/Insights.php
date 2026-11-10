@@ -145,8 +145,14 @@ class Insights
 
             return $cat === 'Tous' || ($cat === 'U17' && $a['age'] <= 17) || ($cat === 'U20' && $a['age'] <= 20) || ($cat === 'Seniors' && $a['age'] > 20);
         });
-        $list = array_map(fn ($a) => $a + ['rating' => $this->rating($a)], $list);
-        usort($list, fn ($x, $y) => $y['rating'] <=> $x['rating']);
+        // Classement « Meilleurs sportifs » : le score de l'algorithme (Admin > Algorithme > Classement des sportifs)
+        $algo = app(Algorithm::class);
+        $minVideos = (int) $algo->get('rank_min_videos');
+        if ($minVideos > 0) {
+            $list = array_filter($list, fn ($a) => count($a['videos'] ?? []) >= $minVideos);
+        }
+        $list = array_map(fn ($a) => ['rating' => $algo->score($a)] + $a, $list);
+        usort($list, fn ($x, $y) => [$y['rating'], count($y['videos'] ?? [])] <=> [$x['rating'], count($x['videos'] ?? [])]);
 
         return array_values($list);
     }

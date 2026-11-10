@@ -58,7 +58,7 @@
         <label for="away">{{ __('Équipe à l’extérieur') }}<input id="away" name="away" value="{{ $v('away') }}" maxlength="80" required></label>
       </div>
       <div class="phonerow">
-        <label for="sport">{{ __('Sport') }}<select id="sport" name="sport">@foreach ($sports as $sp)<option value="{{ $sp }}" @selected($v('sport', 'Football') === $sp)>@td($sp)</option>@endforeach</select></label>
+        @if (! \App\Terrain\SportFields::single())<label for="sport">{{ __('Sport') }}<select id="sport" name="sport">@foreach ($sports as $sp)<option value="{{ $sp }}" @selected($v('sport', 'Football') === $sp)>@td($sp)</option>@endforeach</select></label>@else<input type="hidden" name="sport" value="Football">@endif
         <label for="competition">{{ __('Compétition') }}<input id="competition" name="competition" value="{{ $v('competition') }}" maxlength="120"></label>
       </div>
       <div class="phonerow">

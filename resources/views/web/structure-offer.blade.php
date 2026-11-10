@@ -43,7 +43,7 @@
       <p class="meta">{{ __('Déjà inscrit ?') }} <a href="{{ route('login') }}">{{ __('Se connecter') }}</a></p>
     @elseif ($isRecruiter)
       @unless ($mine)<p class="note">{{ __('Pense à créer la page de ta structure pour profiter de la mise en avant.') }} <a href="{{ route('clubs.edit') }}">{{ __('Créer ma page') }}</a></p>@endunless
-      <a class="btn big" href="{{ route('premium', 'structure') }}">{{ $active ? __('Prolonger Structure Pro') : __('Choisir ma formule') }}</a>
+      @buyable<a class="btn big" href="{{ route('premium', 'structure') }}">{{ $active ? __('Prolonger Structure Pro') : __('Choisir ma formule') }}</a>@endbuyable
       <p class="meta">{{ __('Paiement par Orange Money ou MTN MoMo.') }}</p>
     @else
       <p class="note">{{ __('Cette offre est réservée aux comptes club, académie ou agent. Tu es sportif ? Découvre plutôt le Boost et le montage vidéo.') }}</p>

@@ -14,6 +14,6 @@
     <div class="prog"><i></i></div>
   </div>
   <div class="tkbar">
-    <a href="{{ route('premium', 'sans_pub') }}">{{ __('Retirer les pubs') }}</a>
+    @buyable<a href="{{ route('premium', 'sans_pub') }}">{{ __('Retirer les pubs') }}</a>@endbuyable
   </div>
 </section>

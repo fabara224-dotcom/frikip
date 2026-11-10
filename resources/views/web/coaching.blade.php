@@ -24,10 +24,10 @@
     <form method="POST" action="{{ route('coaching.plan') }}" class="card coachform" id="plan">@csrf
       <h2>{{ __('Mon programme gratuit') }}</h2>
       <div class="phonerow">
-        <label for="sport">{{ __('Sport') }}
+        @if (! \App\Terrain\SportFields::single())<label for="sport">{{ __('Sport') }}
           <select id="sport" name="sport" onchange="location.href='{{ route('coaching') }}?sport='+encodeURIComponent(this.value)+'#plan'">
             @foreach ($sports as $s)<option value="{{ $s }}" @selected($s === $sport)>@td($s)</option>@endforeach
-          </select></label>
+          </select></label>@else<input type="hidden" name="sport" value="Football">@endif
         @if ($positions)
           <label for="position">{{ __('Poste') }}
             <select id="position" name="position" onchange="location.href='{{ route('coaching') }}?sport='+encodeURIComponent(this.form.sport.value)+'&poste='+encodeURIComponent(this.value)+'#plan'">

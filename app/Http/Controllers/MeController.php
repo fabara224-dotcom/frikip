@@ -25,6 +25,13 @@ class MeController extends Controller
             return view('web.account', ['favorites' => $favorites, 'offersCount' => count($mine)]);
         }
 
+        if ($me['role'] === 'fan') {
+            $followed = array_values(array_filter(array_map(fn ($id) => $this->data->athlete($id), $this->data->following())));
+            $top = array_slice(app(\App\Terrain\Growth\Insights::class)->ranking($this->data->athletes([]), ['sport' => 'Tous', 'country' => \App\Terrain\Region::viewer()]), 0, 5);
+
+            return view('web.fan-home', ['followed' => $followed, 'top' => $top, 'challenge' => app(\App\Terrain\Growth\Challenges::class)->current()]);
+        }
+
         $a = $me['athlete_id'] ? $this->data->athlete($me['athlete_id']) : null;
         $a = $a ?: null;
         $checklist = $a ? [

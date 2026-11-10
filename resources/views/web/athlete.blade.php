@@ -40,18 +40,28 @@
         <a class="btn ghost sm" href="{{ route('athletes.card', $a['id']) }}">{{ __('Carte de joueur') }}</a>
         <a class="btn ghost sm" href="{{ route('athletes.cv', $a['id']) }}">{{ __('CV sportif (PDF)') }}</a>
         <button class="btn ghost sm" type="button" data-copy="{{ $shareUrl }}">{{ __('Copier le lien') }}</button>
+        @if (($me['role'] ?? null) === 'recruiter' && ($a['kind'] ?? 'joueur') === 'joueur')<button class="btn sm" type="button" data-shortlist="{{ $a['id'] }}">＋ {{ __('Ajouter à une liste') }}</button>@endif
         <span class="meta" id="followers-count">{{ number_format($a['followers'] ?? $followers, 0, ',', ' ') }} {{ ($a['followers'] ?? $followers) > 1 ? __('abonnés') : __('abonné') }}</span>
       </div>
       @if (! empty($a['star']))
         <div class="starprog"><x-star /> {{ __('Étoile bleue : plus de :n abonnés', ['n' => number_format($starMin, 0, ',', ' ')]) }}</div>
       @elseif ($mine)
-        @php($pct = min(100, round(($a['followers'] ?? 0) / $starMin * 100)))
+        @php $pct = min(100, round(($a['followers'] ?? 0) / $starMin * 100)); @endphp
         <div class="starprog"><span>{{ __('Étoile bleue') }}</span><span class="bar"><i style="width:{{ $pct }}%"></i></span><span>{{ $a['followers'] ?? 0 }} / {{ number_format($starMin, 0, ',', ' ') }} {{ __('abonnés') }}</span></div>
       @endif
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
-        @if ($a['verified'])<span class="pill ok"><x-ver /> {{ __('Identité vérifiée') }}</span>@else<span class="pill">{{ __('Vérification en attente') }}</span>@endif
+        @php
+          $acct = \Illuminate\Support\Facades\DB::table('accounts')->where('athlete_id', $a['id'])->value('id');
+          $badges = app(\App\Terrain\Growth\Badges::class)->active([$a['id'], $acct]);
+        @endphp
+        @forelse ($badges as $b)
+          <span class="pill ok" title="{{ __('Vérifié le :d', ['d' => \Illuminate\Support\Carbon::parse($b->verified_at)->format('d/m/Y')]) }}@if ($b->source) · {{ $b->source }}@endif">{{ \App\Terrain\Growth\Badges::TYPES[$b->type][1] ?? '' }} {{ \App\Terrain\Growth\Badges::label($b->type) }} · {{ \Illuminate\Support\Carbon::parse($b->verified_at)->format('m/Y') }}</span>
+        @empty
+          @if ($a['verified'])<span class="pill ok"><x-ver /> {{ __('Identité vérifiée') }}</span>@else<span class="pill">{{ __('Vérification en attente') }}</span>@endif
+        @endforelse
         @if ($a['availability'])<span class="pill">{{ __('Disponible') }} : @td($a['availability'])</span>@endif
         @if ($a['age'] < 18)<span class="pill warn">{{ __('Moins de 18 ans') }}</span>@endif
+        @if (! empty($a['managed_by']))<span class="pill" title="{{ __('Ce profil est tenu par un proche du sportif.') }}">{{ __('Profil tenu par') }} {{ $a['manager_name'] }} ({{ mb_strtolower(__($a['managed_by'])) }})</span>@endif
         @if (! empty($a['demo']))<span class="pill">{{ __('Profil fictif (exemple)') }}</span>@endif
       </div>
       @if (! empty($a['demo']))
@@ -117,7 +127,7 @@
         <div class="section-label">{{ __('Derniers matchs') }}</div>
         <div class="list">
           @foreach ($played as $m)
-            @php($r = collect($m['ratings'])->firstWhere('athlete_id', $a['id']))
+            @php $r = collect($m['ratings'])->firstWhere('athlete_id', $a['id']); @endphp
             <a class="li" href="{{ route('matches.show', $m['id']) }}">
               <span class="note10" style="background:{{ $r['note'] >= 8.5 ? 'var(--pitch)' : ($r['note'] >= 7 ? 'var(--accent)' : 'var(--gold)') }}">{{ str_replace('.', ',', number_format($r['note'], 1)) }}</span>
               <span class="grow"><span class="t">{{ $m['result'] === null ? $m['home'].' '.$m['hs'].'–'.$m['as'].' '.$m['away'] : $m['competition'] }}</span>
@@ -128,7 +138,9 @@
       @endif
 
       @if ($me && ! $mine)
-        <details style="margin-top:16px">
+        <form method="POST" action="{{ route('block', $a['id']) }}" style="margin-top:16px">@csrf
+          <button class="linkbtn meta" type="submit" onclick="return confirm(@js(__('Bloquer ce profil ? Il ne pourra plus t’écrire et tu ne verras plus ses vidéos.')))">🚫 {{ __('Bloquer ce profil') }}</button></form>
+        <details style="margin-top:8px">
           <summary class="meta" style="cursor:pointer">{{ __('Signaler ce profil') }}</summary>
           <form method="POST" action="{{ route('report') }}" class="card" style="margin-top:8px">@csrf
             <input type="hidden" name="target_type" value="profile"><input type="hidden" name="target_id" value="{{ $a['id'] }}">
@@ -140,10 +152,13 @@
     </aside>
   </div>
 </div>
+@if (($me['role'] ?? null) === 'recruiter')
+  @include('web.partials.shortlist-sheet')
+@endif
 @endsection
 
 @push('scripts')
-@php($fl = ['fav' => __('Favori ✓'), 'addFav' => __('Ajouter aux favoris'), 'on' => __('Suivi ✓'), 'follow' => __('Suivre'), 'copied' => __('Lien copié'), 'one' => __('abonné'), 'many' => __('abonnés'), 'favWord' => __('Favori')])
+@php $fl = ['fav' => __('Favori ✓'), 'addFav' => __('Ajouter aux favoris'), 'on' => __('Suivi ✓'), 'follow' => __('Suivre'), 'copied' => __('Lien copié'), 'one' => __('abonné'), 'many' => __('abonnés'), 'favWord' => __('Favori')]; @endphp
 <script>
   var FL = @json($fl);
   document.querySelectorAll('[data-copy]').forEach(function (b) {

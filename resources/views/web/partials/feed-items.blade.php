@@ -9,10 +9,23 @@
     $page = app()->getLocale();
     $lite = request()->cookie('terrain_lite') === '1';
     $me ??= null;
+    // Vidéos déjà enregistrées par ce membre (bouton « Enregistrer » du menu •••)
+    $savedIds = [];
+    if ($me) {
+        try { $savedIds = \Illuminate\Support\Facades\DB::table('video_saves')->where('user_key', $me['id'])->pluck('video_id')->all(); } catch (\Throwable) {}
+    }
 @endphp
 @foreach ($items as $k => $it)
       @if (isset($it['live']))
         @include('web.partials.feed-live', ['s' => $it['live']])
+        @continue
+      @endif
+      @if (isset($it['discover']))
+        @include('web.partials.feed-discover', ['v' => $it['discover']])
+        @continue
+      @endif
+      @if (isset($it['top']))
+        @include('web.partials.feed-top', ['top' => $it['top']])
         @continue
       @endif
       @if (isset($it['ad']))
@@ -29,16 +42,20 @@
         $audio = ! empty($v['has_audio']);
         $tracks = $v['tracks'] ?? [];
         $defaultTrack = \App\Terrain\Growth\Subtitles::defaultFor($v);
+        $ed = $v['edit'] ?? [];   // réglages de l'éditeur appliqués à la lecture
       @endphp
       <section class="tki" data-video="{{ $v['id'] }}" data-athlete="{{ $a['id'] }}" data-sport="{{ $a['sport'] }}" data-audio="{{ $audio ? 1 : 0 }}" @if ($defaultTrack) data-subs="{{ $defaultTrack }}" @endif>
         <div class="vid" style="background:linear-gradient(170deg,{{ $c[0] }},{{ $c[1] }})">
-          <video src="{{ $v['url'] }}" @if (! empty($v['poster']))poster="{{ $v['poster'] }}" @endif muted playsinline loop preload="{{ $lite ? 'none' : ($k < 2 ? 'auto' : 'metadata') }}" aria-label="{{ __('Vidéo de :name : :title', ['name' => $a['name'], 'title' => $title]) }}">
+          <video src="{{ $v['url'] }}" @if (! empty($v['poster']))poster="{{ $v['poster'] }}" @endif muted playsinline loop
+            @if (! empty($ed['css']) && $ed['css'] !== 'none') style="filter:{{ $ed['css'] }}" @endif
+            @if (! empty($ed['start']) || ! empty($ed['end'])) data-start="{{ $ed['start'] ?? 0 }}" data-end="{{ $ed['end'] ?? 0 }}" @endif
+            @if (! empty($ed['speed']) && $ed['speed'] != 1) data-speed="{{ $ed['speed'] }}" @endif preload="{{ $lite ? 'none' : ($k < 2 ? 'auto' : 'metadata') }}" aria-label="{{ __('Vidéo de :name : :title', ['name' => $a['name'], 'title' => $title]) }}">
             @foreach ($tracks as $l)
               <track kind="subtitles" srclang="{{ $l }}" label="{{ \App\Terrain\Growth\Subtitles::LANGS[$l] ?? $l }}" src="{{ route('videos.subtitles', [$v['id'], $l]) }}">
             @endforeach
           </video>
           <div class="shade"></div>
-          @if ($caption)<div class="cap">{{ $caption }}</div>@endif
+          @if ($caption)<div class="cap cap-{{ $ed['text_pos'] ?? 'milieu' }} cap-{{ $ed['text_color'] ?? 'blanc' }}">{{ $caption }}</div>@endif
           <div class="subs" aria-live="off" hidden></div>
           <div class="pp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg></div>
           @if ($audio)<button class="tap-sound" type="button" data-sound hidden>🔊 {{ __('Touche pour le son') }}</button>@endif
@@ -81,7 +98,7 @@
         <div class="tkbar">
           <a href="{{ route('athletes.show', $a['id']) }}">{{ __('Voir le profil') }}</a>
           @if (($me['athlete_id'] ?? null) === $a['id'])<a href="{{ route('videos.edit', $v['id']) }}">{{ __('Sous-titres') }}</a>@endif
-          <button type="button" data-report="{{ $v['id'] }}" aria-label="{{ __('Signaler cette vidéo') }}">•••</button>
+          <button type="button" data-vopts="{{ $v['id'] }}" data-athlete="{{ $a['id'] }}" data-mine="{{ ($me['athlete_id'] ?? null) === $a['id'] ? '1' : '0' }}" data-saved="{{ in_array($v['id'], $savedIds, true) ? '1' : '0' }}" aria-label="{{ __('Plus d’options') }}">•••</button>
         </div>
       </section>
 @endforeach

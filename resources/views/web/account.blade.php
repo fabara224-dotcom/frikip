@@ -26,7 +26,7 @@
       <div class="card" style="margin-top:16px;background:var(--ink);color:var(--surface);border-color:var(--ink)">
         <b style="font-family:var(--f-display);font-size:22px;font-stretch:115%">{{ ! empty($me['premium']) ? 'Premium actif' : 'Recruteur Premium' }}</b>
         <span>Contacts illimités, filtres avancés, alertes de nouveaux profils, statistiques de tes offres.</span>
-        @if (empty($me['premium']))<a class="btn" style="align-self:flex-start" href="{{ route('premium', 'premium') }}">Passer Premium</a>@endif
+        @if (empty($me['premium']) && \App\Terrain\InApp::canBuyDigital())<a class="btn" style="align-self:flex-start" href="{{ route('premium', 'premium') }}">Passer Premium</a>@endif
       </div>
       <a class="probanner" href="{{ route('structure.offer') }}" style="margin-top:12px"><span><b>{{ __('Académie ou petit club ?') }}</b>{{ __('Structure Pro : ta page en tête de la liste des clubs, contacts illimités inclus.') }}</span><span class="btn sm">{{ __('Voir l’offre') }}</span></a>
 

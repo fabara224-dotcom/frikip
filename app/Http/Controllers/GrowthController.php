@@ -91,6 +91,14 @@ class GrowthController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    /** Secondes regardées (envoyées quand la vidéo sort de l'écran ou quand on quitte la page). */
+    public function videoTime(Request $request, string $video): JsonResponse
+    {
+        app(\App\Terrain\Growth\Engagement::class)->watchTime($video, \App\Terrain\Growth\Engagement::viewerKey($this->data->user()), (int) $request->input('seconds'));
+
+        return response()->json(['ok' => true]);
+    }
+
     // ------------------------------------------------------------------ statistiques, notifications, préférences
 
     public function stats(): View|RedirectResponse
@@ -158,14 +166,15 @@ class GrowthController extends Controller
     public function rankings(Request $request): View
     {
         $f = [
-            'sport' => in_array($request->query('sport'), SportFields::sports(), true) ? $request->query('sport') : 'Football',
+            'sport' => in_array($request->query('sport'), SportFields::sports(), true) ? $request->query('sport') : (SportFields::single() ? SportFields::sports()[0] : 'Tous'),
             'country' => (string) $request->query('country', \App\Terrain\Region::viewer()),
             'city' => trim((string) $request->query('city', '')),
             'poste' => trim((string) $request->query('poste', '')),
             'cat' => in_array($request->query('cat'), ['Tous', 'U17', 'U20', 'Seniors'], true) ? $request->query('cat') : 'Tous',
         ];
         $all = $this->data->athletes([]);
-        $list = array_slice($this->insights->ranking($all, $f), 0, 50);
+        $size = max(10, min(200, (int) app(\App\Terrain\Growth\Algorithm::class)->get('rank_size')));
+        $list = array_slice($this->insights->ranking($all, $f), 0, $size);
         $cities = array_values(array_unique(array_map(fn ($a) => $a['city'], array_filter($all, fn ($a) => $f['country'] === 'Tous' || $a['country'] === $f['country']))));
         sort($cities);
         $postes = [];

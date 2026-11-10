@@ -70,19 +70,57 @@ Route::middleware(SetLocale::class)->group(function () {
     });
     Route::post('/suppression-compte/annuler', [AccountDeletionController::class, 'cancel'])->name('deletion.cancel');
 
+    // ---- Design Frikip (application web /app) et son API JSON
+    Route::get('/app', [\App\Http\Controllers\AppShellController::class, 'show'])->name('app.v2');
+    Route::prefix('api/v1')->name('v1.')->middleware(Throttle::class.':240,1')->group(function () {
+        Route::get('/me', [\App\Http\Controllers\ApiController::class, 'me'])->name('me');
+        Route::get('/feed', [\App\Http\Controllers\ApiController::class, 'feed'])->name('feed');
+        Route::get('/explore', [\App\Http\Controllers\ApiController::class, 'explore'])->name('explore');
+        Route::get('/search', [\App\Http\Controllers\ApiController::class, 'search'])->name('search');
+        Route::get('/discover', [\App\Http\Controllers\ApiController::class, 'discover'])->name('discover');
+        Route::get('/lives', [\App\Http\Controllers\ApiController::class, 'lives'])->name('lives');
+        Route::get('/matches', [\App\Http\Controllers\ApiController::class, 'matches'])->name('matches');
+        Route::get('/matches/{id}', [\App\Http\Controllers\ApiController::class, 'matchShow'])->name('match');
+        Route::get('/users/{user}', [\App\Http\Controllers\ApiController::class, 'user'])->name('user');
+        Route::get('/users/{user}/videos', [\App\Http\Controllers\ApiController::class, 'userVideos'])->name('user.videos');
+        Route::get('/videos/{video}/comments', [\App\Http\Controllers\ApiController::class, 'comments'])->name('comments');
+        Route::post('/videos/{video}/share', [\App\Http\Controllers\ApiController::class, 'share'])->middleware(Throttle::class.':30,1')->name('share');
+        Route::middleware(TerrainAuth::class)->group(function () {
+            Route::post('/videos/{video}/like', [\App\Http\Controllers\ApiController::class, 'like'])->middleware(Throttle::class.':60,1')->name('like');
+            Route::post('/videos/{video}/save', [\App\Http\Controllers\ApiController::class, 'save'])->middleware(Throttle::class.':60,1')->name('save');
+            Route::get('/saved', [\App\Http\Controllers\ApiController::class, 'saved'])->name('saved');
+            Route::post('/videos/{video}/comments', [\App\Http\Controllers\ApiController::class, 'addComment'])->middleware(Throttle::class.':10,1')->name('comment');
+            Route::post('/comments/{comment}/like', [\App\Http\Controllers\ApiController::class, 'likeComment'])->middleware(Throttle::class.':60,1')->name('comment.like');
+            Route::post('/users/{user}/follow', [\App\Http\Controllers\ApiController::class, 'follow'])->middleware(Throttle::class.':60,1')->name('follow');
+            Route::get('/conversations', [\App\Http\Controllers\ApiController::class, 'conversations'])->name('conversations');
+            Route::post('/conversations', [\App\Http\Controllers\ApiController::class, 'openConversation'])->name('conversations.open');
+            Route::get('/conversations/{partner}', [\App\Http\Controllers\ApiController::class, 'conversation'])->name('conversation');
+            Route::post('/conversations/{partner}/messages', [\App\Http\Controllers\ApiController::class, 'sendMessage'])->middleware(Throttle::class.':30,1')->name('message');
+            Route::get('/notifications', [\App\Http\Controllers\ApiController::class, 'notifications'])->name('notifications');
+            Route::post('/notifications/read', [\App\Http\Controllers\ApiController::class, 'notificationsRead'])->name('notifications.read');
+            Route::post('/me/photo', [\App\Http\Controllers\ApiController::class, 'uploadPhoto'])->middleware(Throttle::class.':10,1')->name('photo');
+        });
+    });
+
     // ---- Comptes
     Route::get('/connexion', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/connexion', [AuthController::class, 'login'])->middleware(Throttle::class.':10,1');
-    Route::get('/inscription', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/inscription', [AuthController::class, 'register'])->middleware(Throttle::class.':10,1');
+    // Inscription en 3 étapes (qui es-tu, comment, ton profil) : e-mail, téléphone, Google, Facebook, TikTok
+    Route::get('/inscription', [\App\Http\Controllers\SignupController::class, 'show'])->name('register');
+    Route::post('/inscription', [\App\Http\Controllers\SignupController::class, 'store'])->middleware(Throttle::class.':10,1');
+    Route::get('/inscription/telephone', [\App\Http\Controllers\SignupController::class, 'viaPhone'])->name('signup.phone');
+    Route::get('/inscription/derniere-etape', [\App\Http\Controllers\SignupController::class, 'finish'])->name('signup.finish');
+    Route::post('/inscription/derniere-etape', [\App\Http\Controllers\SignupController::class, 'finishStore'])->middleware(Throttle::class.':10,1');
+    Route::get('/connexion/{provider}', [\App\Http\Controllers\SignupController::class, 'social'])->whereIn('provider', ['google', 'facebook', 'tiktok'])->name('social.redirect');
+    Route::get('/connexion/{provider}/retour', [\App\Http\Controllers\SignupController::class, 'callback'])->whereIn('provider', ['google', 'facebook', 'tiktok'])->name('social.callback');
     Route::post('/deconnexion', [AuthController::class, 'logout'])->name('logout');
     // Connexion / inscription par numéro de téléphone + code SMS
     Route::get('/connexion/telephone', [PhoneAuthController::class, 'show'])->name('phone.login');
     Route::post('/connexion/telephone', [PhoneAuthController::class, 'send'])->middleware(Throttle::class.':5,10')->name('phone.send');
     Route::post('/connexion/telephone/code', [PhoneAuthController::class, 'verify'])->middleware(Throttle::class.':10,10')->name('phone.verify');
     Route::post('/connexion/telephone/mot-de-passe', [PhoneAuthController::class, 'password'])->middleware(Throttle::class.':10,10')->name('phone.password');
-    Route::get('/connexion/telephone/profil', [PhoneAuthController::class, 'profile'])->name('phone.profile');
-    Route::post('/connexion/telephone/profil', [PhoneAuthController::class, 'complete'])->middleware(Throttle::class.':10,1');
+    Route::get('/connexion/telephone/profil', [\App\Http\Controllers\SignupController::class, 'finish'])->name('phone.profile');
+    Route::post('/connexion/telephone/profil', [\App\Http\Controllers\SignupController::class, 'finishStore'])->middleware(Throttle::class.':10,1');
     // Vrais comptes : mot de passe oublié
     Route::get('/mot-de-passe-oublie', [AccountController::class, 'forgot'])->name('password.forgot');
     Route::post('/mot-de-passe-oublie', [AccountController::class, 'sendReset'])->middleware(Throttle::class.':5,10');
@@ -96,6 +134,7 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/fil/suite', [FeedController::class, 'more'])->name('feed.more');
     Route::get('/videos/{video}/commentaires', [FeedController::class, 'comments'])->name('videos.comments');
     Route::post('/videos/{video}/vue', [GrowthController::class, 'videoView'])->middleware(Throttle::class.':120,1')->name('videos.view');
+    Route::post('/videos/{video}/temps', [GrowthController::class, 'videoTime'])->middleware(Throttle::class.':240,1')->name('videos.time');
     Route::post('/videos/{video}/partage', [FeedController::class, 'share'])->middleware(Throttle::class.':30,1')->name('videos.share');
     Route::get('/videos/{video}/sous-titres/{lang}.vtt', [VideoController::class, 'subtitles'])->whereIn('lang', ['fr', 'en'])->name('videos.subtitles');
     Route::get('/matchs', [MatchController::class, 'index'])->name('matches');
@@ -110,7 +149,11 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/sportifs/{id}/carte.png', [GrowthController::class, 'cardImage'])->name('athletes.card.png');
     Route::get('/cv/{id}', [GrowthController::class, 'cv'])->name('athletes.cv');
     Route::get('/j/{id}', [GrowthController::class, 'short'])->name('athletes.short');
-    Route::view('/explorer', 'web.explore')->name('explore');
+    Route::get('/explorer', [\App\Http\Controllers\ExploreController::class, 'index'])->name('explore');
+    Route::get('/decouvrir', [\App\Http\Controllers\DiscoverController::class, 'index'])->name('discover');
+    Route::get('/salon/{room}', [\App\Http\Controllers\RoomController::class, 'index'])->middleware(Throttle::class.':120,1')->name('room');
+    Route::post('/decouvrir/{id}/lecture', [\App\Http\Controllers\DiscoverController::class, 'play'])->whereNumber('id')->middleware(Throttle::class.':60,1')->name('discover.play');
+    Route::get('/acteurs-du-foot', [\App\Http\Controllers\ExploreController::class, 'actors'])->name('actors');
     Route::get('/actu', [PostController::class, 'index'])->name('posts');
     Route::get('/actu/{id}', [PostController::class, 'show'])->whereNumber('id')->name('posts.show');
     Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
@@ -141,12 +184,26 @@ Route::middleware(SetLocale::class)->group(function () {
 
     // ---- Réservé aux utilisateurs connectés
     Route::middleware(TerrainAuth::class)->group(function () {
+        Route::get('/creer', [\App\Http\Controllers\ExploreController::class, 'create'])->name('create');
+        Route::post('/salon/{room}', [\App\Http\Controllers\RoomController::class, 'store'])->middleware(Throttle::class.':40,1')->name('room.post');
+        Route::post('/salon/message/{id}/signaler', [\App\Http\Controllers\RoomController::class, 'report'])->whereNumber('id')->middleware(Throttle::class.':20,1')->name('room.report');
+        // Lives des membres (Cloudflare Stream) : lancer, studio, arrêter
+        Route::get('/live/lancer', [\App\Http\Controllers\UserLiveController::class, 'create'])->name('live.go');
+        Route::post('/live/lancer', [\App\Http\Controllers\UserLiveController::class, 'store'])->middleware(Throttle::class.':6,10');
+        Route::get('/live/{id}/studio', [\App\Http\Controllers\UserLiveController::class, 'studio'])->whereNumber('id')->name('live.studio');
+        Route::post('/live/{id}/etat', [\App\Http\Controllers\UserLiveController::class, 'state'])->whereNumber('id')->middleware(Throttle::class.':30,1')->name('live.studio.state');
+        // Bloquer un utilisateur
+        Route::post('/bloquer/{id}', [\App\Http\Controllers\BlockController::class, 'toggle'])->middleware(Throttle::class.':20,1')->name('block');
+        Route::get('/parametres/bloques', [\App\Http\Controllers\BlockController::class, 'index'])->name('blocks');
         Route::post('/videos/{video}/aime', [FeedController::class, 'like'])->middleware(Throttle::class.':60,1')->name('videos.like');
         Route::post('/videos/{video}/commentaires', [FeedController::class, 'comment'])->middleware(Throttle::class.':10,1')->name('videos.comment');
         Route::post('/commentaires/{comment}/aime', [FeedController::class, 'likeComment'])->middleware(Throttle::class.':60,1')->name('comments.like');
         Route::post('/commentaires/{comment}/supprimer', [FeedController::class, 'deleteComment'])->middleware(Throttle::class.':30,1')->name('comments.delete');
         Route::post('/commentaires/{comment}/epingler', [FeedController::class, 'pinComment'])->middleware(Throttle::class.':30,1')->name('comments.pin');
         Route::get('/videos/{video}/langue', [VideoController::class, 'edit'])->name('videos.edit');
+        Route::post('/videos/{video}/enregistrer', [VideoController::class, 'save'])->middleware(Throttle::class.':60,1')->name('videos.save');
+        Route::post('/videos/{video}/supprimer-ma-video', [VideoController::class, 'destroyMine'])->middleware(Throttle::class.':20,1')->name('videos.destroy');
+        Route::get('/moi/videos-enregistrees', [VideoController::class, 'saved'])->name('videos.saved');
         Route::post('/videos/{video}/langue', [VideoController::class, 'update'])->middleware(Throttle::class.':20,1');
         Route::post('/sportifs/{athlete}/suivre', [FeedController::class, 'follow'])->name('athletes.follow');
         Route::post('/matchs/{id}/vote', [MatchController::class, 'vote'])->name('matches.vote');
@@ -246,6 +303,14 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::get('/direct/{id}/gerer', [LiveController::class, 'manage'])->whereNumber('id')->name('live.manage');
         Route::post('/direct/{id}/gerer', [LiveController::class, 'update'])->whereNumber('id')->middleware(Throttle::class.':120,1')->name('live.update');
         Route::get('/alertes', [AlertController::class, 'index'])->name('alerts');
+        // Listes de présélection et historique des contacts
+        Route::get('/listes', [\App\Http\Controllers\RecruitController::class, 'index'])->name('shortlists');
+        Route::post('/listes', [\App\Http\Controllers\RecruitController::class, 'store'])->middleware(Throttle::class.':30,1')->name('shortlists.store');
+        Route::get('/listes/{id}', [\App\Http\Controllers\RecruitController::class, 'show'])->whereNumber('id')->name('shortlists.show');
+        Route::post('/listes/{id}/joueur', [\App\Http\Controllers\RecruitController::class, 'toggle'])->whereNumber('id')->middleware(Throttle::class.':120,1')->name('shortlists.toggle');
+        Route::post('/listes/{id}/note', [\App\Http\Controllers\RecruitController::class, 'note'])->whereNumber('id')->name('shortlists.note');
+        Route::post('/listes/{id}/supprimer', [\App\Http\Controllers\RecruitController::class, 'destroy'])->whereNumber('id')->name('shortlists.destroy');
+        Route::get('/mes-contacts', [\App\Http\Controllers\RecruitController::class, 'contacts'])->name('contacts');
         Route::post('/alertes', [AlertController::class, 'store'])->name('alerts.store');
         Route::post('/alertes/{id}/supprimer', [AlertController::class, 'destroy'])->name('alerts.destroy');
     });
@@ -296,6 +361,9 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/direct', [AdminMediaController::class, 'saveLive'])->name('live.save');
         Route::post('/direct/rechercher', [AdminMediaController::class, 'syncLive'])->name('live.sync');
         Route::post('/direct/{id}', [AdminMediaController::class, 'liveAction'])->whereNumber('id')->name('live.action');
+        Route::get('/decouvrir', [AdminMediaController::class, 'discover'])->name('discover');
+        Route::post('/decouvrir/importer', [AdminMediaController::class, 'discoverImport'])->name('discover.import');
+        Route::post('/decouvrir/{id}', [AdminMediaController::class, 'discoverAction'])->whereNumber('id')->name('discover.action');
         Route::get('/diffuseurs', [AdminMediaController::class, 'broadcasters'])->name('broadcasters');
         Route::post('/diffuseurs', [AdminMediaController::class, 'saveBroadcaster'])->name('broadcasters.save');
         Route::post('/diffuseurs/{id}', [AdminMediaController::class, 'broadcasterAction'])->whereNumber('id')->name('broadcasters.action');
@@ -312,6 +380,8 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/moderation/{id}/lever', [AdminGrowthController::class, 'lift'])->name('lift');
         Route::get('/verifications', [AdminGrowthController::class, 'verifications'])->name('verifications');
         Route::post('/verifications/{id}', [AdminGrowthController::class, 'decideVerification'])->name('verifications.decide');
+        Route::post('/membres/{key}/badges', [AdminGrowthController::class, 'grantBadge'])->name('badges.grant');
+        Route::post('/badges/{id}/retirer', [AdminGrowthController::class, 'revokeBadge'])->whereNumber('id')->name('badges.revoke');
         Route::get('/verifications/{id}/{which}', [AdminGrowthController::class, 'file'])->whereIn('which', ['piece', 'tuteur'])->name('file');
         Route::get('/temoignages', [AdminGrowthController::class, 'stories'])->name('stories');
         Route::post('/temoignages/{id}', [AdminGrowthController::class, 'decideStory'])->name('stories.decide');

@@ -73,11 +73,41 @@ Toutes sont facultatives : sans elles, le site fonctionne, et la fonction corres
 |---|---|
 | Paiements Mobile Money | `CINETPAY_API_KEY`, `CINETPAY_SITE_ID` |
 | Scores des championnats | `API_FOOTBALL_KEY` |
-| Matchs en direct trouvés sur YouTube | `YOUTUBE_API_KEY` |
+| Matchs en direct trouvés sur YouTube et vidéos « Découvrir » | `YOUTUBE_API_KEY` |
+| Créer son compte avec Google | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` |
+| Créer son compte avec Facebook | `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET` |
+| Créer son compte avec TikTok | `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET` |
+| Lives des membres depuis le téléphone | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_STREAM_TOKEN` |
 | Diffusion depuis un téléphone | `MUX_TOKEN_ID`, `MUX_TOKEN_SECRET` |
 | API d'un diffuseur partenaire | `LIVE_PARTNER_*` (voir plus bas) |
 | Détection de la nudité | `SIGHTENGINE_USER`, `SIGHTENGINE_SECRET` |
 | SMS et WhatsApp | `TWILIO_*` |
+
+## Connexion avec Google, Facebook et TikTok
+
+Chaque bouton apparaît sur la page « Créer un compte » dès que ses deux clés sont dans `.env`.
+
+- **Google** : <https://console.cloud.google.com> → API et services → Identifiants → « ID client OAuth » (application Web). Adresse de redirection : `https://TON-SITE/connexion/google/retour`.
+- **Facebook** : <https://developers.facebook.com> → Créer une app → « Facebook Login ». Adresse de redirection : `https://TON-SITE/connexion/facebook/retour`.
+- **TikTok** : <https://developers.tiktok.com> → Manage apps → « Login Kit », autorisation `user.info.basic`. Adresse de redirection : `https://TON-SITE/connexion/tiktok/retour`. TikTok doit valider l'application avant qu'elle marche pour tout le monde.
+
+Après la connexion, la personne choisit son type de compte (joueur, supporter, club, recruteur, agent, entraîneur, arbitre, médecin…) et complète son profil.
+
+## Vidéos « Découvrir » (1 000 vidéos de foot)
+
+Avec `YOUTUBE_API_KEY`, lance `php artisan frikip:decouvrir` (ou attends la tâche de 3 h 30). Les vidéos viennent de chaînes YouTube qui autorisent l'intégration, avec le nom de la chaîne affiché ; rien n'est copié sur ton serveur. Thèmes, nombre maximum et vidéos à cacher : **Admin → Découvrir**.
+
+## Lives des membres
+
+Avec `CLOUDFLARE_ACCOUNT_ID` et `CLOUDFLARE_STREAM_TOKEN` (jeton « Stream: Edit », <https://dash.cloudflare.com> → Stream), chaque membre peut lancer un live depuis son téléphone, par exemple pour commenter un match. Les autres le regardent et commentent en direct.
+
+## Sauvegardes
+
+- `php artisan frikip:sauvegarde` : sauvegarde de la base (tous les jours à 2 h 30, 7 gardées dans `storage/sauvegardes`).
+- `php artisan frikip:sauvegarde --videos` : sauvegarde complète avec les vidéos (le dimanche).
+- `php artisan frikip:sauvegarde-test` : vérifie qu'une sauvegarde peut être restaurée.
+
+Copie régulièrement ces fichiers hors du serveur (Google Drive, disque externe).
 
 ## Brancher un diffuseur (matchs en direct)
 

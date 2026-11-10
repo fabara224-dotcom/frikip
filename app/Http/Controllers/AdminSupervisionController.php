@@ -76,7 +76,27 @@ class AdminSupervisionController extends Controller
         } catch (Throwable) {
         }
 
+        // Santé de la plateforme : visionnages, rétention, signalements, stockage
+        $views30 = self::count('video_views', fn ($q) => $q->where('created_at', '>=', now()->subDays(30)));
+        $cohort = self::count('members', fn ($q) => $q->whereBetween('created_at', [now()->subDays(60), now()->subDays(30)]));
+        $kept = self::count('members', fn ($q) => $q->whereBetween('created_at', [now()->subDays(60), now()->subDays(30)])->where('last_seen_at', '>=', now()->subDays(7)));
+        $byType = [];
+        try {
+            $byType = DB::table('members')->selectRaw('role, count(*) n')->groupBy('role')->pluck('n', 'role')->all();
+        } catch (Throwable) {
+        }
+        $health = [
+            'views30' => $views30,
+            'watch' => \App\Terrain\Growth\Engagement::averageWatch(null, 30),
+            'retention' => $cohort ? (int) round($kept / $cohort * 100) : null,
+            'cohort' => $cohort,
+            'reports' => self::count('reports', fn ($q) => $q->where('status', 'nouveau')),
+            'storage' => self::storage(),
+            'byType' => $byType,
+        ];
+
         return view('admin.overview', [
+            'health' => $health,
             'kpi' => [
                 'members' => $members,
                 'new7' => self::count('members', fn ($q) => $q->where('created_at', '>=', $since7)),
@@ -101,6 +121,27 @@ class AdminSupervisionController extends Controller
         ]);
     }
 
+    /** Place prise par les vidéos et fichiers envoyés (octets), recalculée au plus toutes les 6 heures. */
+    private static function storage(): int
+    {
+        return (int) \Illuminate\Support\Facades\Cache::remember('frikip.admin.storage', 21600, function () {
+            $total = 0;
+            foreach ([public_path('uploads'), storage_path('app')] as $dir) {
+                if (! is_dir($dir)) {
+                    continue;
+                }
+                try {
+                    foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS)) as $f) {
+                        $total += $f->isFile() ? $f->getSize() : 0;
+                    }
+                } catch (Throwable) {
+                }
+            }
+
+            return $total;
+        });
+    }
+
     // ------------------------------------------------------------------ membres
 
     public function members(Request $request): View
@@ -108,7 +149,7 @@ class AdminSupervisionController extends Controller
         $f = [
             'q' => trim((string) $request->query('q', '')),
             'country' => (string) $request->query('country', ''),
-            'role' => in_array($request->query('role'), ['athlete', 'recruiter'], true) ? $request->query('role') : '',
+            'role' => in_array($request->query('role'), \App\Terrain\Roles::ALL, true) ? $request->query('role') : '',
             'state' => in_array($request->query('state'), ['actif', 'averti', 'suspendu', 'bloque', 'payant'], true) ? $request->query('state') : '',
             'sort' => in_array($request->query('sort'), ['score', 'recent', 'actif'], true) ? $request->query('sort') : 'recent',
         ];
@@ -334,10 +375,9 @@ class AdminSupervisionController extends Controller
         $test = trim((string) $request->query('tester', ''));
         $preview = [];
         try {
-            $athletes = $this->data->athletes([]);
-            $scored = array_map(fn ($a) => ['a' => $a, 's' => $this->algo->score($a)], $athletes);
-            usort($scored, fn ($x, $y) => $y['s'] <=> $x['s']);
-            $preview = array_slice($scored, 0, 8);
+            // Même liste que la page publique « Meilleurs sportifs »
+            $ranked = app(\App\Terrain\Growth\Insights::class)->ranking($this->data->athletes([]), ['sport' => 'Tous', 'country' => 'Tous']);
+            $preview = array_map(fn ($a) => ['a' => $a, 's' => $a['rating']], array_slice($ranked, 0, 20));
         } catch (Throwable) {
         }
 
@@ -350,7 +390,7 @@ class AdminSupervisionController extends Controller
 
     public function saveAlgorithm(Request $request): RedirectResponse
     {
-        $request->validate(['group' => ['required', 'in:classement,fil,moderation,mots']]);
+        $request->validate(['group' => ['required', 'in:classement,fil,moderation,mots,app']]);
         if ($request->boolean('reset')) {
             $this->algo->reset($request->input('group'));
             $request->attributes->set('admin_log', ['reset' => $request->input('group')]);

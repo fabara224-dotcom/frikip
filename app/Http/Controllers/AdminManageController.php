@@ -169,21 +169,28 @@ class AdminManageController extends Controller
     {
         $v = DB::table('local_videos')->where('id', $id)->first();
         abort_unless($v, 404);
+        self::purgeVideo($v);
+
+        return back()->with('saved', 'Vidéo supprimée.');
+    }
+
+    /** Supprime une vidéo, ses fichiers et tout ce qui s'y rattache (utilisé aussi par le joueur pour ses propres vidéos). */
+    public static function purgeVideo(object $v): void
+    {
+        $id = $v->id;
         foreach ([$v->url, $v->poster] as $f) {
             if ($f && ! str_starts_with($f, 'http')) {
                 @unlink(public_path($f));
             }
         }
         DB::table('local_videos')->where('id', $id)->delete();
-        foreach (['video_meta', 'video_subtitles', 'video_likes_local', 'video_comments_local', 'video_shares', 'video_views'] as $t) {
+        foreach (['video_meta', 'video_subtitles', 'video_likes_local', 'video_comments_local', 'video_shares', 'video_views', 'video_saves'] as $t) {
             try {
                 DB::table($t)->where('video_id', $id)->delete();
             } catch (\Throwable) {
             }
         }
         DB::table('challenge_entries')->where('video_id', $id)->delete();
-
-        return back()->with('saved', 'Vidéo supprimée.');
     }
 
     // ================================================================== contenus

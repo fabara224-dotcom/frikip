@@ -2,21 +2,36 @@
 @php
     $app = config('terrain.app_name');
     $isRecruiter = ($me['role'] ?? null) === 'recruiter';
+    $isFan = ($me['role'] ?? null) === 'fan';
+    // Même barre que l'application (/app) : Accueil, Explorer, [+], Matchs, Messages, Profil
+    $appUrl = fn ($screen) => route('app.v2').'#'.$screen;
+    $tabs = [
+        ['accueil', __('Accueil'), 'home', '', $appUrl('accueil')],
+        ['explorer', __('Explorer'), 'search', '', $appUrl('explorer')],
+        ['publier', __('Publier'), 'plus', 'pub', $me ? (($me['role'] ?? null) === 'athlete' ? $appUrl('publier') : route('create')) : route('register')],
+        ['matchs', __('Matchs'), 'ball', '', $appUrl('matchs')],
+        ['messages', __('Messages'), 'msg', 'msgs', $me ? $appUrl('messages') : route('login')],
+        ['profil', $me ? __('Profil') : __('Connexion'), 'user', '', $me ? $appUrl('profil') : route('login')],
+    ];
     $more = [
-        ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'],
-        ['live', __('Matchs en direct'), 'live'], ['rankings', __('Classements'), 'star'], ['events', __('Détections'), 'calendar'],
+        ['live', __('Matchs en direct'), 'live'], ['matches', __('Matchs et scores'), 'score'], ['posts', __('Actu'), 'news'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'], ['rankings', __('Meilleurs joueurs'), 'star'], ['events', __('Détections'), 'calendar'],
         ['clubs', __('Clubs et académies'), 'stadium'], ['stories', __('Ils ont été recrutés'), 'party'],
     ];
     if ($me) {
         $more[] = ['referral', __('Inviter mes amis'), 'gift'];
         $more[] = ['notifications', __('Notifications'), 'bell'];
+        $more[] = ['videos.saved', __('Vidéos enregistrées'), 'star'];
         if ($isRecruiter) {
             $more[] = ['alerts', __('Mes alertes'), 'megaphone'];
+            $more[] = ['shortlists', __('Mes listes de joueurs'), 'star'];
+            $more[] = ['contacts', __('Historique de mes contacts'), 'doc'];
             $more[] = ['clubs.edit', __('Ma page club'), 'tag'];
-        } else {
+        } elseif (! $isFan) {
             $more[] = ['stats', __('Mes statistiques'), 'stats'];
         }
-        $more[] = ['verification', __('Vérifier mon compte'), 'check'];
+        if (! $isFan) {
+            $more[] = ['verification', __('Vérifier mon compte'), 'check'];
+        }
         if ($realAccounts ?? false) {
             $more[] = ['profile.edit', __('Modifier mon profil'), 'pencil'];
         }
@@ -29,25 +44,41 @@
     $more[] = ['structure.offer', __('Offre Structure Pro'), 'stadium'];
     $more[] = ['partners', __('Devenir partenaire'), 'handshake'];
     $more[] = ['audio-help', __('Aide audio'), 'sound'];
+    $icons = [
+        'home' => '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+        'score' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 5v14M7 10v4M15.5 10h2v4h-2z"/>',
+        'search' => '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+        'plus' => '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/>',
+        'work' => '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>',
+        'user' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+        'msg' => '<path d="M4 5h16v11H8l-4 4z"/>',
+        'bell' => '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+        'trophy' => '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/>',
+        'compass' => '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+        'star' => '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+        'coach' => '<circle cx="9" cy="7" r="3.2"/><path d="M3 21c.5-4 2.8-6.3 6-6.3 1.5 0 2.9.5 4 1.5"/><path d="m14.5 14.5 2.2 2.2 4.3-4.7"/>',
+        'ball' => '<circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 5h-5L8 10z"/><path d="M12 3v4M16 10l4.5-1.5M14.5 15l2.5 4M9.5 15L7 19M8 10L3.5 8.5"/>',
+    ];
     $current = request()->route()?->getName();
+    // Onglet allumé : Explorer pour les pages qu'il ouvre, Matchs pour les matchs et les directs, Profil pour le reste du compte
+    $tabOn = function (string $tab) use ($current) {
+        $c = (string) $current;
+        return match ($tab) {
+            'accueil' => in_array($c, ['feed', 'app.v2'], true),
+            'explorer' => (bool) preg_match('/^(explore|challenges|coaching|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', $c),
+            'matchs' => (bool) preg_match('/^(matches|live|watch)/', $c),
+            'messages' => str_starts_with($c, 'messages') || str_starts_with($c, 'calls'),
+            'publier' => in_array($c, ['publish', 'create'], true) || str_starts_with($c, 'live.go') || str_starts_with($c, 'live.studio'),
+            'profil' => (bool) preg_match('/^(me|profile|settings|stats|verification|payments|premium|notifications|referral|blocks|shortlists|alerts|contacts|videos\.saved|coaching\.follow)/', $c),
+            default => false,
+        };
+    };
     $active = fn ($name) => $current === $name || ($name === 'matches' && str_starts_with((string) $current, 'matches')) || ($name === 'search' && $current === 'compare')
         || ($name === 'challenges' && str_starts_with((string) $current, 'challenges')) || ($name === 'coaching' && str_starts_with((string) $current, 'coaching'))
-        || ($name === 'live' && str_starts_with((string) $current, 'live')) || ($name === 'clubs' && str_starts_with((string) $current, 'clubs'))
-        || ($name === 'events' && str_starts_with((string) $current, 'events')) || ($name === 'posts' && str_starts_with((string) $current, 'posts'));
-    // Menu latéral (ordinateur) : les rubriques principales, comme dans une appli de réseau social
-    $side = [['feed', __('Accueil'), 'home'], ['posts', __('Actu'), 'news'], ['explore', __('Explorer'), 'compass'], ['matches', __('Matchs'), 'score'], ['live', __('En direct'), 'live'],
-        ['challenges', __('Défis'), 'trophy'], ['rankings', __('Joueurs'), 'star'], ['clubs', __('Clubs'), 'stadium'], ['events', __('Détections'), 'calendar'],
-        ['coaching', __('Coaching'), 'coach']];
-    if ($me) {
-        $side[] = ['offers', $isRecruiter ? __('Mes offres') : __('Offres'), 'tag'];
-        $side[] = ['messages', __('Messages'), 'msg'];
-    }
-    $side[] = ['stories', __('Ils ont été recrutés'), 'party'];
-    // Barre du bas (téléphone) : Accueil, Explorer, +, Matchs, Profil
-    $plusUrl = $me ? ($isRecruiter ? route('offers') : route('publish')) : route('phone.login');
-    $plusLabel = $me ? ($isRecruiter ? __('Publier une offre') : __('Publier')) : __('Créer un compte');
-    $profileRoute = $me ? 'me' : 'login';
-    $initial = $me ? collect(preg_split('/\s+/', trim($me['name'] ?? '?')))->filter()->take(2)->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))->implode('') : '';
+        // Explorer reste allumé sur toutes les pages qu'il ouvre
+        || ($name === 'explore' && preg_match('/^(matches|challenges|coaching|live|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', (string) $current))
+        || ($name === 'messages' && str_starts_with((string) $current, 'messages'))
+        || ($name === 'publish' && in_array($current, ['publish', 'create'], true));
 @endphp
 <!doctype html>
 <html lang="{{ app()->getLocale() }}" data-theme="dark">
@@ -57,52 +88,39 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>@yield('title', $app)</title>
 @stack('meta')
-<meta name="description" content="@yield('description', $app.' : le réseau social du foot. Vidéos, actu des joueurs et des clubs, recrutement et scores en direct.')">
-<link rel="preload" href="{{ asset('fonts/inter-var.woff2') }}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ asset('fonts/barlow-condensed-800-italic.woff2') }}" as="font" type="font/woff2" crossorigin>
+<meta name="description" content="@yield('description', $app.' : compilations vidéo de sportifs, recrutement et scores en direct.')">
+<link rel="preload" href="{{ asset('fonts/archivo-var.woff') }}" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="{{ asset('css/terrain.css') }}">
 <link rel="stylesheet" href="{{ asset('css/web.css') }}">
 <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
-<meta name="theme-color" content="#07100B">
+<meta name="theme-color" content="#050706">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="icon" href="{{ asset('icons/favicon-32.png') }}" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
-<link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=1">
+<link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=3">
 <link rel="stylesheet" href="{{ asset('css/frikip-pro.css') }}?v=1">
+{{-- Design Frikip (noir, vert vif, blanc) : le même que l'application /app --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ asset('css/frikip-v5.css') }}?v={{ @filemtime(public_path('css/frikip-v5.css')) }}">
 </head>
-<body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }}">
+<body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }} {{ \App\Terrain\InApp::active() ? 'in-app in-app-'.\App\Terrain\InApp::platform() : '' }}">
 <header class="apptop">
   <div class="apptop-in gut">
-    <a class="logo" href="{{ route('feed') }}" aria-label="{{ $app }}"><x-logo /></a>
-    <form class="topsearch" method="GET" action="{{ route('search') }}" role="search">
-      <x-ico name="search" />
-      <input type="search" name="q" placeholder="{{ __('Rechercher un joueur, un club, un match…') }}" aria-label="{{ __('Rechercher') }}" value="{{ request('q') }}">
-    </form>
-    <nav class="topicons" aria-label="{{ __('Raccourcis') }}">
-      <a href="{{ route('feed') }}" @if ($active('feed')) aria-current="page" @endif><x-ico name="home" /><span>{{ __('Accueil') }}</span></a>
-      @if ($me)
-        <a class="msgbtn" href="{{ route('messages') }}" @if ($active('messages')) aria-current="page" @endif><x-ico name="msg" /><span>{{ __('Messages') }}</span><i class="badge" id="unread-badge" @unless ($unread ?? 0) hidden @endunless>{{ $unread ?? 0 }}</i></a>
-        <a class="msgbtn" href="{{ route('notifications') }}" @if ($active('notifications')) aria-current="page" @endif><x-ico name="bell" /><span>{{ __('Notifications') }}</span><i class="badge" id="bell-badge" @unless ($bell ?? 0) hidden @endunless>{{ $bell ?? 0 }}</i></a>
-      @else
-        <a href="{{ route('matches') }}" @if ($active('matches')) aria-current="page" @endif><x-ico name="score" /><span>{{ __('Matchs') }}</span></a>
-      @endif
+    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#fff"/><path d="M20 11l7 5-2.7 8.3h-8.6L13 16z" fill="#0a0d0b"/><path d="M20 3v8M27 16l7.5-3M24.3 24.3l4.7 7M15.7 24.3L11 31.3M13 16l-7.5-3" stroke="#0a0d0b" stroke-width="2.2"/><path d="M3 23c6-1 12 2 17 7 5-6 11-9 17-9" stroke="#1FE064" stroke-width="3.4" fill="none" stroke-linecap="round"/></svg><span><b>FRIKIP</b><small>{{ __('Le réseau foot') }}</small></span></a>
+    <nav class="appnav" aria-label="Application">
+      @foreach ($tabs as $t)
+        @continue(($t[3] ?? '') === 'pub')
+        <a href="{{ $t[4] }}" @if ($tabOn($t[0])) aria-current="page" @endif>{{ $t[1] }}</a>
+      @endforeach
     </nav>
     <div class="apptop-actions">
-      <a class="iconbtn topsearch-sm" href="{{ route('explore') }}" aria-label="{{ __('Rechercher') }}"><x-ico name="search" /></a>
-      @if ($me)
-        <a class="iconbtn msgbtn bell-sm" href="{{ route('notifications') }}" aria-label="{{ __('Notifications') }}"><x-ico name="bell" /><span class="badge" @unless ($bell ?? 0) hidden @endunless>{{ $bell ?? 0 }}</span></a>
-      @endif
       <details class="moremenu">
-        <summary class="@if ($me) avatarbtn @else iconbtn @endif" aria-label="{{ __('Menu') }}" title="{{ __('Menu') }}">
-          @if ($me)<span class="av sm">{{ $initial }}</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-          @else<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>@endif
-        </summary>
-        <nav class="card" aria-label="{{ __('Menu') }}">
-          @if ($me)
-            <a class="menuhead" href="{{ route('me') }}"><span class="av">{{ $initial }}</span><span><b>{{ $me['name'] ?? '' }}</b><small>{{ $isRecruiter ? __('Recruteur') : __('Sportif') }}@if ($demo) · démo @endif · {{ __('Voir mon profil') }} ›</small></span></a>
-          @endif
+        <summary class="iconbtn" aria-label="{{ __('Plus') }}" title="{{ __('Plus') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary>
+        <nav class="card" aria-label="{{ __('Plus') }}">
           @foreach ($more as $item)
             <a href="{{ route($item[0], $item[3] ?? []) }}"><x-ico :name="$item[2]" />{{ $item[1] }}</a>
           @endforeach
@@ -117,40 +135,19 @@
             @endforeach
           </div>
           <label class="check litetoggle"><input type="checkbox" id="lite-toggle" @checked($lite)> {{ __('Économie de données (3G)') }}</label>
-          @if ($me)
-            <form method="POST" action="{{ route('logout') }}" class="menulogout">@csrf<button type="submit"><x-ico name="logout" />{{ __('Se déconnecter') }}</button></form>
-          @endif
         </nav>
       </details>
-      @unless ($me)
+      @if ($me)
+        <a class="iconbtn msgbtn" href="{{ route('notifications') }}" aria-label="{{ __('Notifications') }}" title="{{ __('Notifications') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['bell'] !!}</svg><span class="badge" id="bell-badge" @unless ($bell ?? 0) hidden @endunless>{{ $bell ?? 0 }}</span></a>
+        <a class="iconbtn msgbtn" href="{{ route('messages') }}" aria-label="Messages{{ ($unread ?? 0) ? ' ('.$unread.' non lus)' : '' }}" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['msg'] !!}</svg><span class="badge" id="unread-badge" @unless ($unread ?? 0) hidden @endunless>{{ $unread ?? 0 }}</span></a>
+        <span class="rolechip">{{ \App\Terrain\Roles::labelFor($me) }}@if ($demo) · démo @endif</span>
+      @else
         <a class="btn sm" href="{{ route('phone.login') }}">{{ __('Créer un compte') }}</a>
-      @endunless
+      @endif
     </div>
   </div>
 </header>
 
-<div class="shell">
-<aside class="sidenav" aria-label="{{ __('Navigation') }}">
-  <nav>
-    @foreach ($side as [$name, $label, $icon])
-      <a href="{{ route($name) }}" @if ($active($name)) aria-current="page" @endif><x-ico :name="$icon" />{{ $label }}</a>
-    @endforeach
-  </nav>
-  <a class="btn sidecta" href="{{ $plusUrl }}"><x-ico name="plus" />{{ $plusLabel }}</a>
-  @unless ($me)
-    <div class="sidecard">
-      <b>{{ __('Ton talent mérite d’être vu.') }}</b>
-      <span>{{ __('Publie tes compilations : les clubs, agents et académies te trouvent.') }}</span>
-      <a class="btn ghost sm" href="{{ route('login') }}">{{ __('Se connecter') }}</a>
-    </div>
-  @endunless
-  <div class="sidefoot">
-    <a href="{{ route('privacy') }}">{{ __('Confidentialité') }}</a> · <a href="{{ route('terms') }}">{{ __('Conditions') }}</a> · <a href="{{ route('support') }}">{{ __('Aide') }}</a>
-    <span>© {{ date('Y') }} {{ $app }}</span>
-  </div>
-</aside>
-
-<div class="shell-main">
 @if (session('status'))
   <div class="flash gut" role="status"><span>{{ session('status') }}</span></div>
 @endif
@@ -174,21 +171,21 @@
   @if ($demo)<span>{{ __('Mode démo : données d\'exemple') }}</span>@endif
 </footer>
 @endunless
-</div>
 
-@hasSection('rail')
-<aside class="siderail" aria-label="{{ __('À découvrir') }}">
-@yield('rail')
-</aside>
-@endif
-</div>
-
-<nav class="tabbar" aria-label="Onglets">
-  <a href="{{ route('feed') }}" @if ($active('feed') || $active('posts')) aria-current="page" @endif><x-ico name="home" />{{ __('Accueil') }}</a>
-  <a href="{{ route('explore') }}" @if ($active('explore') || $active('search')) aria-current="page" @endif><x-ico name="compass" />{{ __('Explorer') }}</a>
-  <a class="tabplus" href="{{ $plusUrl }}" aria-label="{{ $plusLabel }}"><span><x-ico name="plus" /></span></a>
-  <a href="{{ route('matches') }}" @if ($active('matches')) aria-current="page" @endif><x-ico name="score" />{{ __('Matchs') }}</a>
-  <a href="{{ route($profileRoute) }}" @if ($active($profileRoute)) aria-current="page" @endif><x-ico name="user" />{{ $me ? __('Profil') : __('Connexion') }}</a>
+<nav class="tabbar v5tabs" aria-label="Onglets">
+  @foreach ($tabs as $t)
+    @php
+      [$name, $label, $icon, $kind, $href] = $t;
+    @endphp
+    @if ($kind === 'pub')
+      <a href="{{ $href }}" class="v5plus" aria-label="{{ $label }}" @if ($tabOn($name)) aria-current="page" @endif><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a>
+    @else
+      <a href="{{ $href }}" @if ($tabOn($name)) aria-current="page" @endif>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons[$icon] !!}</svg>{{ $label }}
+        @if ($kind === 'msgs' && ($unread ?? 0))<span class="tbadge">{{ $unread }}</span>@endif
+      </a>
+    @endif
+  @endforeach
 </nav>
 
 <script>
@@ -281,7 +278,7 @@
       if (d.notif && d.notif.type !== 'call' && !(d.notif.type === 'message' && location.pathname.indexOf(new URL(d.notif.url || '/', location.href).pathname) === 0)) alertBox(d.notif);
       if (d.notif_max != null) lastNotif = Math.max(lastNotif, d.notif_max);
       if (badge) { badge.hidden = !d.unread; badge.textContent = d.unread; }
-      document.querySelectorAll('#bell-badge, .bell-sm .badge').forEach(function (bell) { if (d.bell != null) { bell.hidden = !d.bell; bell.textContent = d.bell; } });
+      var bell = document.getElementById('bell-badge'); if (bell && d.bell != null) { bell.hidden = !d.bell; bell.textContent = d.bell; }
       document.dispatchEvent(new CustomEvent('terrain:unread', { detail: d.unread }));
       if (d.call && (!current || current !== d.call.id)) {
         current = d.call.id;

@@ -1,103 +1,63 @@
 @extends('layouts.web')
 
-@section('title', 'Créer un compte – '.config('terrain.app_name'))
+@section('title', __('Créer un compte').' – '.config('terrain.app_name'))
+@section('description', __('Crée ton compte Frikip en 1 minute : joueur, supporter, club, recruteur, agent, entraîneur, arbitre, médecin… Avec Google, Facebook, TikTok, ton numéro ou ton e-mail.'))
 
-@php($role = old('role', request('role', 'athlete')))
+@php
+  // Erreurs après envoi du formulaire e-mail : on rouvre l'étape 3 ; type déjà choisi : étape 2
+  $start = $errors->any() && old('type') ? 3 : ($type ? 2 : 1);
+@endphp
 
 @section('content')
 <div class="page gut">
-  <div class="narrow" style="max-width:640px">
-    <h1>Créer un compte</h1>
-    <a class="btn phonebtn" href="{{ route('phone.login') }}"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg> {{ __('Continuer avec mon numéro de téléphone') }}</a>
-    <p class="meta" style="text-align:center;margin:6px 0 12px">{{ __('ou avec un e-mail') }}</p>
-    @unless ($realAccounts ?? false)<p class="meta">Le même compte fonctionne sur le site et dans l'application.</p>@endunless
+  <div class="narrow signup" style="max-width:680px">
+    <h1>{{ __('Créer mon compte Frikip') }}</h1>
+    <p class="pub-lead">{{ __('C’est gratuit et ça prend une minute. Frikip réunit tout le monde du football : joueurs, supporters, clubs, recruteurs, agents, entraîneurs, arbitres, médecins…') }}</p>
 
-    <form method="POST" action="{{ route('register') }}" class="card" id="reg">@csrf
-      <div class="plans">
-        <label class="opt"><input type="radio" name="role" value="athlete" @checked($role === 'athlete')><b>Je suis sportif</b><span class="meta">Je publie mes compilations</span></label>
-        <label class="opt"><input type="radio" name="role" value="recruiter" @checked($role === 'recruiter')><b>Je recrute</b><span class="meta">Club, académie, agent, université</span></label>
-      </div>
+    <ol class="steps" aria-label="{{ __('Étapes') }}">
+      <li class="on"><span>1</span>{{ __('Qui es-tu ?') }}</li>
+      <li><span>2</span>{{ __('Comment ?') }}</li>
+      <li><span>3</span>{{ __('Ton profil') }}</li>
+    </ol>
 
-      <label for="name"><span data-label-athlete>Nom complet</span><span data-label-recruiter hidden>Nom du club ou de la structure</span>
-        <input id="name" name="name" value="{{ old('name') }}" required></label>
-      <label for="email">E-mail<input id="email" name="email" type="email" autocomplete="email" value="{{ old('email') }}" required></label>
-      <label for="password">Mot de passe (8 caractères minimum)<input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required></label>
-      <label for="country">Pays<select id="country" name="country" required>@foreach ($countries as $c)<option @selected(old('country', \App\Terrain\Region::viewer()) === $c)>{{ $c }}</option>@endforeach</select></label>
+    <form method="POST" action="{{ route('register') }}" class="card" id="su" data-start="{{ $start }}" novalidate>@csrf
+      {{-- Étape 1 --}}
+      <section data-step="1">
+        <h2>{{ __('Qui es-tu ?') }}</h2>
+        <p class="meta" style="margin-top:-4px">{{ __('Choisis ce qui te ressemble le plus. Chaque compte a ses propres outils.') }}</p>
+        @include('web.partials.signup-types')
+        @error('type')<p class="field-error" role="alert">{{ $message }}</p>@enderror
+        <button class="btn big" type="button" data-goto="2" @disabled(! $type)>{{ __('Continuer') }}</button>
+      </section>
 
-      <div data-athlete style="display:flex;flex-direction:column;gap:12px">
-        <div class="grid-form">
-          <label for="age">Âge<input id="age" name="age" type="number" min="{{ config('terrain.min_age') }}" max="60" value="{{ old('age') }}"></label>
-          <label for="city">Ville<input id="city" name="city" value="{{ old('city') }}" placeholder="Ex. : Conakry"></label>
-        </div>
+      {{-- Étape 2 --}}
+      <section data-step="2" hidden>
+        <h2>{{ __('Comment veux-tu créer ton compte ?') }}</h2>
+        <p class="meta" style="margin-top:-4px">{{ __('Choisis le plus simple pour toi. La prochaine fois, tu te connecteras de la même façon.') }}</p>
+        @foreach ($types as $k => $t)<p class="sfhelp" data-types="{{ $k }}" hidden><b>{{ $t[4] }} {{ __($t[1]) }}</b> · <button type="button" class="linkbtn" data-goto="1">{{ __('changer') }}</button></p>@endforeach
+        @include('web.partials.social-buttons', ['type' => $type])
+        <div class="ordiv"><span>{{ __('ou') }}</span></div>
+        <button class="authbtn mail" type="button" data-goto="3">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          {{ __('Avec mon adresse e-mail') }}</button>
+        <p class="meta" style="margin:12px 0 0">🔒 {{ __('Ton numéro et ton e-mail ne sont jamais affichés sur ton profil. Personne ne peut te demander d’argent pour un essai sur Frikip.') }}</p>
+        <button class="linkbtn" type="button" data-goto="1" style="margin-top:12px">← {{ __('Retour') }}</button>
+      </section>
 
-        <div id="guardian" hidden>
-          <p class="note" style="margin:0 0 8px">Tu as moins de 18 ans : un parent ou tuteur doit valider ton compte. Il recevra un SMS de confirmation.</p>
-          <label for="guardian_phone">Téléphone du parent ou tuteur<input id="guardian_phone" name="guardian_phone" type="tel" value="{{ old('guardian_phone') }}" placeholder="+224 6XX XX XX XX"></label>
-        </div>
-
-        <b>Ton sport</b>
-        <div class="sport-grid">
-          @foreach ($sports as $s => $fields)
-            @php($c = \App\Terrain\SportFields::color($s))
-            <label class="opt" style="flex-direction:row;align-items:center;gap:8px"><input type="radio" name="sport" value="{{ $s }}" @checked(old('sport') === $s)><span style="width:12px;height:12px;border-radius:50%;background:{{ $c[0] }}"></span><b style="font-size:19px">{{ $s }}</b></label>
-          @endforeach
-        </div>
-
-        @foreach ($sports as $s => $fields)
-          <fieldset class="card" data-sport="{{ $s }}" hidden style="border-style:dashed">
-            <legend style="padding:0 6px;font-weight:700">Fiche {{ mb_strtolower($s) }}</legend>
-            @foreach ($fields as $i => $f)
-              @php($id = 'f-'.\Illuminate\Support\Str::slug($s).'-'.$i)
-              <label for="{{ $id }}">{{ $f['label'] }}
-                @if ($f['type'] === 'choice')
-                  <select id="{{ $id }}" name="fields[{{ $f['label'] }}]" disabled>@foreach ($f['options'] as $o)<option @selected(old('fields.'.$f['label']) === $o)>{{ $o }}</option>@endforeach</select>
-                @else
-                  <input id="{{ $id }}" name="fields[{{ $f['label'] }}]" type="{{ $f['type'] === 'number' ? 'number' : 'text' }}" value="{{ old('fields.'.$f['label']) }}" disabled>
-                @endif
-              </label>
-            @endforeach
-          </fieldset>
-        @endforeach
-      </div>
-
-      <label class="check" for="terms"><input id="terms" name="terms" type="checkbox" value="1" @checked(old('terms')) required>
-        <span>J'accepte les <a href="{{ route('terms') }}" target="_blank">conditions d'utilisation</a> et la <a href="{{ route('privacy') }}" target="_blank">politique de confidentialité</a>.</span></label>
-
-      @if ($errors->any())
-        <div class="msg err">@foreach ($errors->all() as $e)<div>{{ $e }}</div>@endforeach</div>
-      @endif
-      <button class="btn" type="submit">Créer mon compte</button>
+      {{-- Étape 3 --}}
+      <section data-step="3" hidden>
+        <h2>{{ __('Ton profil') }}</h2>
+        <p class="meta" style="margin-top:-4px">{{ __('Seules quelques questions maintenant. Tu compléteras le reste plus tard.') }}</p>
+        @include('web.partials.signup-fields', ['credentials' => true])
+        <button class="btn big" type="submit">{{ __('Créer mon compte') }}</button>
+        <button class="linkbtn" type="button" data-goto="2" style="margin-top:8px">← {{ __('Retour') }}</button>
+      </section>
     </form>
-    <p>Déjà un compte ? <a href="{{ route('login') }}">Se connecter</a></p>
+    <p>{{ __('Déjà un compte ?') }} <a href="{{ route('login') }}">{{ __('Se connecter') }}</a></p>
   </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
-  (function () {
-    var form = document.getElementById('reg');
-    function sync() {
-      var role = (form.querySelector('[name=role]:checked') || {}).value;
-      var athlete = role !== 'recruiter';
-      form.querySelector('[data-athlete]').hidden = !athlete;
-      form.querySelector('[data-label-athlete]').hidden = !athlete;
-      form.querySelector('[data-label-recruiter]').hidden = athlete;
-      ['age'].forEach(function (n) { form.querySelector('[name=' + n + ']').required = athlete; });
-      var sport = (form.querySelector('[name=sport]:checked') || {}).value;
-      form.querySelectorAll('[data-sport]').forEach(function (fs) {
-        var on = athlete && fs.dataset.sport === sport;
-        fs.hidden = !on;
-        fs.querySelectorAll('input,select').forEach(function (el) { el.disabled = !on; });
-      });
-      var age = parseInt(form.querySelector('[name=age]').value, 10);
-      var minor = athlete && age > 0 && age < 18;
-      document.getElementById('guardian').hidden = !minor;
-      document.getElementById('guardian_phone').required = minor;
-    }
-    form.addEventListener('change', sync);
-    form.addEventListener('input', sync);
-    sync();
-  })();
-</script>
+@include('web.partials.signup-js')
 @endpush

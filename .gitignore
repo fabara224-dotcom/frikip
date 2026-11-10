@@ -32,3 +32,4 @@ yarn-error.log
 *.sqlite-journal
 .DS_Store
 /vendor-src
+/storage/sauvegardes/

@@ -8,6 +8,7 @@
       'classement' => ['Classement des sportifs', 'Le score de 0 à 100 de chaque sportif. Plus un poids est élevé, plus ce signal compte. 0 = ignoré.'],
       'fil' => ['Ce que voient les visiteurs', 'L’ordre des vidéos dans le fil de chaque personne.'],
       'moderation' => ['Modération automatique', 'Quand un contenu est retiré et quand un compte est sanctionné. Nudité et mise en danger de mineurs : blocage immédiat, toujours.'],
+      'app' => ['Application mobile', 'Réglages de l’application Android et iPhone (elle affiche le site Frikip).'],
       'mots' => ['Mots interdits', 'Un mot ou une expression par ligne. Refusés dès l’envoi dans les titres, commentaires, messages, profils et offres. Accents et majuscules ignorés.'],
   ];
 @endphp
@@ -66,10 +67,11 @@
 
       @if ($g === 'classement' && $preview)
         <section class="panel">
-          <h2>Les 8 meilleurs scores avec ces réglages</h2>
+          <h2>Les 20 meilleurs sportifs avec ces réglages</h2>
+          <p class="meta" style="margin:-4px 0 10px">C’est l’ordre de la page publique « Meilleurs sportifs » et de la carte du fil. <a href="{{ route('rankings') }}" target="_blank" rel="noopener">Voir la page</a></p>
           <ol class="top8">
             @foreach ($preview as $p)
-              <li><span>{{ $p['a']['name'] }}<small>{{ $p['a']['sport'] }} · {{ $p['a']['country'] }}@if (! empty($p['a']['demo'])) · profil d’exemple @endif</small></span><b>{{ $p['s'] }}</b></li>
+              <li><span><a href="{{ route('athletes.show', $p['a']['id']) }}" target="_blank" rel="noopener">{{ $p['a']['name'] }}</a><small>{{ $p['a']['sport'] }} · {{ $p['a']['country'] }}@if (! empty($p['a']['demo'])) · profil d’exemple @endif</small></span><b>{{ $p['s'] }}</b></li>
             @endforeach
           </ol>
         </section>

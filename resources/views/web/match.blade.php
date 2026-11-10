@@ -24,6 +24,9 @@
   <div id="match-detail" data-src="{{ route('matches.show.partial', $m['id']) }}" data-live="{{ $m['status'] === 'live' ? '1' : '0' }}">
     @include('web.partials.match-detail')
   </div>
+  @if ($m['status'] !== 'finished' || \Illuminate\Support\Facades\DB::table('room_messages')->where('room', 'm-'.$m['id'])->exists())
+    @include('web.partials.room', ['room' => 'm-'.$m['id']])
+  @endif
 </div>
 @endsection
 

@@ -57,6 +57,9 @@ class AppServiceProvider extends ServiceProvider
             $view->with($shared);
         });
 
+        // @buyable … @endbuyable : boutons d'achat numérique (Premium, Sans pub, Boost), masqués dans l'app mobile si les stores l'exigent
+        \Illuminate\Support\Facades\Blade::if('buyable', fn () => \App\Terrain\InApp::canBuyDigital());
+
         // Pastilles (messages non lus, notifications) et mode économie de données
         View::composer('layouts.web', function ($view) {
             $unread = 0;

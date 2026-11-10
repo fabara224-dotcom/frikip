@@ -19,8 +19,12 @@ class FeedController extends Controller
     {
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): View|\Illuminate\Http\RedirectResponse
     {
+        // Design Frikip : le fil s'ouvre dans /app (lien partagé ?v=… compris). Ancienne version : /fil?ancien=1
+        if (config('terrain.new_design') && ! $request->boolean('ancien')) {
+            return redirect()->to(route('app.v2').($request->query('v') ? '#v='.rawurlencode((string) $request->query('v')) : ''));
+        }
         // Plus de filtre par sport en haut du fil : c'est l'algorithme qui choisit (Admin > Algorithme)
         $sport = 'Tous';
         $items = app(\App\Terrain\Growth\Algorithm::class)->orderFeed($this->data->feed($sport));
@@ -40,6 +44,16 @@ class FeedController extends Controller
         if ($streams && app(\App\Terrain\Growth\Algorithm::class)->get('live_in_feed') && count($page) > 2) {
             array_splice($page, 2, 0, [['live' => $streams[0]]]);
         }
+        $page = $this->withDiscover($page);
+        // Carte « Meilleurs sportifs » (top 5 du pays du visiteur) entre les vidéos
+        $algo = app(\App\Terrain\Growth\Algorithm::class);
+        $at = max(5, min(40, (int) $algo->get('top_every')));
+        if ($algo->get('top_in_feed') && count($page) > $at) {
+            $top = array_slice(app(\App\Terrain\Growth\Insights::class)->ranking($this->data->athletes([]), ['sport' => 'Tous', 'country' => \App\Terrain\Region::viewer()]), 0, 5);
+            if (count($top) >= 3) {
+                array_splice($page, $at, 0, [['top' => $top]]);
+            }
+        }
 
         return view('web.feed', [
             'items' => $page, 'onAir' => $streams, 'scoreChoice' => $scores->get(), 'scoreOptions' => $scores->options(), 'sport' => $sport, 'sports' => SportFields::sports(), 'live' => $live,
@@ -54,7 +68,7 @@ class FeedController extends Controller
         $page = max(2, (int) $request->query('page', 2));
         $items = app(\App\Terrain\Growth\Algorithm::class)->orderFeed($this->data->feed($sport));
         $html = view('web.partials.feed-items', [
-            'items' => app(\App\Terrain\Growth\Ads::class)->inject(array_slice($items, ($page - 1) * self::PAGE, self::PAGE), ($page - 1) * self::PAGE, $this->data->user(), $sport),
+            'items' => $this->withDiscover(app(\App\Terrain\Growth\Ads::class)->inject(array_slice($items, ($page - 1) * self::PAGE, self::PAGE), ($page - 1) * self::PAGE, $this->data->user(), $sport)),
             'following' => $this->data->following(), 'me' => $this->data->user(),
         ])->render();
 
@@ -208,5 +222,32 @@ class FeedController extends Controller
         }
 
         return response()->json(['following' => $on, 'followers' => $after]);
+    }
+
+    /**
+     * Vidéos « Découvrir » (YouTube, créditées) glissées dans l'Accueil : une toutes les N vidéos,
+     * et l'Accueil entier tant que les membres n'ont encore rien publié.
+     */
+    private function withDiscover(array $page): array
+    {
+        $algo = app(\App\Terrain\Growth\Algorithm::class);
+        $every = max(3, min(30, (int) $algo->get('disc_every')));
+        $want = count($page) ? intdiv(count($page), $every) : 12;
+        $extra = app(\App\Terrain\Growth\Discover::class)->sample($want);
+        if (! $extra) {
+            return $page;
+        }
+        if (! count($page)) {
+            return array_map(fn ($v) => ['discover' => $v], $extra);
+        }
+        $out = [];
+        foreach ($page as $i => $it) {
+            $out[] = $it;
+            if (($i + 1) % $every === 0 && $extra) {
+                $out[] = ['discover' => array_shift($extra)];
+            }
+        }
+
+        return $out;
     }
 }
