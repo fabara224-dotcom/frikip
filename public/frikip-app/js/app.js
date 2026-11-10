@@ -8,8 +8,8 @@ window.Frikip = window.Frikip || {};
 
   Frikip.views.logoSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l-1.6 4H10.4l-.7 2.6h5.6L13.7 13.6H8.6L6.9 21H3z" fill="#03140A"/><circle cx="18.5" cy="17.5" r="3" fill="#03140A"/></svg>';
   // Logo façon maquette : ballon + éclair vert
-  Frikip.views.brandSvg = '<svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#fff"/><path d="M20 11l7 5-2.7 8.3h-8.6L13 16z" fill="#0a0d0b"/><path d="M20 3v8M27 16l7.5-3M24.3 24.3l4.7 7M15.7 24.3L11 31.3M13 16l-7.5-3" stroke="#0a0d0b" stroke-width="2.2"/><path d="M3 23c6-1 12 2 17 7 5-6 11-9 17-9" stroke="#1FE064" stroke-width="3.4" fill="none" stroke-linecap="round"/></svg>';
-  var logo = '<a class="brand" href="#accueil" aria-label="Frikip, accueil">' + Frikip.views.brandSvg + '<span><b>FRIKIP</b><small>Le réseau foot</small></span></a>';
+  Frikip.views.brandSvg = '<svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#16A34A"/><circle cx="20" cy="20" r="11.5" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M20 14.2l5.4 3.9-2.1 6.3h-6.6l-2.1-6.3z" fill="#fff"/></svg>';
+  var logo = '<a class="brand" href="#accueil" aria-label="Frikip, accueil">' + Frikip.views.brandSvg + '<span><b>Frikip</b><small>Le réseau foot</small></span></a>';
 
   var ROUTES = ['accueil', 'reels', 'explorer', 'publier', 'matchs', 'messages', 'profil', 'compte', 'notifications', 'menu'];
   var NO_RAIL = ['messages', 'publier'];

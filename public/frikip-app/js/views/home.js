@@ -90,7 +90,7 @@ Frikip.views = Frikip.views || {};
   function render() {
     root.innerHTML =
       '<header class="home-top"><span class="ht-side"></span>' +
-        '<a class="brand" href="#accueil" aria-label="Frikip, accueil">' + Frikip.views.brandSvg + '<span><b>FRIKIP</b><small>Le réseau foot</small></span></a>' +
+        '<a class="brand" href="#accueil" aria-label="Frikip, accueil">' + Frikip.views.brandSvg + '<span><b>Frikip</b><small>Le réseau foot</small></span></a>' +
         '<span class="ht-side"><a class="iconbtn" href="#explorer" aria-label="Rechercher">' + U.icon('search') + '</a>' +
         '<a class="iconbtn" href="#notifications" aria-label="Notifications">' + U.icon('bell') + '<span class="dot-badge num" data-badge="notifications" hidden></span></a></span></header>' +
       '<div class="home-tabs" role="group" aria-label="Fil">' +

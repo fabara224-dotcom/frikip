@@ -733,3 +733,119 @@ button.story { background: none; border: 0; padding: 0; color: var(--fg); }
 .p-tabs { overflow-x: auto; scrollbar-width: none; gap: 4px; }
 .p-tabs::-webkit-scrollbar { display: none; }
 .p-tabs button { flex: 1 0 auto; padding: 0 12px; white-space: nowrap; font-size: 14.5px; }
+
+/* =====================================================================
+   V5 — « Pro clair » : blanc, vert, texte presque noir, police Inter.
+   Sobre et professionnel (même esprit qu'AkademiaLife) : traits fins gris,
+   pas de lueurs, titres en minuscules. Les Reels restent en noir (vidéo).
+   ===================================================================== */
+:root {
+  --bg: #FFFFFF; --surface: #FFFFFF; --surface-2: #F4F6F5; --line: #E5E8E6;
+  --fg: #0B1210; --muted: #5F6B65;
+  --green: #16A34A; --green-ink: #FFFFFF; --green-soft: #ECF8F0; --green-dark: #15803D;
+  --live: #E5243B; --gold: #D99A00;
+  --card: #FFFFFF; --card-ink: #0B1210; --card-muted: #5F6B65; --tag: #15803D;
+  --f-display: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-body: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 20, .06);
+  color-scheme: light;
+}
+body { font-size: 15px; letter-spacing: -.005em; }
+:focus-visible { outline-color: var(--green); }
+
+/* titres : sobres, en minuscules */
+.topbar h1, .section-h h2, .page-title, .p-head h2, .pname { font-family: var(--f-body); text-transform: none; letter-spacing: -.02em; font-weight: 700; }
+.topbar h1 { font-size: 20px; }
+.section-h h2 { font-size: 17px; }
+.page-title { font-size: 26px; }
+.pname { font-size: 26px; }
+.cat b, .tile { text-transform: none; letter-spacing: -.01em; }
+.live-card .sc, .match .score, .live-row .sc, .mrow-mid b, .p-stats b, .pstats b, .season b, .mini-match b, .trend .rk, .match .when { font-family: var(--f-body); font-weight: 700; letter-spacing: -.02em; }
+.live-row .sc { font-size: 36px; } .match .score { font-size: 30px; } .pstats b { font-size: 20px; } .mrow-mid b { font-size: 17px; }
+.menu-group { font-size: 12px; letter-spacing: .04em; font-weight: 600; }
+.kv span { text-transform: none; letter-spacing: 0; font-size: 12.5px; }
+
+/* logo */
+.brand b, .logo-word b { font: 700 21px/1 var(--f-body); font-style: normal; letter-spacing: -.03em; color: var(--fg); text-shadow: none; text-transform: none; }
+.brand small, .logo-word small { display: none; }
+.brand-ball { width: 32px; height: 32px; filter: none; }
+.brand span { line-height: 1; }
+
+/* barres */
+.topbar, .home-top { background: rgba(255, 255, 255, .92); border-bottom: 1px solid var(--line); }
+.home-top { border-bottom: 0; }
+.iconbtn:hover { background: var(--surface-2); }
+.tabbar { background: #fff; border-top: 1px solid var(--line); }
+.tab { color: var(--muted); font-weight: 500; }
+.tab[aria-current="page"] { color: var(--green); font-weight: 600; }
+.tab[aria-current="page"]::before { display: none; }
+.tab-plus span { width: 46px; height: 46px; border-radius: 14px; box-shadow: none; transform: none; }
+.tab-plus:hover span { transform: none; background: var(--green-dark); }
+
+/* boutons et onglets */
+.btn, .pill-follow { font-weight: 600; box-shadow: none; }
+.btn-green, .pill-follow { background: var(--green); color: #fff; }
+.btn-green:hover, .pill-follow:hover { background: var(--green-dark); }
+.pill-follow[aria-pressed="true"] { background: var(--surface-2); color: var(--fg); border: 1px solid var(--line); }
+.home-tabs button, .home-reels, .chip { font-weight: 600; font-size: 14px; background: #fff; border: 1px solid var(--line); color: var(--fg); box-shadow: none; }
+.home-tabs button[aria-pressed="true"], .chip[aria-pressed="true"], .seg-tabs button[aria-pressed="true"] { background: var(--green); color: #fff; border-color: var(--green); box-shadow: none; }
+.seg-tabs { background: var(--surface-2); }
+.home-reels svg.i { color: var(--fg); }
+
+/* stories */
+.story-ring { background: var(--green); animation: none; padding: 2.5px; }
+.story-ring .av { animation: none; box-shadow: 0 0 0 2.5px #fff; }
+.story-ring.seen { background: #D5DAD7; }
+.story-ring.create { border: 1.5px dashed #C9CFCB; }
+.story-plus { box-shadow: none; width: 36px; height: 36px; }
+.story-name { font-weight: 500; color: var(--fg); }
+.story-ring.live { background: var(--live); animation: none; }
+.story-live { background: var(--live); box-shadow: 0 0 0 2px #fff; font-weight: 700; }
+
+/* fil */
+[data-view="accueil"] { background: #F7F8F7; }
+.home-top, .home-tabs, .stories { background: transparent; }
+.post { border: 1px solid var(--line); box-shadow: var(--shadow-sm); border-radius: 16px; animation: none; }
+.post-h .av { box-shadow: none; }
+.post-who b { font-weight: 600; }
+.post-media { border-radius: 12px; }
+.post-actions button { font-weight: 500; font-size: 14px; color: var(--muted); }
+.post-actions button:hover { background: var(--surface-2); color: var(--fg); }
+.live-post { color: var(--fg); background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow-sm); border-radius: 16px; }
+.live-top { color: var(--muted); font-weight: 500; }
+.live-cta { color: var(--green); font-weight: 600; }
+.pill-live { background: var(--live); font-weight: 700; letter-spacing: .04em; }
+
+/* Explorer : tuiles blanches, icône verte */
+.tile, .tile.c-red, .tile.c-blue, .tile.c-orange, .tile.c-violet, .tile.c-green, .tile.c-sky, .tile.c-pink, .tile.c-yt, .tile.c-teal {
+  background: #fff; color: var(--fg); border: 1px solid var(--line); box-shadow: var(--shadow-sm); font-weight: 600; border-radius: 14px; aspect-ratio: auto; min-height: 96px; }
+.tile::after { display: none; }
+.tile:hover { transform: none; border-color: var(--green); }
+.tile .tile-ic { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--green-soft); color: var(--green); }
+.tile .tile-ic svg.i { width: 22px; height: 22px; }
+.create-item { background: #fff; border: 1px solid var(--line); }
+.create-item .tile-ic, .tile-ic.c-green, .tile-ic.c-red, .tile-ic.c-violet, .tile-ic.c-orange, .tile-ic.c-blue, .tile-ic.c-sky { background: var(--green-soft); color: var(--green); }
+.tc-media { border-radius: 12px; }
+
+/* matchs et lives */
+.match, .mlist, .live-row-card, .me-card, .card { box-shadow: var(--shadow-sm); }
+.match.is-live { background: #fff; border-color: color-mix(in srgb, var(--live) 35%, var(--line)); }
+.live-row-card.on { background: #fff; border-color: color-mix(in srgb, var(--live) 35%, var(--line)); }
+.lrc-eye { color: var(--live); font-weight: 600; }
+.partner-card { color: var(--fg); background: var(--green-soft); border: 1px solid color-mix(in srgb, var(--green) 30%, var(--line)); }
+.partner-card small { color: var(--muted); }
+.chat { background: var(--surface-2); }
+.chat-msg { background: #fff; border: 1px solid var(--line); }
+.chat-msg b { color: var(--green-dark); }
+.chat-msg.me { background: var(--green-soft); border-color: color-mix(in srgb, var(--green) 25%, var(--line)); }
+.reacts button { background: var(--surface-2); }
+
+/* profil */
+.pcover { background: var(--surface-2); }
+.pid-av .av { box-shadow: 0 0 0 4px #fff; }
+.pid-cam { box-shadow: 0 0 0 3px #fff; }
+.me-card em { color: var(--green); font-weight: 600; }
+.logout, .menu-item.danger { color: #D92D20; }
+
+/* Reels : on garde le noir pour la vidéo */
+[data-view="reels"] { --bg: #000; --surface: #121614; --surface-2: #1C221F; --line: #2A322E; --fg: #FFFFFF; --muted: #A3ADA8; color-scheme: dark; background: #000; color: #fff; }
