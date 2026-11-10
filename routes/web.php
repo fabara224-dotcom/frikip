@@ -69,6 +69,38 @@ Route::middleware(SetLocale::class)->group(function () {
     });
     Route::post('/suppression-compte/annuler', [AccountDeletionController::class, 'cancel'])->name('deletion.cancel');
 
+    // ---- Design Frikip (application web /app) et son API JSON
+    Route::get('/app', [\App\Http\Controllers\AppShellController::class, 'show'])->name('app.v2');
+    Route::prefix('api/v1')->name('v1.')->middleware(Throttle::class.':240,1')->group(function () {
+        Route::get('/me', [\App\Http\Controllers\ApiController::class, 'me'])->name('me');
+        Route::get('/feed', [\App\Http\Controllers\ApiController::class, 'feed'])->name('feed');
+        Route::get('/explore', [\App\Http\Controllers\ApiController::class, 'explore'])->name('explore');
+        Route::get('/search', [\App\Http\Controllers\ApiController::class, 'search'])->name('search');
+        Route::get('/discover', [\App\Http\Controllers\ApiController::class, 'discover'])->name('discover');
+        Route::get('/lives', [\App\Http\Controllers\ApiController::class, 'lives'])->name('lives');
+        Route::get('/matches', [\App\Http\Controllers\ApiController::class, 'matches'])->name('matches');
+        Route::get('/matches/{id}', [\App\Http\Controllers\ApiController::class, 'matchShow'])->name('match');
+        Route::get('/users/{user}', [\App\Http\Controllers\ApiController::class, 'user'])->name('user');
+        Route::get('/users/{user}/videos', [\App\Http\Controllers\ApiController::class, 'userVideos'])->name('user.videos');
+        Route::get('/videos/{video}/comments', [\App\Http\Controllers\ApiController::class, 'comments'])->name('comments');
+        Route::post('/videos/{video}/share', [\App\Http\Controllers\ApiController::class, 'share'])->middleware(Throttle::class.':30,1')->name('share');
+        Route::middleware(TerrainAuth::class)->group(function () {
+            Route::post('/videos/{video}/like', [\App\Http\Controllers\ApiController::class, 'like'])->middleware(Throttle::class.':60,1')->name('like');
+            Route::post('/videos/{video}/save', [\App\Http\Controllers\ApiController::class, 'save'])->middleware(Throttle::class.':60,1')->name('save');
+            Route::get('/saved', [\App\Http\Controllers\ApiController::class, 'saved'])->name('saved');
+            Route::post('/videos/{video}/comments', [\App\Http\Controllers\ApiController::class, 'addComment'])->middleware(Throttle::class.':10,1')->name('comment');
+            Route::post('/comments/{comment}/like', [\App\Http\Controllers\ApiController::class, 'likeComment'])->middleware(Throttle::class.':60,1')->name('comment.like');
+            Route::post('/users/{user}/follow', [\App\Http\Controllers\ApiController::class, 'follow'])->middleware(Throttle::class.':60,1')->name('follow');
+            Route::get('/conversations', [\App\Http\Controllers\ApiController::class, 'conversations'])->name('conversations');
+            Route::post('/conversations', [\App\Http\Controllers\ApiController::class, 'openConversation'])->name('conversations.open');
+            Route::get('/conversations/{partner}', [\App\Http\Controllers\ApiController::class, 'conversation'])->name('conversation');
+            Route::post('/conversations/{partner}/messages', [\App\Http\Controllers\ApiController::class, 'sendMessage'])->middleware(Throttle::class.':30,1')->name('message');
+            Route::get('/notifications', [\App\Http\Controllers\ApiController::class, 'notifications'])->name('notifications');
+            Route::post('/notifications/read', [\App\Http\Controllers\ApiController::class, 'notificationsRead'])->name('notifications.read');
+            Route::post('/me/photo', [\App\Http\Controllers\ApiController::class, 'uploadPhoto'])->middleware(Throttle::class.':10,1')->name('photo');
+        });
+    });
+
     // ---- Comptes
     Route::get('/connexion', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/connexion', [AuthController::class, 'login'])->middleware(Throttle::class.':10,1');

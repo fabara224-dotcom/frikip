@@ -52,4 +52,12 @@ class ExploreController extends Controller
     {
         return view('web.create', ['me' => $this->data->user(), 'cfReady' => \App\Terrain\Growth\UserLive::configured()]);
     }
+
+    /** #hashtags d'un texte, en minuscules et sans le #. */
+    public static function tags(string $text): array
+    {
+        preg_match_all('/#([\p{L}\p{N}_]{2,40})/u', $text, $m);
+
+        return array_values(array_unique(array_map(fn ($t) => \Illuminate\Support\Str::lower($t), $m[1])));
+    }
 }

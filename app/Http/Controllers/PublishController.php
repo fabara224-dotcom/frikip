@@ -199,6 +199,9 @@ class PublishController extends Controller
         }
         try {
             $id = $this->data->publishVideo($data, $file);
+            if ($id) {
+                \App\Terrain\Growth\Posters::make($id);   // image d'aperçu (si ffmpeg est installé)
+            }
         } catch (Throwable $e) {
             report($e);
             $msg = __('L’envoi a échoué. Réessaie avec une meilleure connexion.');

@@ -19,8 +19,12 @@ class FeedController extends Controller
     {
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): View|\Illuminate\Http\RedirectResponse
     {
+        // Design Frikip : le fil s'ouvre dans /app (lien partagé ?v=… compris). Ancienne version : /fil?ancien=1
+        if (config('terrain.new_design') && ! $request->boolean('ancien')) {
+            return redirect()->to(route('app.v2').($request->query('v') ? '#v='.rawurlencode((string) $request->query('v')) : ''));
+        }
         // Plus de filtre par sport en haut du fil : c'est l'algorithme qui choisit (Admin > Algorithme)
         $sport = 'Tous';
         $items = app(\App\Terrain\Growth\Algorithm::class)->orderFeed($this->data->feed($sport));

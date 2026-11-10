@@ -3,14 +3,15 @@
     $app = config('terrain.app_name');
     $isRecruiter = ($me['role'] ?? null) === 'recruiter';
     $isFan = ($me['role'] ?? null) === 'fan';
-    // 5 onglets : Accueil, Explorer, Publier (au centre), Messages, Profil
-    $publishTo = $me ? (($me['role'] ?? null) === 'athlete' ? 'publish' : 'create') : 'register';
+    // Même barre que l'application (/app) : Accueil, Explorer, [+], Matchs, Messages, Profil
+    $appUrl = fn ($screen) => route('app.v2').'#'.$screen;
     $tabs = [
-        ['feed', __('Accueil'), 'home'],
-        ['explore', __('Explorer'), 'compass'],
-        [$publishTo, __('Publier'), 'plus', 'pub'],
-        [$me ? 'messages' : 'login', __('Messages'), 'msg', 'msgs'],
-        [$me ? 'me' : 'login', $me ? __('Profil') : __('Connexion'), 'user'],
+        ['accueil', __('Accueil'), 'home', '', $appUrl('accueil')],
+        ['explorer', __('Explorer'), 'search', '', $appUrl('explorer')],
+        ['publier', __('Publier'), 'plus', 'pub', $me ? (($me['role'] ?? null) === 'athlete' ? $appUrl('publier') : route('create')) : route('register')],
+        ['matchs', __('Matchs'), 'ball', '', $appUrl('matchs')],
+        ['messages', __('Messages'), 'msg', 'msgs', $me ? $appUrl('messages') : route('login')],
+        ['profil', $me ? __('Profil') : __('Connexion'), 'user', '', $me ? $appUrl('profil') : route('login')],
     ];
     $more = [
         ['live', __('Matchs en direct'), 'live'], ['matches', __('Matchs et scores'), 'score'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'], ['rankings', __('Meilleurs joueurs'), 'star'], ['events', __('Détections'), 'calendar'],
@@ -56,8 +57,22 @@
         'compass' => '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
         'star' => '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
         'coach' => '<circle cx="9" cy="7" r="3.2"/><path d="M3 21c.5-4 2.8-6.3 6-6.3 1.5 0 2.9.5 4 1.5"/><path d="m14.5 14.5 2.2 2.2 4.3-4.7"/>',
+        'ball' => '<circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 5h-5L8 10z"/><path d="M12 3v4M16 10l4.5-1.5M14.5 15l2.5 4M9.5 15L7 19M8 10L3.5 8.5"/>',
     ];
     $current = request()->route()?->getName();
+    // Onglet allumé : Explorer pour les pages qu'il ouvre, Matchs pour les matchs et les directs, Profil pour le reste du compte
+    $tabOn = function (string $tab) use ($current) {
+        $c = (string) $current;
+        return match ($tab) {
+            'accueil' => in_array($c, ['feed', 'app.v2'], true),
+            'explorer' => (bool) preg_match('/^(explore|challenges|coaching|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', $c),
+            'matchs' => (bool) preg_match('/^(matches|live|watch)/', $c),
+            'messages' => str_starts_with($c, 'messages') || str_starts_with($c, 'calls'),
+            'publier' => in_array($c, ['publish', 'create'], true) || str_starts_with($c, 'live.go') || str_starts_with($c, 'live.studio'),
+            'profil' => (bool) preg_match('/^(me|profile|settings|stats|verification|payments|premium|notifications|referral|blocks|shortlists|alerts|contacts|videos\.saved|coaching\.follow)/', $c),
+            default => false,
+        };
+    };
     $active = fn ($name) => $current === $name || ($name === 'matches' && str_starts_with((string) $current, 'matches')) || ($name === 'search' && $current === 'compare')
         || ($name === 'challenges' && str_starts_with((string) $current, 'challenges')) || ($name === 'coaching' && str_starts_with((string) $current, 'coaching'))
         // Explorer reste allumé sur toutes les pages qu'il ouvre
@@ -66,7 +81,7 @@
         || ($name === 'publish' && in_array($current, ['publish', 'create'], true));
 @endphp
 <!doctype html>
-<html lang="{{ app()->getLocale() }}" data-theme="light">
+<html lang="{{ app()->getLocale() }}" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -78,22 +93,27 @@
 <link rel="stylesheet" href="{{ asset('css/terrain.css') }}">
 <link rel="stylesheet" href="{{ asset('css/web.css') }}">
 <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
-<meta name="theme-color" content="#0B2318">
+<meta name="theme-color" content="#050706">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="icon" href="{{ asset('icons/favicon-32.png') }}" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
 <link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=3">
+{{-- Design Frikip (noir, vert vif, blanc) : le même que l'application /app --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ asset('css/frikip-v5.css') }}?v={{ @filemtime(public_path('css/frikip-v5.css')) }}">
 </head>
 <body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }} {{ \App\Terrain\InApp::active() ? 'in-app in-app-'.\App\Terrain\InApp::platform() : '' }}">
 <header class="apptop">
   <div class="apptop-in gut">
-    <a class="logo" href="{{ route('feed') }}" aria-label="{{ $app }}"><img src="{{ asset('brand/logo.svg') }}" alt="{{ $app }}" width="112" height="30"></a>
+    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#fff"/><path d="M20 11l7 5-2.7 8.3h-8.6L13 16z" fill="#0a0d0b"/><path d="M20 3v8M27 16l7.5-3M24.3 24.3l4.7 7M15.7 24.3L11 31.3M13 16l-7.5-3" stroke="#0a0d0b" stroke-width="2.2"/><path d="M3 23c6-1 12 2 17 7 5-6 11-9 17-9" stroke="#1FE064" stroke-width="3.4" fill="none" stroke-linecap="round"/></svg><span><b>FRIKIP</b><small>{{ __('Le réseau foot') }}</small></span></a>
     <nav class="appnav" aria-label="Application">
       @foreach ($tabs as $t)
-        @continue(($t[3] ?? '') === 'msgs' || ($t[0] === 'login' && ($t[3] ?? '') === ''))
-        <a href="{{ route($t[0]) }}" class="{{ ($t[3] ?? '') === 'pub' ? 'navpub' : '' }}" @if ($active($t[0])) aria-current="page" @endif>{{ $t[1] }}</a>
+        @continue(($t[3] ?? '') === 'pub')
+        <a href="{{ $t[4] }}" @if ($tabOn($t[0])) aria-current="page" @endif>{{ $t[1] }}</a>
       @endforeach
     </nav>
     <div class="apptop-actions">
@@ -151,16 +171,19 @@
 </footer>
 @endunless
 
-<nav class="tabbar" aria-label="Onglets">
+<nav class="tabbar v5tabs" aria-label="Onglets">
   @foreach ($tabs as $t)
     @php
-      [$name, $label, $icon] = $t;
-      $kind = $t[3] ?? '';
+      [$name, $label, $icon, $kind, $href] = $t;
     @endphp
-    <a href="{{ route($name) }}" class="{{ $kind === 'pub' ? 'tabpub' : '' }}" @if ($active($name) && ! ($kind === 'msgs' && $name === 'login')) aria-current="page" @endif>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons[$icon] !!}</svg>{{ $label }}
-      @if ($kind === 'msgs' && ($unread ?? 0))<span class="tbadge">{{ $unread }}</span>@endif
-    </a>
+    @if ($kind === 'pub')
+      <a href="{{ $href }}" class="v5plus" aria-label="{{ $label }}" @if ($tabOn($name)) aria-current="page" @endif><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a>
+    @else
+      <a href="{{ $href }}" @if ($tabOn($name)) aria-current="page" @endif>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons[$icon] !!}</svg>{{ $label }}
+        @if ($kind === 'msgs' && ($unread ?? 0))<span class="tbadge">{{ $unread }}</span>@endif
+      </a>
+    @endif
   @endforeach
 </nav>
 

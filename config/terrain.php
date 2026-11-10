@@ -13,6 +13,8 @@ return [
     'sports' => env('TERRAIN_SPORTS', 'Football'),
 
     'app_name' => env('TERRAIN_APP_NAME', 'Frikip'),
+    // Design Frikip (/app) : true = l'accueil de l'application (/fil) ouvre directement /app (ancienne version : /fil?ancien=1)
+    'new_design' => (bool) env('FRIKIP_NOUVEAU_DESIGN', true),
     'editor' => env('TERRAIN_EDITOR', 'Fabara'),
     'editor_address' => env('TERRAIN_EDITOR_ADDRESS', ''),
     'country' => env('TERRAIN_COUNTRY', 'Guinée'),

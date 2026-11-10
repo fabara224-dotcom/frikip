@@ -45,7 +45,7 @@ class Rooms
         }
         // Pas plus d'un message toutes les 2 secondes par personne
         $last = DB::table('room_messages')->where('user_key', $user['id'])->orderByDesc('id')->value('created_at');
-        if ($last && now()->diffInSeconds(\Illuminate\Support\Carbon::parse($last)) < 2 && $kind === 'text') {
+        if ($last && abs(now()->diffInSeconds(\Illuminate\Support\Carbon::parse($last))) < 2 && $kind === 'text') {
             throw new RuntimeException(__('Doucement : attends deux secondes entre deux messages.'));
         }
 
