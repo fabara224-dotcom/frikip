@@ -104,7 +104,7 @@
 {{-- Design Frikip (noir, vert vif, blanc) : le même que l'application /app --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="{{ asset('css/frikip-v5.css') }}?v={{ @filemtime(public_path('css/frikip-v5.css')) }}">
 </head>
 <body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }} {{ \App\Terrain\InApp::active() ? 'in-app in-app-'.\App\Terrain\InApp::platform() : '' }}">
