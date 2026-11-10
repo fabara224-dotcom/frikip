@@ -9,8 +9,8 @@
         ['accueil', __('Accueil'), 'home', '', $appUrl('accueil')],
         ['explorer', __('Explorer'), 'search', '', $appUrl('explorer')],
         ['publier', __('Publier'), 'plus', 'pub', $me ? (($me['role'] ?? null) === 'athlete' ? $appUrl('publier') : route('create')) : route('register')],
+        ['reels', __('Reels'), 'reels', '', $appUrl('reels')],
         ['matchs', __('Matchs'), 'ball', '', $appUrl('matchs')],
-        ['messages', __('Messages'), 'msg', 'msgs', $me ? $appUrl('messages') : route('login')],
         ['profil', $me ? __('Profil') : __('Connexion'), 'user', '', $me ? $appUrl('profil') : route('login')],
     ];
     $more = [
@@ -45,12 +45,15 @@
     $more[] = ['partners', __('Devenir partenaire'), 'handshake'];
     $more[] = ['audio-help', __('Aide audio'), 'sound'];
     $icons = [
-        'home' => '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+        'home' => '<path class="fillable" d="M3 10.4 12 3l9 7.4V21h-6.2v-6.6H9.2V21H3z"/>',
+        'reels' => '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M9.2 3l3 5.5M15.2 3l3 5.5"/><path d="M10.2 12.2v5.6l4.8-2.8z"/>',
+        'heart' => '<path d="M16.8 3.5c-1.9 0-3.6 1-4.8 2.7-1.2-1.7-2.9-2.7-4.8-2.7C4.3 3.5 2 5.9 2 8.9c0 5.9 8.6 11.1 10 11.6 1.4-.5 10-5.7 10-11.6 0-3-2.3-5.4-5.2-5.4z"/>',
+        'messenger' => '<path d="M12 2.8c-5.2 0-9.2 3.8-9.2 8.8 0 2.7 1.1 5 3 6.6V21l2.8-1.5c1 .3 2.2.5 3.4.5 5.2 0 9.2-3.8 9.2-8.8S17.2 2.8 12 2.8z"/><path d="m7 14 3.5-3.8 2.3 2L17 8.3l-3.5 3.8-2.3-2z"/>',
         'score' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 5v14M7 10v4M15.5 10h2v4h-2z"/>',
-        'search' => '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
-        'plus' => '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/>',
+        'search' => '<circle cx="10.5" cy="10.5" r="7.5"/><path d="M16.2 16.2 21 21"/>',
+        'plus' => '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 7.5v9M7.5 12h9"/>',
         'work' => '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>',
-        'user' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+        'user' => '<circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="10" r="3.2"/><path d="M6.4 18.4c1.3-2.2 3.3-3.3 5.6-3.3s4.3 1.1 5.6 3.3"/>',
         'msg' => '<path d="M4 5h16v11H8l-4 4z"/>',
         'bell' => '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
         'trophy' => '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/>',
@@ -104,13 +107,13 @@
 {{-- Design Frikip (noir, vert vif, blanc) : le même que l'application /app --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Nunito:wght@400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="{{ asset('css/frikip-v5.css') }}?v={{ @filemtime(public_path('css/frikip-v5.css')) }}">
 </head>
 <body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }} {{ \App\Terrain\InApp::active() ? 'in-app in-app-'.\App\Terrain\InApp::platform() : '' }}">
 <header class="apptop">
   <div class="apptop-in gut">
-    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#16A34A"/><circle cx="20" cy="20" r="11.5" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M20 14.2l5.4 3.9-2.1 6.3h-6.6l-2.1-6.3z" fill="#fff"/></svg><span><b>Frikip</b></span></a>
+    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><span><b class="ig-logo">Frikip</b></span></a>
     <nav class="appnav" aria-label="Application">
       @foreach ($tabs as $t)
         @continue(($t[3] ?? '') === 'pub')
@@ -138,8 +141,8 @@
         </nav>
       </details>
       @if ($me)
-        <a class="iconbtn msgbtn" href="{{ route('notifications') }}" aria-label="{{ __('Notifications') }}" title="{{ __('Notifications') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['bell'] !!}</svg><span class="badge" id="bell-badge" @unless ($bell ?? 0) hidden @endunless>{{ $bell ?? 0 }}</span></a>
-        <a class="iconbtn msgbtn" href="{{ route('messages') }}" aria-label="Messages{{ ($unread ?? 0) ? ' ('.$unread.' non lus)' : '' }}" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['msg'] !!}</svg><span class="badge" id="unread-badge" @unless ($unread ?? 0) hidden @endunless>{{ $unread ?? 0 }}</span></a>
+        <a class="iconbtn msgbtn" href="{{ route('notifications') }}" aria-label="{{ __('Notifications') }}" title="{{ __('Notifications') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['heart'] !!}</svg><span class="badge" id="bell-badge" @unless ($bell ?? 0) hidden @endunless>{{ $bell ?? 0 }}</span></a>
+        <a class="iconbtn msgbtn" href="{{ route('messages') }}" aria-label="Messages{{ ($unread ?? 0) ? ' ('.$unread.' non lus)' : '' }}" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons['messenger'] !!}</svg><span class="badge" id="unread-badge" @unless ($unread ?? 0) hidden @endunless>{{ $unread ?? 0 }}</span></a>
         <span class="rolechip">{{ \App\Terrain\Roles::labelFor($me) }}@if ($demo) · démo @endif</span>
       @else
         <a class="btn sm" href="{{ route('phone.login') }}">{{ __('Créer un compte') }}</a>
@@ -178,10 +181,10 @@
       [$name, $label, $icon, $kind, $href] = $t;
     @endphp
     @if ($kind === 'pub')
-      <a href="{{ $href }}" class="v5plus" aria-label="{{ $label }}" @if ($tabOn($name)) aria-current="page" @endif><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a>
+      <a href="{{ $href }}" class="v5plus" aria-label="{{ $label }}" @if ($tabOn($name)) aria-current="page" @endif><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! $icons['plus'] !!}</svg></span></a>
     @else
-      <a href="{{ $href }}" @if ($tabOn($name)) aria-current="page" @endif>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $icons[$icon] !!}</svg>{{ $label }}
+      <a href="{{ $href }}" aria-label="{{ $label }}" title="{{ $label }}" @if ($tabOn($name)) aria-current="page" @endif>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">{!! $icons[$icon] !!}</svg><span class="sr-only">{{ $label }}</span>
         @if ($kind === 'msgs' && ($unread ?? 0))<span class="tbadge">{{ $unread }}</span>@endif
       </a>
     @endif

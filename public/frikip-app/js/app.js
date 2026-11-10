@@ -8,7 +8,7 @@ window.Frikip = window.Frikip || {};
 
   Frikip.views.logoSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l-1.6 4H10.4l-.7 2.6h5.6L13.7 13.6H8.6L6.9 21H3z" fill="#03140A"/><circle cx="18.5" cy="17.5" r="3" fill="#03140A"/></svg>';
   // Logo façon maquette : ballon + éclair vert
-  Frikip.views.brandSvg = '<svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#16A34A"/><circle cx="20" cy="20" r="11.5" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M20 14.2l5.4 3.9-2.1 6.3h-6.6l-2.1-6.3z" fill="#fff"/></svg>';
+  Frikip.views.brandSvg = '<svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#C9A227"/><circle cx="20" cy="20" r="11.5" fill="#fff" stroke="#0B3D2E" stroke-width="2.4"/><path d="M20 14.2l5.4 3.9-2.1 6.3h-6.6l-2.1-6.3z" fill="#0B3D2E"/></svg>';
   var logo = '<a class="brand" href="#accueil" aria-label="Frikip, accueil">' + Frikip.views.brandSvg + '<span><b>Frikip</b><small>Le réseau foot</small></span></a>';
 
   var ROUTES = ['accueil', 'reels', 'explorer', 'publier', 'matchs', 'messages', 'profil', 'compte', 'notifications', 'menu'];
@@ -22,8 +22,8 @@ window.Frikip = window.Frikip || {};
       '<span style="color:var(--muted)">Crée ton compte en 30 secondes avec ton numéro de téléphone.</span>' +
       '<a class="btn btn-green" href="' + U.esc(C.loginUrl || '#accueil') + '">Se connecter ou s’inscrire</a></div></div>';
   }
-  var NAV = [['accueil', 'Accueil', 'home'], ['reels', 'Reels', 'film'], ['explorer', 'Explorer', 'search'], ['matchs', 'Matchs', 'ball'], ['messages', 'Messages', 'msg', 'messages'], ['notifications', 'Notifications', 'bell', 'notifications'], ['profil', 'Profil', 'user']];
-  var TABS = [['accueil', 'Accueil', 'home'], ['explorer', 'Explorer', 'search'], ['publier', 'Publier', 'plus'], ['matchs', 'Matchs', 'ball'], ['messages', 'Messages', 'msg', 'messages'], ['profil', 'Profil', 'user']];
+  var NAV = [['accueil', 'Accueil', 'home'], ['explorer', 'Explorer', 'search'], ['reels', 'Reels', 'reels'], ['matchs', 'Matchs', 'ball'], ['messages', 'Messages', 'messenger', 'messages'], ['notifications', 'Notifications', 'heart', 'notifications'], ['profil', 'Profil', 'user']];
+  var TABS = [['accueil', 'Accueil', 'home'], ['explorer', 'Explorer', 'search'], ['publier', 'Publier', 'plusSq'], ['reels', 'Reels', 'reels'], ['matchs', 'Matchs', 'ball'], ['profil', 'Profil', 'user']];
 
   function shell() {
     var app = document.getElementById('app');
@@ -36,8 +36,8 @@ window.Frikip = window.Frikip || {};
       '<main class="main" id="main">' + ROUTES.map(function (r) { return '<section class="view" data-view="' + r + '" hidden></section>'; }).join('') + '</main>' +
       '<aside class="rail" aria-label="À la une" data-rail></aside>' +
       '<nav class="tabbar" aria-label="Onglets">' + TABS.map(function (t) {
-        if (t[0] === 'publier') return '<a class="tab-plus" href="#publier" data-nav="publier" aria-label="Publier une vidéo"><span>' + U.icon('plus') + '</span></a>';
-        return '<a class="tab" href="#' + t[0] + '" data-nav="' + t[0] + '">' + U.icon(t[2]) + t[1] + (t[3] ? '<span class="dot-badge num" data-badge="' + t[3] + '" hidden></span>' : '') + '</a>';
+        if (t[0] === 'publier') return '<a class="tab-plus" href="#publier" data-nav="publier" aria-label="Publier une vidéo"><span>' + U.icon('plusSq') + '</span></a>';
+        return '<a class="tab" href="#' + t[0] + '" data-nav="' + t[0] + '" aria-label="' + t[1] + '" title="' + t[1] + '">' + U.icon(t[2]) + '<span class="tab-l">' + t[1] + '</span>' + (t[3] ? '<span class="dot-badge num" data-badge="' + t[3] + '" hidden></span>' : '') + '</a>';
       }).join('') + '</nav>';
   }
 

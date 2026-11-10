@@ -893,3 +893,76 @@ body { font-size: 15px; font-weight: 500; }
 .home-top > .ht-side:first-child:empty, .home-top > .ht-side:first-child:not(:has(*)) { display: none; }
 .home-top .brand { justify-self: start; padding-left: 4px; }
 .post-who { align-items: flex-start; } .post-who b { justify-content: flex-start; }
+
+/* =====================================================================
+   V8 — mise en page Instagram : logo écrit, cœur + messagerie en haut,
+   barre du bas en icônes seules, publications « Instagram ».
+   ===================================================================== */
+.ig-logo { font: 400 34px/1 "Grand Hotel", "Brush Script MT", cursive; color: var(--fg); letter-spacing: .01em; }
+.home-top { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px 4px 14px; }
+.feed-switch { display: inline-flex; align-items: center; gap: 4px; color: var(--fg); }
+.feed-switch svg.chev { width: 16px; height: 16px; transform: rotate(-90deg); stroke-width: 2.6; transition: transform .2s; }
+.feed-open .feed-switch svg.chev { transform: rotate(90deg); }
+.home-top .ht-side { display: flex; gap: 2px; }
+.home-top .iconbtn svg.i { width: 26px; height: 26px; stroke-width: 1.9; }
+/* le choix du fil s'ouvre sous le logo, comme le menu d'Instagram */
+.home-tabs { display: none; }
+.feed-open .home-tabs { display: flex; position: absolute; top: 52px; left: 12px; z-index: 30; flex-direction: column; align-items: stretch; gap: 0; padding: 6px; background: #fff; border-radius: 14px; box-shadow: 0 8px 30px rgba(0, 0, 0, .18); min-width: 190px; }
+.feed-open .home-tabs button, .feed-open .home-tabs .home-reels { justify-content: flex-start; min-height: 44px; padding: 0 12px; border-radius: 8px; box-shadow: none; color: var(--fg); font-weight: 700; margin: 0; }
+.feed-open .home-tabs button[aria-pressed="true"] { box-shadow: none; color: var(--green); }
+.feed-open .home-tabs button:hover, .feed-open .home-tabs .home-reels:hover { background: var(--surface-2); }
+[data-view="accueil"] { position: absolute; }
+
+/* stories plus grandes */
+.stories { gap: 12px; padding-top: 6px; }
+.story { width: 76px; }
+.story-ring { width: 74px; height: 74px; }
+.av-story { --s: 66px; }
+.story-name { max-width: 76px; font-weight: 500; }
+.story-ring.seen + .story-name { color: var(--muted); }
+.story-plus { width: 24px; height: 24px; }
+
+/* publications comme Instagram */
+.post { padding: 0 0 14px; border-bottom: 0; }
+.post-h { padding: 10px 12px; }
+.post-h .av { --s: 34px; }
+.post-who { flex-direction: row; align-items: center; gap: 6px; }
+.post-who small { display: none; }
+.post-who b { font-size: 14px; }
+.post-media { aspect-ratio: 4 / 5; }
+.post-dur, .post-views { display: none; }
+.post-play { width: 58px; height: 58px; background: rgba(0, 0, 0, .35); }
+.post-actions { gap: 0; padding: 6px 6px 0; }
+.post-actions button { min-height: 40px; padding: 0 8px; }
+.post-actions svg.i, .post-actions .ci { width: 26px; height: 26px; stroke-width: 1.9; }
+.post-actions [data-like][aria-pressed="true"] .ci { fill: #ED4956; stroke: #ED4956; }
+.post-meta { padding: 0 14px; display: flex; flex-direction: column; gap: 4px; }
+.post-likes { font-size: 14px; font-weight: 800; }
+.post-meta .post-text { margin: 0; font-size: 14px; line-height: 1.4; }
+.post-meta .post-text b { font-weight: 800; margin-right: 2px; }
+.post-cmts { align-self: flex-start; color: var(--muted); font-size: 14px; padding: 0; }
+.post-time { color: var(--muted); font-size: 11.5px; text-transform: lowercase; }
+
+/* barre du bas : icônes seules */
+.tabbar { grid-template-columns: repeat(6, 1fr); align-items: center; height: 54px; padding-top: 0; }
+.tab, .tab-plus { height: 50px; display: grid; place-items: center; gap: 0; padding: 0; color: var(--fg); }
+.tab .tab-l { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.tab svg.i, .tab-plus svg.i { width: 27px; height: 27px; stroke-width: 1.9; }
+.tab-plus span { width: auto; height: auto; border: 0; border-radius: 0; background: none; display: grid; place-items: center; }
+.tab-plus svg.i { stroke: var(--fg); stroke-width: 1.9; width: 27px; height: 27px; }
+.tab-plus:hover span { border: 0; }
+.tab[aria-current="page"] { color: var(--fg); }
+.tab[aria-current="page"] svg.i { stroke-width: 2.7; }
+.tab[aria-current="page"] svg.i .fillable { fill: currentColor; }
+.tab[aria-current="page"]::after { content: ""; position: absolute; bottom: 4px; width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+.tab { position: relative; }
+.tab .dot-badge { top: 6px; right: calc(50% - 22px); }
+
+@media (min-width: 1024px) {
+  .home-top { display: none; }
+  .home-tabs, .feed-open .home-tabs { display: flex; position: static; flex-direction: row; box-shadow: none; background: none; padding: 18px 0 0; min-width: 0; }
+  .nav-a svg.i { stroke-width: 1.9; }
+  .side .brand b { font: 400 34px/1 "Grand Hotel", "Brush Script MT", cursive; }
+}
+.feed-open .home-tabs { position: fixed; top: calc(54px + env(safe-area-inset-top, 0px)); }
+.home-top .dot-badge { top: 5px; right: 4px; min-width: 17px; height: 17px; font-size: 10px; line-height: 17px; padding: 0 4px; box-shadow: 0 0 0 2px #fff; }

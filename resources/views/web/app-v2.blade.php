@@ -10,7 +10,7 @@
 <link rel="icon" href="{{ asset('brand/logo.svg') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Nunito:wght@400;500;600;700;800;900&display=swap">
 @php($v = @filemtime(public_path('frikip-app/css/app.css')) ?: 1)
 <link rel="stylesheet" href="{{ asset('frikip-app/css/app.css') }}?v={{ $v }}">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>

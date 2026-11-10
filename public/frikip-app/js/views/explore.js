@@ -14,7 +14,7 @@ Frikip.views = Frikip.views || {};
     ['Vidéos', 'film', 'c-red', '#reels'],
     ['Joueurs', 'user', 'c-blue', 'q:joueurs'],
     ['Clubs', 'shield', 'c-orange', 'q:clubs'],
-    ['Lives', 'bell', 'c-pink', 'lives'],
+    ['Lives', 'reels', 'c-pink', 'lives'],
     ['Matchs', 'ball', 'c-violet', '#matchs'],
     ['Découvrir', 'play', 'c-yt', 'q:decouvrir'],
     ['Défis', 'trophy', 'c-green', 'url:challenges'],

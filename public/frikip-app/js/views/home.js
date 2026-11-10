@@ -27,7 +27,7 @@ Frikip.views = Frikip.views || {};
         '<span class="story-ring live">' + U.avatar(who, 'story') + '<span class="story-live">LIVE</span></span><span class="story-name">' + U.esc((who.name || '').split(' ')[0]) + '</span></a>';
     }).join('');
     return '<div class="stories" role="list" aria-label="Stories et lives">' +
-      '<button class="story" role="listitem" type="button" data-create><span class="story-ring create">' + (me ? U.avatar(me, 'story') : '') + '<span class="story-plus">' + U.icon('plus') + '</span></span><span class="story-name">Créer</span></button>' + liveItems +
+      '<button class="story" role="listitem" type="button" data-create><span class="story-ring create">' + (me ? U.avatar(me, 'story') : '') + '<span class="story-plus">' + U.icon('plus') + '</span></span><span class="story-name">Ta story</span></button>' + liveItems +
       order.slice(0, 14).map(function (id) {
         var v = by[id], a = v.author;
         return '<button class="story" role="listitem" type="button" data-story="' + v.id + '" data-author="' + a.id + '" aria-label="Story de ' + U.esc(a.name) + '">' +
@@ -61,16 +61,21 @@ Frikip.views = Frikip.views || {};
     return '<article class="post" data-id="' + v.id + '">' +
       '<header class="post-h"><button type="button" data-action="profile" data-user="' + a.id + '" aria-label="Profil de ' + U.esc(a.name) + '">' + U.avatar(a, 'post') + '</button>' +
         '<div class="post-who"><button type="button" data-action="profile" data-user="' + a.id + '"><b>' + U.name(a) + '</b></button>' +
-        '<small>' + U.esc([a.city, a.type === 'Joueur' && a.player ? a.player.position : a.type].filter(Boolean).join(' · ')) + ' · ' + U.ago(v.createdAt) + '</small></div>' +
+        '<small>' + U.esc([a.city, a.type === 'Joueur' && a.player ? a.player.position : a.type].filter(Boolean).join(' · ')) + '</small></div>' +
         (a.isMe || a.isFollowing || a.canFollow === false ? '' : '<button class="pill-follow" type="button" data-action="follow" data-user="' + a.id + '" aria-pressed="false">Suivre</button>') +
         '<button class="post-more" type="button" data-more="' + v.id + '" aria-label="Plus d’options">' + DOTS + '</button></header>' +
-      '<p class="post-text">' + U.caption(v.caption) + '</p>' + media(v) +
+      media(v) +
       '<footer class="post-actions">' +
-        '<button type="button" data-like aria-pressed="' + v.liked + '" aria-label="J’aime">' + HEART + '<span class="num" data-c="likes">' + U.n(v.likes) + '</span></button>' +
-        '<button type="button" data-comments aria-label="Commentaires">' + U.icon('comment') + '<span class="num">' + U.n(v.comments) + '</span></button>' +
-        '<button type="button" data-share aria-label="Partager">' + U.icon('share') + '<span class="num" data-c="shares">' + U.n(v.shares) + '</span></button>' +
+        '<button type="button" data-like aria-pressed="' + v.liked + '" aria-label="J’aime">' + HEART + '</button>' +
+        '<button type="button" data-comments aria-label="Commentaires">' + U.icon('comment') + '</button>' +
+        '<button type="button" data-share aria-label="Partager">' + U.icon('plane') + '<span class="sr-only num" data-c="shares">' + U.n(v.shares) + '</span></button>' +
         '<button type="button" data-save aria-pressed="' + v.saved + '" aria-label="Enregistrer" class="post-save">' + U.icon('bookmark') + '</button>' +
-      '</footer></article>';
+      '</footer>' +
+      '<div class="post-meta"><b class="post-likes" data-like-line><span class="num" data-c="likes">' + U.n(v.likes) + '</span> J’aime</b>' +
+        '<p class="post-text"><b>' + U.esc((a.handle || a.name || '').toString()) + '</b> ' + U.caption(v.caption) + '</p>' +
+        (v.comments ? '<button type="button" class="post-cmts" data-comments>Voir les ' + U.n(v.comments) + ' commentaires</button>' : '') +
+        '<time class="post-time">' + U.ago(v.createdAt) + '</time></div>' +
+      '</article>';
   }
 
   function liveCard(m) {
@@ -89,14 +94,14 @@ Frikip.views = Frikip.views || {};
 
   function render() {
     root.innerHTML =
-      '<header class="home-top"><span class="ht-side"></span>' +
-        '<a class="brand" href="#accueil" aria-label="Frikip, accueil">' + Frikip.views.brandSvg + '<span><b>Frikip</b><small>Le réseau foot</small></span></a>' +
-        '<span class="ht-side"><a class="iconbtn" href="#explorer" aria-label="Rechercher">' + U.icon('search') + '</a>' +
-        '<a class="iconbtn" href="#notifications" aria-label="Notifications">' + U.icon('bell') + '<span class="dot-badge num" data-badge="notifications" hidden></span></a></span></header>' +
-      '<div class="home-tabs" role="group" aria-label="Fil">' +
+      '<header class="home-top">' +
+        '<button class="feed-switch" type="button" data-feed-menu aria-expanded="false" aria-label="Choisir le fil"><span class="ig-logo">Frikip</span>' + U.icon('back', 'chev') + '</button>' +
+        '<span class="ht-side"><a class="iconbtn" href="#notifications" aria-label="Notifications">' + U.icon('heart') + '<span class="dot-badge num" data-badge="notifications" hidden></span></a>' +
+        '<a class="iconbtn" href="#messages" aria-label="Messages">' + U.icon('messenger') + '<span class="dot-badge num" data-badge="messages" hidden></span></a></span></header>' +
+      '<div class="home-tabs" role="group" aria-label="Fil" data-feed-tabs>' +
         '<button type="button" data-tab="pour-toi" aria-pressed="' + (tab === 'pour-toi') + '">Pour vous</button>' +
         '<button type="button" data-tab="abonnements" aria-pressed="' + (tab === 'abonnements') + '">Abonnements</button>' +
-        '<a href="#reels" class="home-reels">' + U.icon('film') + 'Reels</a>' +
+        '<a href="#reels" class="home-reels">' + U.icon('reels') + 'Reels</a>' +
       '</div>' +
       '<div data-stories></div><div class="posts" data-list>' + skeleton() + '</div>';
     list = root.querySelector('[data-list]');
@@ -150,7 +155,11 @@ Frikip.views = Frikip.views || {};
 
   function onClick(e) {
     var t;
+    if ((t = e.target.closest('[data-feed-menu]'))) {
+      var open = !root.classList.contains('feed-open'); root.classList.toggle('feed-open', open); t.setAttribute('aria-expanded', open); return;
+    }
     if ((t = e.target.closest('[data-tab]'))) {
+      root.classList.remove('feed-open');
       tab = t.getAttribute('data-tab');
       root.querySelectorAll('[data-tab]').forEach(function (b) { b.setAttribute('aria-pressed', b === t); });
       list.innerHTML = skeleton(); load(); return;
@@ -166,7 +175,7 @@ Frikip.views = Frikip.views || {};
     var card = e.target.closest('.post'); if (!card || !card.getAttribute('data-id')) return;
     var v = byId(card.getAttribute('data-id'));
     if ((t = e.target.closest('[data-like]'))) {
-      api.toggleLike(v.id).then(function (r) { v.liked = r.liked; v.likes = r.likes; t.setAttribute('aria-pressed', r.liked); t.querySelector('[data-c]').textContent = U.n(r.likes); });
+      api.toggleLike(v.id).then(function (r) { v.liked = r.liked; v.likes = r.likes; t.setAttribute('aria-pressed', r.liked); card.querySelector('[data-c="likes"]').textContent = U.n(r.likes); });
     } else if ((t = e.target.closest('[data-save]'))) {
       api.toggleSave(v.id).then(function (r) { v.saved = r.saved; t.setAttribute('aria-pressed', r.saved); U.toast(r.saved ? 'Ajouté à tes favoris' : 'Retiré de tes favoris'); });
     } else if (e.target.closest('[data-comments]')) {
@@ -175,7 +184,7 @@ Frikip.views = Frikip.views || {};
     } else if ((t = e.target.closest('[data-share]'))) {
       var link = Frikip.config.shareBase + v.id;
       if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {});
-      api.share(v.id, 'lien').then(function (r) { t.querySelector('[data-c]').textContent = U.n(r.shares); });
+      api.share(v.id, 'lien').then(function (r) { var c = t.querySelector('[data-c]'); if (c) c.textContent = U.n(r.shares); });
       U.toast('Lien copié : ' + link);
     } else if (e.target.closest('[data-more]')) {
       U.sheet('Options', '<div class="menu-list" style="margin:0;border:0">' +
