@@ -163,7 +163,7 @@ window.Frikip = window.Frikip || {};
       var d = db(); if (!d.storyGroups) return wait({ groups: [], canPost: true });
       return wait({ groups: d.storyGroups.map(function (g) {
         var u = byId(d.users, g.userId) || {}, items = g.items.map(function (i) { return Object.assign({}, i, { seen: !!(d.storySeen || {})[i.id] }); });
-        return { id: g.userId, name: u.name, color: u.color, avatar: u.avatar || null, mine: g.userId === d.meId, profile: '#profil/' + g.userId, items: items,
+        return { id: g.userId, name: u.name, color: u.color, avatar: u.photo || u.avatar || null, mine: g.userId === d.meId, profile: '#profil/' + g.userId, items: items,
           seen: items.every(function (i) { return i.seen; }) };
       }), canPost: true });
     },

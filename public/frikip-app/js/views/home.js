@@ -30,8 +30,8 @@ Frikip.views = Frikip.views || {};
       return '<a class="story live" role="listitem" href="' + U.esc(l.url) + '" aria-label="Live : ' + U.esc(l.title) + '">' +
         '<span class="story-ring live">' + U.avatar(who, 'story') + '<span class="story-live">LIVE</span></span><span class="story-name">' + U.esc((who.name || '').split(' ')[0]) + '</span></a>';
     });
-    // ordre : ta story, 2 lives, les stories, puis les autres lives
-    var liveItems = liveHtml.slice(0, 2).join(''), liveRest = liveHtml.slice(2).join('');
+    // ordre : ta story, les stories (non vues d'abord), puis les lives
+    var liveItems = '', liveRest = liveHtml.join('');
     var others;
     if (storyGroups.length) {
       others = storyGroups.map(function (g, k) {
