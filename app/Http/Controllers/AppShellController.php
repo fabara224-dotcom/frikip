@@ -32,7 +32,7 @@ class AppShellController extends Controller
                 'links' => [
                     'liveGo' => route('live.go'), 'liveBroadcast' => route('live.create'), 'liveAll' => route('live'),
                     'events' => route('events'), 'offers' => route('offers'), 'challenges' => route('challenges'), 'coaching' => route('coaching'),
-                    'clubs' => route('clubs'), 'rankings' => route('rankings'), 'stories' => route('stories'), 'posts' => route('posts'), 'actors' => route('actors'),
+                    'clubs' => route('clubs'), 'rankings' => route('rankings'), 'stories' => route('stories'), 'posts' => route('posts'), 'storyStore' => route('fkstories.store'), 'storyBase' => url('/stories'), 'actors' => route('actors'),
                     'profileEdit' => route('profile.edit'), 'settings' => route('settings'), 'stats' => route('stats'), 'verification' => route('verification'),
                     'payments' => route('payments.history'), 'premium' => route('premium', 'premium'), 'noAds' => route('premium', 'sans_pub'),
                     'boost' => route('premium', 'boost'), 'structure' => route('structure.offer'), 'videoServices' => route('video.services'),

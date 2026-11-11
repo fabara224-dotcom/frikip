@@ -17,22 +17,44 @@ Frikip.views = Frikip.views || {};
 
   function dur(s) { s = Math.round(s || 0); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
 
-  function stories(vids, lives) {
-    var by = {}, order = [];
-    vids.forEach(function (v) { if (v.source !== 'youtube' && !by[v.author.id]) { by[v.author.id] = v; order.push(v.author.id); } });
+  var storyGroups = [], lastFeed = [], lastLives = [];
+  function refreshStories() {
+    api.stories().then(function (d) { var el = root && root.querySelector('[data-stories]'); if (el) el.innerHTML = stories(lastFeed, lastLives, d.groups); });
+  }
+  function stories(vids, lives, groups) {
     var me = S.me;
-    var liveItems = (lives || []).slice(0, 8).map(function (l) {
+    storyGroups = (groups || []).slice().sort(function (x, y) { return (y.mine - x.mine) || (x.seen - y.seen); });
+    var mine = storyGroups.filter(function (g) { return g.mine; })[0];
+    var liveHtml = (lives || []).slice(0, 8).map(function (l) {
       var who = l.owner || { name: l.home || l.title, color: '#E5373A' };
       return '<a class="story live" role="listitem" href="' + U.esc(l.url) + '" aria-label="Live : ' + U.esc(l.title) + '">' +
         '<span class="story-ring live">' + U.avatar(who, 'story') + '<span class="story-live">LIVE</span></span><span class="story-name">' + U.esc((who.name || '').split(' ')[0]) + '</span></a>';
-    }).join('');
-    return '<div class="stories" role="list" aria-label="Stories et lives">' +
-      '<button class="story" role="listitem" type="button" data-create><span class="story-ring create">' + (me ? U.avatar(me, 'story') : '') + '<span class="story-plus">' + U.icon('plus') + '</span></span><span class="story-name">Ta story</span></button>' + liveItems +
-      order.slice(0, 14).map(function (id) {
+    });
+    // ordre : ta story, 2 lives, les stories, puis les autres lives
+    var liveItems = liveHtml.slice(0, 2).join(''), liveRest = liveHtml.slice(2).join('');
+    var others;
+    if (storyGroups.length) {
+      others = storyGroups.map(function (g, k) {
+        if (g.mine) return '';
+        var u = { name: g.name, color: g.color, photo: g.avatar };
+        return '<button class="story" role="listitem" type="button" data-story-group="' + k + '" aria-label="Story de ' + U.esc(g.name) + '">' +
+          '<span class="story-ring' + (g.seen ? ' seen' : '') + '">' + U.avatar(u, 'story') + '</span><span class="story-name">' + U.esc((g.name || '').split(' ')[0]) + '</span></button>';
+      }).join('');
+    } else {   // pas encore de story : on montre les comptes qui viennent de publier
+      var by = {}, order = [];
+      vids.forEach(function (v) { if (v.source !== 'youtube' && !by[v.author.id]) { by[v.author.id] = v; order.push(v.author.id); } });
+      others = order.slice(0, 14).map(function (id) {
         var v = by[id], a = v.author;
-        return '<button class="story" role="listitem" type="button" data-story="' + v.id + '" data-author="' + a.id + '" aria-label="Story de ' + U.esc(a.name) + '">' +
+        return '<button class="story" role="listitem" type="button" data-story="' + v.id + '" data-author="' + a.id + '" aria-label="Dernière vidéo de ' + U.esc(a.name) + '">' +
           '<span class="story-ring' + (seen[v.id] ? ' seen' : '') + '">' + U.avatar(a, 'story') + '</span><span class="story-name">' + U.esc(a.name.split(' ')[0]) + '</span></button>';
-      }).join('') + '</div>';
+      }).join('');
+    }
+    var myIdx = mine ? storyGroups.indexOf(mine) : -1;
+    return '<div class="stories" role="list" aria-label="Stories et lives">' +
+      '<div class="story" role="listitem"><button class="story-me" type="button" ' + (mine ? 'data-story-group="' + myIdx + '" aria-label="Voir ta story"' : 'data-new-story aria-label="Ajouter une story"') + '>' +
+        '<span class="story-ring' + (mine ? (mine.seen ? ' seen' : '') : ' create') + '">' + (me ? U.avatar(me, 'story') : '') + '</span></button>' +
+        '<button class="story-plus" type="button" data-new-story aria-label="Ajouter une story">' + U.icon('plus') + '</button>' +
+        '<span class="story-name">Ta story</span></div>' + liveItems + others + liveRest + '</div>';
   }
 
   function media(v) {
@@ -111,9 +133,11 @@ Frikip.views = Frikip.views || {};
   function load() {
     Frikip.scene.stop();
     var livesP = api.lives ? api.lives().catch(function () { return { members: [], matches: [] }; }) : Promise.resolve({ members: [], matches: [] });
-    Promise.all([api.feed(tab), tab === 'pour-toi' ? api.matches('direct') : Promise.resolve([]), api.feed('pour-toi'), livesP]).then(function (r) {
+    var storiesP = api.stories ? api.stories().catch(function () { return { groups: [] }; }) : Promise.resolve({ groups: [] });
+    Promise.all([api.feed(tab), tab === 'pour-toi' ? api.matches('direct') : Promise.resolve([]), api.feed('pour-toi'), livesP, storiesP]).then(function (r) {
       items = r[0].items;
-      root.querySelector('[data-stories]').innerHTML = stories(r[2].items, (r[3].members || []).concat(r[3].matches || []));
+      lastFeed = r[2].items; lastLives = (r[3].members || []).concat(r[3].matches || []);
+      root.querySelector('[data-stories]').innerHTML = stories(lastFeed, lastLives, r[4].groups);
       if (!items.length) {
         list.innerHTML = '<div class="post empty-post"><b>' + (tab === 'abonnements' ? 'Rien de neuf dans tes abonnements.' : 'Pas encore de publication.') + '</b>' +
           '<span>' + (tab === 'abonnements' ? 'Abonne-toi à des joueurs et des clubs pour voir leurs vidéos ici.' : 'Publie la première vidéo foot de Frikip.') + '</span>' +
@@ -164,6 +188,11 @@ Frikip.views = Frikip.views || {};
       root.querySelectorAll('[data-tab]').forEach(function (b) { b.setAttribute('aria-pressed', b === t); });
       list.innerHTML = skeleton(); load(); return;
     }
+    if (e.target.closest('[data-new-story]')) { Frikip.stories.create(); return; }
+    if ((t = e.target.closest('[data-story-group]'))) {
+      Frikip.stories.open(storyGroups, +t.getAttribute('data-story-group'), function () { var el = root.querySelector('[data-stories]'); el.innerHTML = stories(lastFeed, lastLives, storyGroups); });
+      return;
+    }
     if (e.target.closest('[data-create]')) { Frikip.views.create(); return; }
     if ((t = e.target.closest('[data-story]'))) {
       var vid = t.getAttribute('data-story'); seen[vid] = 1;
@@ -206,7 +235,7 @@ Frikip.views = Frikip.views || {};
   }
 
   Frikip.views.accueil = {
-    mount: function (el) { root = el; render(); el.addEventListener('click', onClick); },
+    mount: function (el) { root = el; render(); el.addEventListener('click', onClick); Frikip.bus.on('stories:changed', refreshStories); },
     show: function () { if (list && list.querySelector('.post-media')) watch(); },
     hide: function () { if (playing) stop(playing); if (observer) observer.disconnect(); },
     reload: function () { if (root) { list.innerHTML = skeleton(); load(); } },

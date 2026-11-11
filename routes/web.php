@@ -79,6 +79,7 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::get('/search', [\App\Http\Controllers\ApiController::class, 'search'])->name('search');
         Route::get('/discover', [\App\Http\Controllers\ApiController::class, 'discover'])->name('discover');
         Route::get('/lives', [\App\Http\Controllers\ApiController::class, 'lives'])->name('lives');
+        Route::get('/stories', [\App\Http\Controllers\ApiController::class, 'stories'])->name('stories');
         Route::get('/matches', [\App\Http\Controllers\ApiController::class, 'matches'])->name('matches');
         Route::get('/matches/{id}', [\App\Http\Controllers\ApiController::class, 'matchShow'])->name('match');
         Route::get('/users/{user}', [\App\Http\Controllers\ApiController::class, 'user'])->name('user');

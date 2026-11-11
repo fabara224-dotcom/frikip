@@ -76,6 +76,7 @@ window.Frikip = window.Frikip || {};
     if (!me) { U.toast('Connecte-toi pour publier'); if (C.loginUrl) setTimeout(function () { location.href = C.loginUrl; }, 700); return; }
     var items = [];
     if (me.canPublish) items.push(['#publier', 'upload', 'Publier une vidéo', 'Un geste, un but, un entraînement…', 'c-green']);
+    items.push(['#story', 'camera', 'Ajouter une story', 'Une photo ou une courte vidéo, visible 24 h.', 'c-pink']);
     items.push([Lk.liveGo || '#matchs', 'film', 'Lancer un live', me.liveRefusal || 'Filme et commente un match en direct depuis ton téléphone.', 'c-red']);
     items.push(['#matchs', 'msg', 'Commenter un match', 'Réagis dans le salon d’un match avec les autres supporters.', 'c-violet']);
     if (me.role === 'recruiter') {
@@ -86,7 +87,9 @@ window.Frikip = window.Frikip || {};
     if (me.role === 'fan') items.push([Lk.proche, 'user', 'Mettre en avant un proche', 'Crée le profil de joueur d’un frère, d’un fils, d’un ami… et publie ses vidéos.', 'c-blue']);
     U.sheet('Que veux-tu partager ?', '<div class="create-list">' + items.filter(function (i) { return i[0]; }).map(function (i) {
       return '<a class="create-item" href="' + U.esc(i[0]) + '"><span class="tile-ic ' + i[4] + '">' + U.icon(i[1]) + '</span><span><b>' + i[2] + '</b><small>' + U.esc(i[3]) + '</small></span></a>';
-    }).join('') + '</div>', function (sh) { sh.addEventListener('click', function (e) { if (e.target.closest('a[href^="#"]')) U.closeSheet(); }); });
+    }).join('') + '</div>', function (sh) { sh.addEventListener('click', function (e) {
+      if (e.target.closest('a[href="#story"]')) { e.preventDefault(); U.closeSheet(); Frikip.stories.create(); return; }
+      if (e.target.closest('a[href^="#"]')) U.closeSheet(); }); });
   };
   document.addEventListener('click', function (e) {
     var plus = e.target.closest('[data-nav="publier"], [data-create]');

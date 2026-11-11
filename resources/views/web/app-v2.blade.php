@@ -18,7 +18,7 @@
 <body>
 <div class="app" id="app"></div>
 <script>window.FRIKIP_CONFIG = @json($config);</script>
-@foreach (['config', 'services/state', 'services/api', 'ui/components', 'ui/scene', 'views/feed', 'views/home', 'views/explore', 'views/matches', 'views/messages', 'views/profile', 'views/notifications', 'views/publish', 'views/menu', 'app'] as $f)
+@foreach (['config', 'services/state', 'services/api', 'ui/components', 'ui/scene', 'views/feed', 'views/home', 'views/explore', 'views/matches', 'views/messages', 'views/profile', 'views/notifications', 'views/publish', 'views/menu', 'views/stories', 'app'] as $f)
 <script src="{{ asset('frikip-app/js/'.$f.'.js') }}?v={{ $v }}"></script>
 @endforeach
 </body>
