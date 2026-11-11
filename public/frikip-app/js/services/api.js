@@ -52,6 +52,33 @@ window.Frikip = window.Frikip || {};
     notifications: function () { return http('GET', '/notifications'); },
     markNotificationsRead: function () { return http('POST', '/notifications/read'); },
     /* Publication : envoi en morceaux de 4 Mo vers le site (reprise possible en 3G), puis enregistrement */
+    stories: function () { return http('GET', '/stories'); },
+    storyView: function (id) { return remote.site('POST', L().storyBase + '/' + id + '/vue').catch(function () { return {}; }); },
+    /* Story : photo envoyée directement, vidéo envoyée en morceaux comme une publication */
+    postStory: function (data) {
+      var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '', file = data.file;
+      function send(f) {
+        if (data.caption) f.append('caption', data.caption.slice(0, 200));
+        return fetch(L().storyStore, { method: 'POST', credentials: 'include', body: f, headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf } })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.message || d.error || 'Envoi impossible.'); return d; }); });
+      }
+      if (/^image\//.test(file.type)) { var f = new FormData(); f.append('media', file); return send(f); }
+      return remote.chunks(file, data.onProgress).then(function (id) { var f = new FormData(); f.append('upload_id', id); f.append('file_name', file.name || 'story.mp4'); return send(f); });
+    },
+    chunks: function (file, onProgress) {
+      var C = Frikip.config, CH = 4 * 1024 * 1024, total = Math.ceil(file.size / CH);
+      var id = Array.from(crypto.getRandomValues(new Uint8Array(16)), function (b) { return ('0' + (b % 36).toString(36)).slice(-1); }).join('') + Date.now().toString(36);
+      id = id.replace(/[^a-z0-9]/gi, '').slice(0, 32);
+      var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+      function part(i) {
+        if (i >= total) return Promise.resolve(id);
+        if (onProgress) onProgress(i / total);
+        return fetch(C.chunkUrl, { method: 'POST', credentials: 'include', body: file.slice(i * CH, (i + 1) * CH),
+          headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Upload-Id': id, 'X-Chunk-Index': String(i), 'X-Chunk-Total': String(total), 'X-File-Size': String(file.size), 'Content-Type': 'application/octet-stream' } })
+          .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Envoi interrompu.'); return part(i + 1); }); });
+      }
+      return part(0);
+    },
     publish: function (data) {
       var C = Frikip.config, file = data.file, CH = 4 * 1024 * 1024, total = Math.ceil(file.size / CH);
       var id = Array.from(crypto.getRandomValues(new Uint8Array(16)), function (b) { return ('0' + (b % 36).toString(36)).slice(-1); }).join('') + Date.now().toString(36);
@@ -132,6 +159,21 @@ window.Frikip = window.Frikip || {};
   }
 
   var demo = {
+    stories: function () {
+      var d = db(); if (!d.storyGroups) return wait({ groups: [], canPost: true });
+      return wait({ groups: d.storyGroups.map(function (g) {
+        var u = byId(d.users, g.userId) || {}, items = g.items.map(function (i) { return Object.assign({}, i, { seen: !!(d.storySeen || {})[i.id] }); });
+        return { id: g.userId, name: u.name, color: u.color, avatar: u.avatar || null, mine: g.userId === d.meId, profile: '#profil/' + g.userId, items: items,
+          seen: items.every(function (i) { return i.seen; }) };
+      }), canPost: true });
+    },
+    storyView: function (id) { var d = db(); d.storySeen = d.storySeen || {}; d.storySeen[id] = 1; return wait({ ok: true }); },
+    postStory: function (data) {
+      var d = db(), g = (d.storyGroups = d.storyGroups || []).filter(function (x) { return x.userId === d.meId; })[0];
+      if (!g) { g = { userId: d.meId, items: [] }; d.storyGroups.unshift(g); }
+      g.items.push({ id: 's' + Date.now(), type: /^image\//.test(data.file.type) ? 'image' : 'video', src: URL.createObjectURL(data.file), caption: data.caption || '', when: 'à l’instant' });
+      return wait({ ok: true }, 600);
+    },
     lives: function () {
       var d = db(), u = function (id) { return userOut(byId(d.users, id)); };
       return wait({

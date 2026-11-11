@@ -13,6 +13,8 @@ window.Frikip = window.Frikip || {};
     plusSq: '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 7.5v9M7.5 12h9"/>',
     reels: '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M9.2 3l3 5.5M15.2 3l3 5.5"/><path d="M10.2 12.2v5.6l4.8-2.8z"/>',
     messenger: '<path d="M12 2.8c-5.2 0-9.2 3.8-9.2 8.8 0 2.7 1.1 5 3 6.6V21l2.8-1.5c1 .3 2.2.5 3.4.5 5.2 0 9.2-3.8 9.2-8.8S17.2 2.8 12 2.8z"/><path d="m7 14 3.5-3.8 2.3 2L17 8.3l-3.5 3.8-2.3-2z"/>',
+    eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    volume: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/>',
     home: '<path class="fillable" d="M3 10.4 12 3l9 7.4V21h-6.2v-6.6H9.2V21H3z"/>',
     search: '<circle cx="10.5" cy="10.5" r="7.5"/><path d="M16.2 16.2 21 21"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',

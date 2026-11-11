@@ -266,6 +266,27 @@ class ApiController extends Controller
 
     // ================================================================= compte
 
+    /** Stories de 24 h (photos et vidéos), regroupées par auteur, avec la photo de profil. */
+    public function stories(): JsonResponse
+    {
+        $me = $this->data->user();
+        $groups = StoryController::groups($me);
+        $keys = array_column($groups, 'key');
+        $avatars = [];
+        try {
+            $avatars = DB::table('accounts')->whereIn('id', $keys)->pluck('avatar_url', 'id')->all();
+        } catch (\Throwable) {
+        }
+        $out = array_map(fn ($g) => [
+            'id' => $g['key'], 'name' => $g['name'], 'initials' => $g['initials'], 'mine' => $g['mine'], 'seen' => $g['seen'],
+            'avatar' => ! empty($avatars[$g['key']]) ? asset($avatars[$g['key']]) : null, 'profile' => $g['profile'],
+            'items' => array_map(fn ($i) => ['id' => $i['id'], 'type' => $i['type'], 'src' => $i['src'], 'caption' => $i['caption'],
+                'when' => $i['when'], 'seen' => $i['seen'], 'views' => $g['mine'] ? $i['views'] : null], $g['items']),
+        ], $groups);
+
+        return response()->json(['groups' => $out, 'canPost' => (bool) $me]);
+    }
+
     public function me(Messenger $messenger): JsonResponse
     {
         $u = $this->data->user();

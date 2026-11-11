@@ -966,3 +966,44 @@ body { font-size: 15px; font-weight: 500; }
 }
 .feed-open .home-tabs { position: fixed; top: calc(54px + env(safe-area-inset-top, 0px)); }
 .home-top .dot-badge { top: 5px; right: 4px; min-width: 17px; height: 17px; font-size: 10px; line-height: 17px; padding: 0 4px; box-shadow: 0 0 0 2px #fff; }
+
+/* =====================================================================
+   STORIES — rangée « Ta story » et lecteur plein écran façon Instagram
+   ===================================================================== */
+.story { position: relative; }
+.story-me { display: block; padding: 0; background: none; border: 0; cursor: pointer; }
+.stories .story-plus { position: absolute; top: 52px; left: 52px; inset: auto; top: 52px; left: 50px; z-index: 2; display: grid; place-items: center; padding: 0; border: 0; cursor: pointer; }
+html.sv-open, html.sv-open body { overflow: hidden; }
+.sv { position: fixed; inset: 0; z-index: 200; background: #000; display: grid; place-items: center; animation: svIn .22s ease-out; touch-action: none; user-select: none; -webkit-user-select: none; }
+@keyframes svIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+.sv-frame { position: relative; width: 100%; height: 100%; max-width: 480px; max-height: 100dvh; overflow: hidden; background: #111; }
+@media (min-width: 600px) { .sv-frame { height: min(92dvh, 860px); aspect-ratio: 9 / 16; width: auto; border-radius: 14px; } }
+.sv-stage { position: absolute; inset: 0; display: grid; place-items: center; }
+.sv-stage img, .sv-stage video { width: 100%; height: 100%; object-fit: cover; }
+.sv-top { position: absolute; left: 0; right: 0; top: 0; z-index: 3; padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 22px; background: linear-gradient(rgba(0,0,0,.45), transparent); }
+.sv-bars { display: flex; gap: 4px; }
+.sv-bar { flex: 1; height: 2.5px; border-radius: 2px; background: rgba(255,255,255,.38); overflow: hidden; }
+.sv-bar i { display: block; height: 100%; background: #fff; }
+.sv-head { display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+.sv-head > div { flex: 1; min-width: 0; }
+.sv-who { display: flex; align-items: center; gap: 9px; color: #fff; text-decoration: none; }
+.sv-who .av { --s: 32px; width: 32px; height: 32px; font-size: 12px; }
+.sv-who b { font-weight: 800; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sv-who small { color: rgba(255,255,255,.75); font-size: 13px; white-space: nowrap; }
+.sv-btn { width: 40px; height: 40px; display: grid; place-items: center; color: #fff; background: none; border: 0; }
+.sv-btn svg.i { width: 24px; height: 24px; stroke: #fff; }
+[data-sv-sound] { display: none; }
+.sv-muted [data-sv-sound] { display: grid; }
+.sv-zone { position: absolute; top: 80px; bottom: 90px; z-index: 2; background: none; border: 0; padding: 0; }
+.sv-zone.left { left: 0; width: 33%; } .sv-zone.right { right: 0; width: 67%; }
+.sv-zone:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+.sv-cap { position: absolute; left: 14px; right: 14px; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 3; margin: 0; color: #fff; font-weight: 700; font-size: 16px; text-align: center; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+.sv-foot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; padding: 14px 14px calc(16px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(transparent, rgba(0,0,0,.45)); display: flex; justify-content: center; }
+.sv-reply { flex: 1; display: block; text-align: left; color: #fff; border: 1.5px solid rgba(255,255,255,.7); border-radius: 999px; padding: 11px 16px; font-weight: 700; text-decoration: none; }
+.sv-views { display: inline-flex; align-items: center; gap: 6px; color: #fff; font-weight: 700; }
+.sv-views svg.i { width: 20px; height: 20px; stroke: #fff; }
+.sv-paused .sv-top, .sv-paused .sv-foot, .sv-paused .sv-cap { opacity: 0; transition: opacity .2s; }
+.story-new-prev { border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 9 / 16; max-height: 52vh; margin: 0 auto 12px; display: grid; place-items: center; }
+.story-new-prev img, .story-new-prev video { width: 100%; height: 100%; object-fit: cover; }
+.btn-block { width: 100%; }
+@media (prefers-reduced-motion: reduce) { .sv { animation: none; } }
