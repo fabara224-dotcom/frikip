@@ -1,4 +1,4 @@
-/* Espace admin de FootPro : menu latéral bleu nuit, contenu clair, une action principale par bloc. */
+/* Espace admin de MyFootPro : menu latéral bleu nuit, contenu clair, une action principale par bloc. */
 .adminbody{background:var(--bg);margin:0}
 .adm{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
 .adm-side{position:sticky;top:0;height:100vh;overflow-y:auto;background:#0B2318;color:#D2E2D8;display:flex;flex-direction:column;padding:20px 14px}

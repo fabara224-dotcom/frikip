@@ -10,9 +10,9 @@ use RuntimeException;
 use Throwable;
 
 /**
- * Diffusion en direct par FootPro avec Mux (service payant, https://www.mux.com) :
+ * Diffusion en direct par MyFootPro avec Mux (service payant, https://www.mux.com) :
  * le club filme avec son téléphone (Larix Broadcaster, Prism Live…) ou une caméra (OBS), Mux reçoit la vidéo
- * et FootPro la diffuse. Le direct passe « En direct » tout seul quand la vidéo arrive, puis « Terminé » avec le replay.
+ * et MyFootPro la diffuse. Le direct passe « En direct » tout seul quand la vidéo arrive, puis « Terminé » avec le replay.
  *
  * Réglages .env : MUX_TOKEN_ID, MUX_TOKEN_SECRET (Mux > Settings > Access Tokens, droits Mux Video « Read » et « Write »)
  * et, facultatif, MUX_WEBHOOK_SECRET (Mux > Settings > Webhooks, adresse https://ton-site/webhooks/mux).

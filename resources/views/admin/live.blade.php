@@ -8,7 +8,7 @@
   $f = $edit;
   $fv = fn ($k, $d = '') => old($k, $f->{$k} ?? $d);
   $pending = $rows->where('approved', false);
-  $src = ['youtube' => 'YouTube', 'club' => 'Club', 'admin' => 'Admin', 'mux' => 'FootPro'];
+  $src = ['youtube' => 'YouTube', 'club' => 'Club', 'admin' => 'Admin', 'mux' => 'MyFootPro'];
 @endphp
 
 <div class="kpis">
@@ -28,9 +28,9 @@
     @else
       <p class="note">Pour trouver les matchs tout seul, ajoute une clé <code>YOUTUBE_API_KEY</code> dans le fichier <code>.env</code> (gratuit : console.cloud.google.com > API « YouTube Data API v3 » > Identifiants > Clé API).</p>
     @endif
-    <h2 style="margin-top:18px">Diffusion par FootPro (Mux)</h2>
+    <h2 style="margin-top:18px">Diffusion par MyFootPro (Mux)</h2>
     @if ($muxReady)
-      <p class="meta" style="margin-top:-6px">Active : les clubs peuvent filmer avec leur téléphone et diffuser sur FootPro. Coût chez Mux selon les minutes diffusées et regardées.</p>
+      <p class="meta" style="margin-top:-6px">Active : les clubs peuvent filmer avec leur téléphone et diffuser sur MyFootPro. Coût chez Mux selon les minutes diffusées et regardées.</p>
     @else
       <p class="note">Facultatif et payant : avec <code>MUX_TOKEN_ID</code> et <code>MUX_TOKEN_SECRET</code> dans le <code>.env</code> (mux.com > Settings > Access Tokens), les clubs diffusent leurs matchs directement depuis un téléphone, sans passer par YouTube.</p>
     @endif
@@ -59,10 +59,10 @@
       <label>Score extérieur<input type="number" name="away_score" min="0" value="{{ $fv('away_score', 0) }}"></label>
       <label>Minute<input name="minute" value="{{ $fv('minute') }}" maxlength="12" placeholder="37'"></label>
       @if (! $f && $muxReady)
-        <label class="check wide"><input type="checkbox" name="mux" value="1" @checked(old('mux')) onchange="document.getElementById('aurl').required=!this.checked"> Diffuser avec FootPro (téléphone ou caméra) : pas besoin de lien</label>
+        <label class="check wide"><input type="checkbox" name="mux" value="1" @checked(old('mux')) onchange="document.getElementById('aurl').required=!this.checked"> Diffuser avec MyFootPro (téléphone ou caméra) : pas besoin de lien</label>
       @endif
       <label class="wide">Lien du direct<input id="aurl" name="stream_url" type="url" value="{{ $fv('stream_url') }}" placeholder="https://www.youtube.com/live/… ou https://…m3u8" @unless ($f && $f->source === 'mux') required @endunless @if ($f && $f->source === 'mux') readonly @endif></label>
-      <label>Match relié (facultatif)<input name="fixture_id" value="{{ $fv('fixture_id') }}" maxlength="40" placeholder="api-1208021"><small>Numéro du match sur la page Matchs : le bouton « Regarder dans FootPro » s’affiche sur ce match.</small></label>
+      <label>Match relié (facultatif)<input name="fixture_id" value="{{ $fv('fixture_id') }}" maxlength="40" placeholder="api-1208021"><small>Numéro du match sur la page Matchs : le bouton « Regarder dans MyFootPro » s’affiche sur ce match.</small></label>
       <label class="wide">Lien du replay (facultatif)<input name="replay_url" type="url" value="{{ $fv('replay_url') }}"></label>
     </div>
     <div class="formbar"><button class="btn" type="submit">{{ $f ? 'Enregistrer' : 'Ajouter le direct' }}</button>@if ($f)<a class="btn ghost" href="{{ route('admin.live') }}">Annuler</a>@endif</div>

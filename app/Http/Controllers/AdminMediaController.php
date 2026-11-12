@@ -395,7 +395,7 @@ class AdminMediaController extends Controller
             'country' => ['nullable', Rule::in(SportFields::COUNTRIES)], 'contact' => ['nullable', 'string', 'max:120'],
             'active' => ['nullable', 'boolean'],
         ]);
-        // Rattacher le compte FootPro du coach (par e-mail ou téléphone) : il verra ses sportifs dans « Espace coach »
+        // Rattacher le compte MyFootPro du coach (par e-mail ou téléphone) : il verra ses sportifs dans « Espace coach »
         $key = null;
         if (! empty($data['contact'])) {
             $c = trim($data['contact']);
@@ -414,7 +414,7 @@ class AdminMediaController extends Controller
         }
         $msg = $id ? 'Coach modifié.' : 'Coach ajouté.';
         if (! empty($data['contact'])) {
-            $msg .= $key ? ' Compte FootPro rattaché : il a accès à l’espace coach.' : ' Aucun compte FootPro trouvé avec ce contact : le coach doit d’abord s’inscrire, puis enregistre à nouveau.';
+            $msg .= $key ? ' Compte MyFootPro rattaché : il a accès à l’espace coach.' : ' Aucun compte MyFootPro trouvé avec ce contact : le coach doit d’abord s’inscrire, puis enregistre à nouveau.';
         }
 
         return redirect()->route('admin.coaching', ['statut' => 'coachs'])->with('saved', $msg);
