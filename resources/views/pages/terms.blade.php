@@ -28,7 +28,7 @@
   </nav>
 
   <h2 id="service">1. Le service</h2>
-  <p>{{ config('terrain.app_name', 'Frikip') }}, édité par <b><x-cfg key="editor" /></b>, permet aux sportifs de publier un profil et des compilations vidéo, aux recruteurs (clubs, académies, agents, fédérations, universités) de les trouver et de les contacter, et à tous de suivre les scores des compétitions. <x-cfg key="app_name" /> est un outil de mise en relation : nous ne sommes ni agent sportif ni employeur, et nous ne garantissons aucun recrutement.</p>
+  <p>{{ config('terrain.app_name', 'FootPro') }}, édité par <b><x-cfg key="editor" /></b>, permet aux sportifs de publier un profil et des compilations vidéo, aux recruteurs (clubs, académies, agents, fédérations, universités) de les trouver et de les contacter, et à tous de suivre les scores des compétitions. <x-cfg key="app_name" /> est un outil de mise en relation : nous ne sommes ni agent sportif ni employeur, et nous ne garantissons aucun recrutement.</p>
 
   <h2 id="compte">2. Votre compte</h2>
   <ul>

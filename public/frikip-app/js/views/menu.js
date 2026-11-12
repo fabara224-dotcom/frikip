@@ -46,9 +46,9 @@ Frikip.views = Frikip.views || {};
         ['ball', 'Diffuser un match', 'url:liveBroadcast']
       ] : []],
       ['Services', [
-        ['star', 'Frikip Premium', 'url:premium'],
+        ['star', 'FootPro Premium', 'url:premium'],
         ['upload', 'Booster mon profil', 'url:boost', null, isAth],
-        ['close', 'Frikip sans pub', 'url:noAds'],
+        ['close', 'FootPro sans pub', 'url:noAds'],
         ['film', 'Montage vidéo', 'url:videoServices'],
         ['receipt', 'Mes paiements', 'url:payments'],
         ['shield', 'Offre Structure Pro', 'url:structure', null, isRec]

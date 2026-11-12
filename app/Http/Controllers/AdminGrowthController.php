@@ -89,7 +89,7 @@ class AdminGrowthController extends Controller
         $badges = app(\App\Terrain\Growth\Badges::class);
         $admin = app(\App\Terrain\Growth\AdminAuth::class)->current()->name ?? 'Admin';
         if ($data['status'] === 'validee') {
-            $badges->grant($v->user_key, 'identite', 'Pièce d’identité contrôlée par l’équipe Frikip (demande n°'.$id.')', $admin);
+            $badges->grant($v->user_key, 'identite', 'Pièce d’identité contrôlée par l’équipe FootPro (demande n°'.$id.')', $admin);
             if (($v->role ?? null) === 'recruiter') {
                 $badges->grant($v->user_key, 'recruteur', trim('Affiliation confirmée'.(! empty($v->organization) ? ' : '.$v->organization : '')), $admin);
             }

@@ -1,4 +1,4 @@
-/* Frikip – lives des membres : envoi (WHIP) et lecture (WHEP) en WebRTC, avec Cloudflare Stream. */
+/* FootPro – lives des membres : envoi (WHIP) et lecture (WHEP) en WebRTC, avec Cloudflare Stream. */
 (function () {
   var ICE = [{ urls: 'stun:stun.cloudflare.com:3478' }];
   function iceDone(pc) {

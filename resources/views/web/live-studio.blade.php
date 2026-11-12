@@ -18,7 +18,7 @@
     </div>
     <h1 class="livetitle">{{ $s->title }}</h1>
     <p class="meta">{{ __('Lien à partager') }} : <a href="{{ route('live.show', $s->id) }}">{{ route('live.show', $s->id) }}</a>
-      · <a href="https://wa.me/?text={{ rawurlencode($s->title.' – en direct sur Frikip : '.route('live.show', $s->id)) }}" target="_blank" rel="noopener">{{ __('Partager sur WhatsApp') }}</a></p>
+      · <a href="https://wa.me/?text={{ rawurlencode($s->title.' – en direct sur FootPro : '.route('live.show', $s->id)) }}" target="_blank" rel="noopener">{{ __('Partager sur WhatsApp') }}</a></p>
     <p class="note">{{ __('Rappel : ne filme jamais une télé ou un écran qui diffuse un match. Garde ton téléphone branché et en Wi-Fi si possible.') }}</p>
     @include('web.partials.room', ['room' => 'l-'.$s->id, 'roomTitle' => __('Commentaires de ton live')])
   </div>

@@ -44,7 +44,7 @@
     </form>
   @else
     <a class="composer composer-guest" href="{{ route('phone.login') }}">
-      <span>{{ __('Quoi de neuf sur le terrain ?') }}</span><span class="btn sm">{{ __('Rejoindre Frikip') }}</span>
+      <span>{{ __('Quoi de neuf sur le terrain ?') }}</span><span class="btn sm">{{ __('Rejoindre FootPro') }}</span>
     </a>
   @endif
 

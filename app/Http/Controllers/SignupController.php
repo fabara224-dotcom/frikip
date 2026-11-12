@@ -134,7 +134,7 @@ class SignupController extends Controller
             return redirect()->route('register')->withErrors(['type' => __('Connexion avec :p impossible.', ['p' => $name])]);
         }
 
-        // Déjà relié à un compte Frikip : connexion directe
+        // Déjà relié à un compte FootPro : connexion directe
         $linked = DB::table('social_accounts')->where('provider', $provider)->where('provider_id', $u['id'])->value('account_id');
         if ($linked && $this->data->signInById($linked)) {
             return redirect()->intended(route('feed'));

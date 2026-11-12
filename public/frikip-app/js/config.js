@@ -11,7 +11,7 @@ Frikip.config = Object.assign({
   apiBase: '/api/v1',           // ex. 'https://frikip.com/api/v1' une fois l'API Laravel en ligne
   pollMessagesMs: 4000,         // rafraîchissement des messages en mode api
   pollScoresMs: 30000,          // rafraîchissement des scores en direct (API-Football côté serveur)
-  appName: 'Frikip',
+  appName: 'FootPro',
   tagline: 'Le réseau foot',
   loginUrl: null,               // page de connexion du site (mode api)
   shareBase: 'https://frikip.com/v/'

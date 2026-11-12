@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 
 /**
- * L'algorithme de Frikip, réglable dans l'espace admin (Admin > Algorithme), sans toucher au code :
+ * L'algorithme de FootPro, réglable dans l'espace admin (Admin > Algorithme), sans toucher au code :
  *  1. il CLASSE les sportifs : score de 0 à 100 à partir de signaux réels ;
  *  2. il CHOISIT ce que chaque visiteur voit dans le fil (pays, sport, abonnements, nouveautés) ;
  *  3. ses seuils de MODÉRATION (signalements, avertissements, suspensions, analyse d'image) sont lus par ContentGuard.
@@ -35,7 +35,7 @@ class Algorithm
         'country_priority' => ['forte', 'level', 'fil', 'Priorité au pays du visiteur', 'Les vidéos du pays du visiteur passent avant le reste de la région'],
         'sport_priority' => ['moyenne', 'level', 'fil', 'Priorité au sport du visiteur', 'Pour un sportif : les vidéos de son sport passent avant'],
         'learn_sport' => ['moyenne', 'level', 'fil', 'Priorité aux sports que le visiteur regarde', 'Le fil apprend : quelqu’un qui regarde surtout du basket voit plus de basket'],
-        'hidden_sports' => ['', 'words', 'fil', 'Sports cachés du fil', 'Un sport par ligne. (Frikip est 100 % football : ce réglage ne sert plus.)'],
+        'hidden_sports' => ['', 'words', 'fil', 'Sports cachés du fil', 'Un sport par ligne. (FootPro est 100 % football : ce réglage ne sert plus.)'],
         'follow_priority' => ['forte', 'level', 'fil', 'Priorité aux comptes suivis', 'Les sportifs que le visiteur suit passent avant'],
         'fresh_hours' => [48, 'int', 'fil', 'Durée « nouveauté » (heures)', 'Une vidéo récente est mise en avant pendant ce temps'],
         'top_in_feed' => [true, 'bool', 'fil', 'Carte « Meilleurs sportifs » dans le fil', 'Le top 5 du pays du visiteur apparaît entre les vidéos'],
@@ -74,7 +74,7 @@ class Algorithm
         'partner_on' => [false, 'bool', 'partenaire', 'Activer le lien du partenaire', 'Le lien est proposé sur tous les matchs, sur la page « En direct » et en haut du fil'],
         'partner_name' => ['', 'text', 'partenaire', 'Nom du partenaire', 'Ex. « New World TV ». Affiché à côté du lecteur'],
         'partner_url' => ['', 'url', 'partenaire', 'Lien unique pour tous les matchs', 'Le lien donné par ton partenaire (https://…) : lecteur, chaîne en direct, flux .m3u8 ou page de ses matchs'],
-        'partner_contract' => [false, 'bool', 'partenaire', 'Accord écrit signé : la vidéo se regarde dans Frikip', 'Sans accord, le bouton ouvre le site du partenaire dans un nouvel onglet'],
+        'partner_contract' => [false, 'bool', 'partenaire', 'Accord écrit signé : la vidéo se regarde dans FootPro', 'Sans accord, le bouton ouvre le site du partenaire dans un nouvel onglet'],
         'partner_note' => ['', 'text', 'partenaire', 'Précision affichée (facultatif)', 'Ex. « Gratuit » ou « Avec abonnement »'],
         // ---- Découvrir : vidéos de foot YouTube créditées (Admin > Découvrir)
         'disc_in_feed' => [true, 'bool', 'decouvrir', 'Glisser des vidéos « Découvrir » dans l’Accueil', 'Utile au lancement, quand les membres ont encore peu de vidéos'],

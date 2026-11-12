@@ -1,6 +1,6 @@
 {
-  "name": "Frikip",
-  "short_name": "Frikip",
+  "name": "FootPro",
+  "short_name": "FootPro",
   "description": "Montre ton talent en vidéo. Les clubs, agents et universités te trouvent.",
   "start_url": "/fil",
   "scope": "/",

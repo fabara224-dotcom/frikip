@@ -8,7 +8,7 @@ use Throwable;
 
 /**
  * Matchs en direct : le club (ou l'admin) diffuse avec YouTube Live, Facebook Live ou un service de diffusion (lien .m3u8),
- * Frikip affiche le direct avec le score, le nombre de spectateurs et une pub avant le match (sauf « Sans pub »).
+ * FootPro affiche le direct avec le score, le nombre de spectateurs et une pub avant le match (sauf « Sans pub »).
  */
 class Live
 {
@@ -75,7 +75,7 @@ class Live
         return ($s->source ?? 'club') !== 'youtube';
     }
 
-    /** Lien accepté ? (https, et un format que Frikip sait afficher ou au moins ouvrir) */
+    /** Lien accepté ? (https, et un format que FootPro sait afficher ou au moins ouvrir) */
     public static function validUrl(string $url): bool
     {
         return (bool) preg_match('~^https://~i', trim($url)) && strlen($url) <= 500;

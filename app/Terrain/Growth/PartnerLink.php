@@ -4,9 +4,9 @@ namespace App\Terrain\Growth;
 
 /**
  * Lien unique du partenaire de diffusion (Admin > Diffuseurs > « Lien unique pour tous les matchs ») :
- * le partenaire donne un seul lien (sa chaîne, son lecteur ou sa page de directs) et Frikip le propose
+ * le partenaire donne un seul lien (sa chaîne, son lecteur ou sa page de directs) et FootPro le propose
  * sur tous les matchs, sur la page « En direct » et en haut du fil.
- *  - Accord écrit signé : la vidéo se regarde dans Frikip (lecteur intégré).
+ *  - Accord écrit signé : la vidéo se regarde dans FootPro (lecteur intégré).
  *  - Sans accord : bouton qui ouvre le site du partenaire.
  */
 class PartnerLink

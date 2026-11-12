@@ -1,7 +1,7 @@
 {
     "name": "fabara/frikip",
     "type": "project",
-    "description": "Frikip : plateforme de recrutement sportif pour l'Afrique de l'Ouest (Laravel).",
+    "description": "FootPro : plateforme de recrutement sportif pour l'Afrique de l'Ouest (Laravel).",
     "keywords": [
         "frikip",
         "recrutement",
