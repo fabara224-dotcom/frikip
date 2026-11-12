@@ -8,7 +8,7 @@
       'classement' => ['Classement des sportifs', 'Le score de 0 à 100 de chaque sportif. Plus un poids est élevé, plus ce signal compte. 0 = ignoré.'],
       'fil' => ['Ce que voient les visiteurs', 'L’ordre des vidéos dans le fil de chaque personne.'],
       'moderation' => ['Modération automatique', 'Quand un contenu est retiré et quand un compte est sanctionné. Nudité et mise en danger de mineurs : blocage immédiat, toujours.'],
-      'app' => ['Application mobile', 'Réglages de l’application Android et iPhone (elle affiche le site Frikip).'],
+      'app' => ['Application mobile', 'Réglages de l’application Android et iPhone (elle affiche le site FootPro).'],
       'mots' => ['Mots interdits', 'Un mot ou une expression par ligne. Refusés dès l’envoi dans les titres, commentaires, messages, profils et offres. Accents et majuscules ignorés.'],
   ];
 @endphp

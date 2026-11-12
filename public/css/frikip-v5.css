@@ -1,5 +1,5 @@
 /* =====================================================================
-   FRIKIP — design « comme Instagram » appliqué à toutes les pages du site :
+   FOOTPRO — design « comme Instagram » appliqué à toutes les pages du site :
    tout blanc, traits fins gris, texte noir, vert pour les boutons et ce qui est actif ; police Nunito.
    Chargé en dernier dans layouts/web.blade.php : il ne fait que remplacer les couleurs,
    les polices et la barre de navigation, sans toucher au fonctionnement des pages.

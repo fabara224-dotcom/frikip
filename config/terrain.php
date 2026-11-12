@@ -9,11 +9,11 @@
 
 return [
 
-    // Sports ouverts sur le site (séparés par des virgules). Frikip est 100 % football.
+    // Sports ouverts sur le site (séparés par des virgules). FootPro est 100 % football.
     'sports' => env('TERRAIN_SPORTS', 'Football'),
 
-    'app_name' => env('TERRAIN_APP_NAME', 'Frikip'),
-    // Design Frikip (/app) : true = l'accueil de l'application (/fil) ouvre directement /app (ancienne version : /fil?ancien=1)
+    'app_name' => env('TERRAIN_APP_NAME', 'FootPro'),
+    // Design FootPro (/app) : true = l'accueil de l'application (/fil) ouvre directement /app (ancienne version : /fil?ancien=1)
     'new_design' => (bool) env('FRIKIP_NOUVEAU_DESIGN', true),
     'editor' => env('TERRAIN_EDITOR', 'Fabara'),
     'editor_address' => env('TERRAIN_EDITOR_ADDRESS', ''),
@@ -135,7 +135,7 @@ return [
     'shop_name' => env('TERRAIN_BOUTIQUE_NOM', 'Fabara'),
     // ---- Matchs en direct trouvés automatiquement sur YouTube (chaînes officielles, intégration autorisée).
     // Clé gratuite : https://console.cloud.google.com > « YouTube Data API v3 » > Identifiants > Clé API.
-    // ---- Diffusion en direct par Frikip (payant) : https://www.mux.com — sans clés, les clubs collent un lien YouTube/Facebook.
+    // ---- Diffusion en direct par FootPro (payant) : https://www.mux.com — sans clés, les clubs collent un lien YouTube/Facebook.
     'mux' => [
         'token_id' => env('MUX_TOKEN_ID', ''),
         'token_secret' => env('MUX_TOKEN_SECRET', ''),

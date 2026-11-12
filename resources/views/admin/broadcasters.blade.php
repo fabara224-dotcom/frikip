@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('title', 'Diffuseurs – Admin')
 @section('content')
-@include('admin._nav', ['title' => 'Diffuseurs officiels', 'lead' => 'Pour chaque match de Premier League, Ligue des champions, Liga, Serie A, Bundesliga…, Frikip montre où le regarder en direct dans le pays du visiteur. Avec un contrat, le flux du diffuseur se regarde directement dans Frikip.'])
+@include('admin._nav', ['title' => 'Diffuseurs officiels', 'lead' => 'Pour chaque match de Premier League, Ligue des champions, Liga, Serie A, Bundesliga…, FootPro montre où le regarder en direct dans le pays du visiteur. Avec un contrat, le flux du diffuseur se regarde directement dans FootPro.'])
 
 @php
   $f = $edit;
@@ -24,10 +24,10 @@
       <li>sur la page <b>En direct</b> et dans l’onglet <b>Matchs</b> ;</li>
       <li>en haut du <b>fil</b> (« Matchs en direct »).</li>
     </ul>
-    <p class="meta">Coche « Accord écrit signé » seulement si le partenaire t’a autorisé par écrit à intégrer sa vidéo dans Frikip, et s’il a lui-même les droits des matchs. Sinon, le bouton ouvre son site.</p>
+    <p class="meta">Coche « Accord écrit signé » seulement si le partenaire t’a autorisé par écrit à intégrer sa vidéo dans FootPro, et s’il a lui-même les droits des matchs. Sinon, le bouton ouvre son site.</p>
     @error('partner_url')<p class="field-error">{{ $message }}</p>@enderror
     @if ($partner)
-      <p><span class="pill ok">Actif</span> {{ $partner->name }} · {{ $partner->inside ? 'vidéo dans Frikip' : 'ouvre le site du partenaire' }}</p>
+      <p><span class="pill ok">Actif</span> {{ $partner->name }} · {{ $partner->inside ? 'vidéo dans FootPro' : 'ouvre le site du partenaire' }}</p>
       <div class="formbar"><a class="btn ghost" href="{{ route('live.partner') }}" target="_blank" rel="noopener">Voir la page des matchs</a></div>
     @else
       <p><span class="pill">Inactif</span></p>
@@ -53,7 +53,7 @@
         @foreach ($countries as $c)<label class="check"><input type="checkbox" name="countries[]" value="{{ $c }}" @checked(in_array($c, old('countries', $fp), true))> {{ $c }}</label>@endforeach
       </fieldset>
       <fieldset class="countrypick"><legend>Contrat de diffusion</legend>
-        <label class="check wide"><input type="checkbox" name="contract" value="1" @checked(old('contract', $f->contract ?? false))> Contrat signé : le flux se regarde directement dans Frikip</label>
+        <label class="check wide"><input type="checkbox" name="contract" value="1" @checked(old('contract', $f->contract ?? false))> Contrat signé : le flux se regarde directement dans FootPro</label>
         <label class="wide" style="flex:1 1 100%">Lien du flux fourni par le diffuseur<input name="embed_url" type="url" value="{{ old('embed_url', $f->embed_url ?? '') }}" placeholder="https://…m3u8 ou lien d’intégration"><small>Seulement avec un accord écrit du diffuseur.</small></label>
       </fieldset>
       <label class="check" style="margin-top:12px"><input type="checkbox" name="active" value="1" @checked(old('active', $f->active ?? true))> Afficher sur les matchs</label>

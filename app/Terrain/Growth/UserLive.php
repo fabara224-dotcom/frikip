@@ -40,7 +40,7 @@ class UserLive
             return __('Les lives des membres sont fermés pour le moment.');
         }
         if (! self::configured()) {
-            return __('Les lives arrivent très bientôt sur Frikip.');
+            return __('Les lives arrivent très bientôt sur FootPro.');
         }
         $days = (int) $algo->get('lives_min_age_days');
         if ($days > 0) {
@@ -56,7 +56,7 @@ class UserLive
         return null;
     }
 
-    /** Crée le direct chez Cloudflare et dans Frikip. */
+    /** Crée le direct chez Cloudflare et dans FootPro. */
     public function start(array $u, string $title, ?string $matchId, ?string $matchLabel): object
     {
         $acc = (string) config('terrain.cloudflare.account');

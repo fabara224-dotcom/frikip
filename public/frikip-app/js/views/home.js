@@ -117,7 +117,7 @@ Frikip.views = Frikip.views || {};
   function render() {
     root.innerHTML =
       '<header class="home-top">' +
-        '<button class="feed-switch" type="button" data-feed-menu aria-expanded="false" aria-label="Choisir le fil"><span class="ig-logo">Frikip</span>' + U.icon('back', 'chev') + '</button>' +
+        '<button class="feed-switch" type="button" data-feed-menu aria-expanded="false" aria-label="Choisir le fil"><span class="ig-logo">FootPro</span>' + U.icon('back', 'chev') + '</button>' +
         '<span class="ht-side"><a class="iconbtn" href="#notifications" aria-label="Notifications">' + U.icon('heart') + '<span class="dot-badge num" data-badge="notifications" hidden></span></a>' +
         '<a class="iconbtn" href="#messages" aria-label="Messages">' + U.icon('messenger') + '<span class="dot-badge num" data-badge="messages" hidden></span></a></span></header>' +
       '<div class="home-tabs" role="group" aria-label="Fil" data-feed-tabs>' +
@@ -140,7 +140,7 @@ Frikip.views = Frikip.views || {};
       root.querySelector('[data-stories]').innerHTML = stories(lastFeed, lastLives, r[4].groups);
       if (!items.length) {
         list.innerHTML = '<div class="post empty-post"><b>' + (tab === 'abonnements' ? 'Rien de neuf dans tes abonnements.' : 'Pas encore de publication.') + '</b>' +
-          '<span>' + (tab === 'abonnements' ? 'Abonne-toi à des joueurs et des clubs pour voir leurs vidéos ici.' : 'Publie la première vidéo foot de Frikip.') + '</span>' +
+          '<span>' + (tab === 'abonnements' ? 'Abonne-toi à des joueurs et des clubs pour voir leurs vidéos ici.' : 'Publie la première vidéo foot de FootPro.') + '</span>' +
           '<a class="btn btn-green" href="' + (tab === 'abonnements' ? '#explorer' : '#publier') + '">' + (tab === 'abonnements' ? 'Trouver des comptes' : 'Publier une vidéo') + '</a></div>';
         return;
       }
