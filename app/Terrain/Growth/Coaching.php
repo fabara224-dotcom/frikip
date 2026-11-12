@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Throwable;
 
 /**
- * Coaching FootPro.
+ * Coaching MyFootPro.
  *  - GRATUIT : à partir du poste et des chiffres de la saison passée, un diagnostic et un programme de 4 semaines
  *    (ex. attaquant avec 3 buts en 20 matchs → finition et déplacements dans la surface).
  *  - PAYANT : suivi par un coach (demandes, programmes, bilans) — formules dans config terrain.offers.coaching.
@@ -160,7 +160,7 @@ class Coaching
         ], 'Note tes résultats sur les 5 prochaines compétitions.'],
         'mental' => ['Confiance et routine de match', [
             ['Routine d’avant-match', 'à chaque match', 'Même échauffement, même musique, 3 objectifs simples écrits sur ton téléphone (ex. « 3 tirs cadrés »).'],
-            ['Revoir tes bonnes actions', '10 minutes avant chaque match', 'Regarde ta propre compilation FootPro : ton cerveau garde les bons gestes.'],
+            ['Revoir tes bonnes actions', '10 minutes avant chaque match', 'Regarde ta propre compilation MyFootPro : ton cerveau garde les bons gestes.'],
         ], 'Après chaque match, note-toi sur 10 : as-tu atteint tes 3 objectifs ?'],
     ];
 
@@ -441,7 +441,7 @@ class Coaching
         DB::table('coaching_requests')->where('id', $requestId)->update(['updated_at' => now()]);
     }
 
-    /** Coach rattaché à ce compte (un compte FootPro peut être coach). */
+    /** Coach rattaché à ce compte (un compte MyFootPro peut être coach). */
     public function coachFor(?string $userKey): ?object
     {
         if (! $userKey) {

@@ -1,4 +1,4 @@
-# FootPro — nouveau design « TikTok du foot »
+# MyFootPro — nouveau design « TikTok du foot »
 
 Ce que contient cette version :
 - **/app** : l'application (Accueil, Reels plein écran, Explorer, Publier, Matchs & Lives, Messages, Profil, Menu) branchée sur ta vraie base via l'API `/api/v1`.

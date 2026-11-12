@@ -7,7 +7,7 @@
 
 @section('rail')
   <a class="railhero" href="{{ ($me['role'] ?? null) === 'athlete' ? route('publish') : route('phone.login') }}">
-    <span class="railhero-k">{{ __('Sur FootPro') }}</span>
+    <span class="railhero-k">{{ __('Sur MyFootPro') }}</span>
     <b>{{ __('Découvre les talents de demain') }}</b>
     <small>{{ __('Entraînements · Matchs · Recrutement') }}</small>
     <span class="btn sm">{{ ($me['role'] ?? null) === 'athlete' ? __('Publier ma vidéo') : __('Rejoindre la communauté') }}</span>

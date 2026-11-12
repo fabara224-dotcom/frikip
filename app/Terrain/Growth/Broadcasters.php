@@ -8,8 +8,8 @@ use Throwable;
 
 /**
  * Diffuseurs officiels des grands championnats (Admin > Diffuseurs) : pour chaque match de Premier League,
- * Ligue des champions, Liga, Serie A, Bundesliga…, FootPro montre où le regarder en direct dans le pays du visiteur.
- * Avec un contrat de diffusion (« contract » + « embed_url »), le flux du diffuseur se regarde directement dans FootPro.
+ * Ligue des champions, Liga, Serie A, Bundesliga…, MyFootPro montre où le regarder en direct dans le pays du visiteur.
+ * Avec un contrat de diffusion (« contract » + « embed_url »), le flux du diffuseur se regarde directement dans MyFootPro.
  */
 class Broadcasters
 {
@@ -34,7 +34,7 @@ class Broadcasters
         })->values()->all();
     }
 
-    /** Flux à regarder dans FootPro : direct relié au match (Admin > Direct), sinon diffuseur partenaire sous contrat. */
+    /** Flux à regarder dans MyFootPro : direct relié au match (Admin > Direct), sinon diffuseur partenaire sous contrat. */
     public function inFrikip(array $match): ?array
     {
         try {

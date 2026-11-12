@@ -5,7 +5,7 @@ namespace App\Terrain;
 use App\Terrain\Growth\Algorithm;
 
 /**
- * Visite depuis l'application mobile FootPro (Flutter). L'app ajoute « FrikipApp/x.y » à l'identifiant du navigateur.
+ * Visite depuis l'application mobile MyFootPro (Flutter). L'app ajoute « FrikipApp/x.y » à l'identifiant du navigateur.
  * Google Play et l'App Store imposent leur propre système de paiement pour les achats numériques
  * (Premium, Sans pub, Boost, Structure Pro) : tant que ce n'est pas branché, ces achats se font sur le site web.
  * Le coaching (service rendu par une personne) peut se payer dans l'app.

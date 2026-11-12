@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 use Throwable;
 
 /**
- * API JSON du design FootPro (/api/v1/...), utilisée par l'interface public/frikip-app.
+ * API JSON du design MyFootPro (/api/v1/...), utilisée par l'interface public/frikip-app.
  *
  * Tout vient des vraies données du site : comptes (joueurs, acteurs du foot, supporters, clubs),
  * vidéos, j'aime, commentaires, favoris, abonnements, messagerie, notifications, lives, vidéos Découvrir,

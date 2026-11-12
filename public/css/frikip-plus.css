@@ -1,4 +1,4 @@
-/* FootPro : coaching, matchs en direct, publicités. Le corail signale ce qui est en direct. */
+/* MyFootPro : coaching, matchs en direct, publicités. Le corail signale ce qui est en direct. */
 
 /* ---------------------------------------------------------------- éléments communs */
 .listrow{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none;margin-bottom:8px}

@@ -1,7 +1,7 @@
 @extends('layouts.web')
 
 @section('title', __('Explorer').' – '.config('terrain.app_name'))
-@section('description', __('Joueurs, entraîneurs, arbitres, clubs, détections, matchs en direct, défis et vidéos de foot : tout le football d’Afrique de l’Ouest sur FootPro.'))
+@section('description', __('Joueurs, entraîneurs, arbitres, clubs, détections, matchs en direct, défis et vidéos de foot : tout le football d’Afrique de l’Ouest sur MyFootPro.'))
 
 @php
   $tiles = [
@@ -15,7 +15,7 @@
       ['posts', 'news', __('Actu'), __('Publications texte et photo des membres')],
       ['coaching', 'coach', __('Coaching'), __('Ton programme d’entraînement gratuit, ou un coach')],
       ['discover', 'play', __('Découvrir'), $discover ? __(':n vidéos de foot pour apprendre et t’inspirer', ['n' => number_format($discover, 0, ',', ' ')]) : __('Vidéos de foot pour apprendre et t’inspirer')],
-      ['stories', 'party', __('Ils ont été recrutés'), __('Des joueurs repérés grâce à FootPro')],
+      ['stories', 'party', __('Ils ont été recrutés'), __('Des joueurs repérés grâce à MyFootPro')],
   ];
   if ($me) {
       array_splice($tiles, 4, 0, [['offers', 'tag', __('Offres et essais'), __('Les annonces des clubs et des recruteurs')]]);

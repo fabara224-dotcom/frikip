@@ -1,4 +1,4 @@
-{{-- Numéros de contact de FootPro (config/terrain.php, « phones » ; TERRAIN_TELEPHONES dans .env). Lien d'appel et WhatsApp. --}}
+{{-- Numéros de contact de MyFootPro (config/terrain.php, « phones » ; TERRAIN_TELEPHONES dans .env). Lien d'appel et WhatsApp. --}}
 @props(['wa' => false, 'sep' => ' · '])
 @php
   $nums = (array) config('terrain.phones', []);

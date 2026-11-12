@@ -8,7 +8,7 @@
 <article class="narrow">
   <span class="eyebrow">Normes de sécurité des enfants · Child Safety Standards</span>
   <h1>Protection des enfants sur <x-cfg key="app_name" /></h1>
-  <p class="lead">Beaucoup de jeunes sportifs utilisent {{ config('terrain.app_name', 'FootPro') }}. <b><x-cfg key="editor" /></b>, éditeur de l'application, applique une tolérance zéro envers l'exploitation et les abus sexuels sur les enfants (CSAE) et envers les contenus d'abus sexuels sur mineurs (CSAM).</p>
+  <p class="lead">Beaucoup de jeunes sportifs utilisent {{ config('terrain.app_name', 'MyFootPro') }}. <b><x-cfg key="editor" /></b>, éditeur de l'application, applique une tolérance zéro envers l'exploitation et les abus sexuels sur les enfants (CSAE) et envers les contenus d'abus sexuels sur mineurs (CSAM).</p>
   <p class="meta">Dernière mise à jour : <x-cfg key="last_update" /></p>
 
   <h2 id="interdit">Ce qui est strictement interdit</h2>

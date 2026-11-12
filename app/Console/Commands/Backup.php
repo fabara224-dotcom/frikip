@@ -16,7 +16,7 @@ class Backup extends Command
 {
     protected $signature = 'frikip:sauvegarde {--videos : inclure les vidéos et images envoyées (fichier plus lourd)} {--garder=7 : nombre de sauvegardes à garder}';
 
-    protected $description = 'Sauvegarde la base de données (et les vidéos) de FootPro';
+    protected $description = 'Sauvegarde la base de données (et les vidéos) de MyFootPro';
 
     public function handle(): int
     {
@@ -52,7 +52,7 @@ class Backup extends Command
             }
             $zip->addFile($tmp, 'database.sql');
         }
-        $zip->addFromString('LISEZ-MOI.txt', "Sauvegarde FootPro du ".now()->format('d/m/Y H:i')."\n\nRestaurer la base (SQLite) : remplacer database/database.sqlite par database.sqlite de ce fichier.\nRestaurer la base (MySQL) : mysql -u UTILISATEUR -p BASE < database.sql\nVidéos : copier le dossier uploads/ dans public/.\nLe fichier .env (clés) n'est PAS dans la sauvegarde : garde-le à part, en lieu sûr.\n");
+        $zip->addFromString('LISEZ-MOI.txt', "Sauvegarde MyFootPro du ".now()->format('d/m/Y H:i')."\n\nRestaurer la base (SQLite) : remplacer database/database.sqlite par database.sqlite de ce fichier.\nRestaurer la base (MySQL) : mysql -u UTILISATEUR -p BASE < database.sql\nVidéos : copier le dossier uploads/ dans public/.\nLe fichier .env (clés) n'est PAS dans la sauvegarde : garde-le à part, en lieu sûr.\n");
         if ($this->option('videos') && is_dir(public_path('uploads'))) {
             $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(public_path('uploads'), \FilesystemIterator::SKIP_DOTS));
             foreach ($it as $f) {

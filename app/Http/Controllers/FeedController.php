@@ -21,7 +21,7 @@ class FeedController extends Controller
 
     public function index(Request $request): View|\Illuminate\Http\RedirectResponse
     {
-        // Design FootPro : le fil s'ouvre dans /app (lien partagé ?v=… compris). Ancienne version : /fil?ancien=1
+        // Design MyFootPro : le fil s'ouvre dans /app (lien partagé ?v=… compris). Ancienne version : /fil?ancien=1
         if (config('terrain.new_design') && ! $request->boolean('ancien')) {
             return redirect()->to(route('app.v2').($request->query('v') ? '#v='.rawurlencode((string) $request->query('v')) : ''));
         }
