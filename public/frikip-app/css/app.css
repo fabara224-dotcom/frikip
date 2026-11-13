@@ -1007,3 +1007,10 @@ html.sv-open, html.sv-open body { overflow: hidden; }
 .story-new-prev img, .story-new-prev video { width: 100%; height: 100%; object-fit: cover; }
 .btn-block { width: 100%; }
 @media (prefers-reduced-motion: reduce) { .sv { animation: none; } }
+
+/* logo : ballons à la place des « o » */
+.ig-logo { display: inline-flex; align-items: baseline; white-space: nowrap; }
+.ig-logo > span { display: inline-flex; align-items: baseline; }
+.ig-logo .lb { width: .66em; height: .66em; margin: 0 .02em; flex: none; position: relative; top: .04em; }
+.brand .ig-logo, .brand .ig-logo > span { display: inline-flex !important; flex-direction: row !important; align-items: baseline; }
+.brand .ig-logo .lb { display: block; }
