@@ -9,7 +9,7 @@ window.Frikip = window.Frikip || {};
   Frikip.views.logoSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l-1.6 4H10.4l-.7 2.6h5.6L13.7 13.6H8.6L6.9 21H3z" fill="#03140A"/><circle cx="18.5" cy="17.5" r="3" fill="#03140A"/></svg>';
   // Logo façon maquette : ballon + éclair vert
   Frikip.views.brandSvg = '<svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#C9A227"/><circle cx="20" cy="20" r="11.5" fill="#fff" stroke="#0B3D2E" stroke-width="2.4"/><path d="M20 14.2l5.4 3.9-2.1 6.3h-6.6l-2.1-6.3z" fill="#0B3D2E"/></svg>';
-  var logo = '<a class="brand" href="#accueil" aria-label="FootProWorld, accueil">' + Frikip.views.brandSvg + '<span><b>FootProWorld</b><small>Le réseau foot</small></span></a>';
+  var logo = '<a class="brand" href="#accueil" aria-label="FootProWorld, accueil">' + Frikip.views.brandSvg + '<span><b>' + Frikip.ui.logoMark() + '</b><small>Le réseau foot</small></span></a>';
 
   var ROUTES = ['accueil', 'reels', 'explorer', 'publier', 'matchs', 'messages', 'profil', 'compte', 'notifications', 'menu'];
   var NO_RAIL = ['messages', 'publier'];

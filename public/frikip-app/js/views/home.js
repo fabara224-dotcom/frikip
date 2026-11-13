@@ -117,7 +117,7 @@ Frikip.views = Frikip.views || {};
   function render() {
     root.innerHTML =
       '<header class="home-top">' +
-        '<button class="feed-switch" type="button" data-feed-menu aria-expanded="false" aria-label="Choisir le fil"><span class="ig-logo">FootProWorld</span>' + U.icon('back', 'chev') + '</button>' +
+        '<button class="feed-switch" type="button" data-feed-menu aria-expanded="false" aria-label="Choisir le fil">' + U.logoMark() + U.icon('back', 'chev') + '</button>' +
         '<span class="ht-side"><a class="iconbtn" href="#notifications" aria-label="Notifications">' + U.icon('heart') + '<span class="dot-badge num" data-badge="notifications" hidden></span></a>' +
         '<a class="iconbtn" href="#messages" aria-label="Messages">' + U.icon('messenger') + '<span class="dot-badge num" data-badge="messages" hidden></span></a></span></header>' +
       '<div class="home-tabs" role="group" aria-label="Fil" data-feed-tabs>' +

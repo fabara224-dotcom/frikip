@@ -154,3 +154,10 @@ body.webapp .bub { background: var(--sunk); border: 0; border-radius: 18px; }
 .tabbar.v5tabs a.v5plus span { width: auto; height: auto; border: 0; background: none; }
 .tabbar.v5tabs a.v5plus svg { width: 27px; height: 27px; color: #000 !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* logo : ballons à la place des « o » */
+.ig-logo { display: inline-flex; align-items: baseline; white-space: nowrap; }
+.ig-logo > span { display: inline-flex; align-items: baseline; }
+.ig-logo .lb { width: .66em; height: .66em; margin: 0 .02em; flex: none; position: relative; top: .04em; }
+.brand .ig-logo, .brand .ig-logo > span { display: inline-flex !important; flex-direction: row !important; align-items: baseline; }
+.brand .ig-logo .lb { display: block; }
