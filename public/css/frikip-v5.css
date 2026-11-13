@@ -140,7 +140,7 @@ body.webapp .bub { background: var(--sunk); border: 0; border-radius: 18px; }
 .apptop .badge, .tabbar .tbadge { background: #ED4956; }
 
 /* mise en page Instagram : logo écrit, cœur + messagerie, barre du bas en icônes seules */
-.apptop .brand .ig-logo, .ig-logo { font: 400 32px/1 "Grand Hotel", "Brush Script MT", cursive !important; letter-spacing: .01em !important; color: #000 !important; }
+.apptop .brand .ig-logo, .ig-logo { font: 800 26px/1 "Jost", "Nunito", system-ui, sans-serif !important; letter-spacing: -.035em !important; color: #000 !important; }
 .apptop .iconbtn svg { width: 26px; height: 26px; stroke-width: 1.9; }
 .apptop .badge { min-width: 17px; height: 17px; font-size: 10px; line-height: 17px; box-shadow: 0 0 0 2px #fff; }
 .tabbar.v5tabs { align-items: center; }
