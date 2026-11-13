@@ -137,7 +137,7 @@ Frikip.views = Frikip.views || {};
                 });
               });
             }
-            else if (k === 'share') { var link = (user.profileUrl || ('https://myfootpro.com/@' + user.handle)); if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {}); U.toast('Lien du profil copié : ' + link); }
+            else if (k === 'share') { var link = (user.profileUrl || ('https://footproworld.com/@' + user.handle)); if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {}); U.toast('Lien du profil copié : ' + link); }
             else if (k === 'edit' && Frikip.config.mode === 'api') location.href = (Frikip.config.links || {}).profileEdit || LINKS.edit;
             else if (Frikip.config.mode === 'api' && LINKS[k]) {
               if (k === 'Se déconnecter') {

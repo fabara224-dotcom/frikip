@@ -38,7 +38,7 @@
         $more[] = ['offers', $isRecruiter ? __('Mes offres') : __('Offres'), 'tag'];
         $more[] = ['coaching.follow', __('Mon coaching'), 'coach'];
         $more[] = ['payments.history', __('Mes paiements'), 'receipt'];
-        $more[] = ['premium', __('MyFootPro sans pub'), 'ad', ['product' => 'sans_pub']];
+        $more[] = ['premium', __('FootProWorld sans pub'), 'ad', ['product' => 'sans_pub']];
     }
     $more[] = ['video.services', __('Montage vidéo'), 'film'];
     $more[] = ['structure.offer', __('Offre Structure Pro'), 'stadium'];
@@ -104,7 +104,7 @@
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
 <link rel="stylesheet" href="{{ asset('css/frikip-plus.css') }}?v=3">
 <link rel="stylesheet" href="{{ asset('css/frikip-pro.css') }}?v=1">
-{{-- Design MyFootPro (noir, vert vif, blanc) : le même que l'application /app --}}
+{{-- Design FootProWorld (noir, vert vif, blanc) : le même que l'application /app --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Nunito:wght@400;500;600;700;800;900&display=swap">
@@ -113,7 +113,7 @@
 <body class="webapp @yield('body-class') {{ $lite ? 'lite' : '' }} {{ \App\Terrain\InApp::active() ? 'in-app in-app-'.\App\Terrain\InApp::platform() : '' }}">
 <header class="apptop">
   <div class="apptop-in gut">
-    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><span><b class="ig-logo">MyFootPro</b></span></a>
+    <a class="brand" href="{{ route('app.v2') }}" aria-label="{{ $app }}"><span><b class="ig-logo">FootProWorld</b></span></a>
     <nav class="appnav" aria-label="Application">
       @foreach ($tabs as $t)
         @continue(($t[3] ?? '') === 'pub')

@@ -34,7 +34,7 @@
       @if (($s->source ?? '') === 'mux' && $s->stream_key && $s->status !== 'termine')
         <section class="card muxbox">
           <h2 style="margin:0">{{ __('Diffuser depuis ton téléphone ou ta caméra') }}</h2>
-          <p class="meta" style="margin:0">{{ __('Dans l’application de diffusion, choisis « RTMP » ou « Serveur personnalisé » et colle ces deux informations. Le direct démarre tout seul sur MyFootPro quand la vidéo arrive.') }}</p>
+          <p class="meta" style="margin:0">{{ __('Dans l’application de diffusion, choisis « RTMP » ou « Serveur personnalisé » et colle ces deux informations. Le direct démarre tout seul sur FootProWorld quand la vidéo arrive.') }}</p>
           <label>{{ __('Adresse du serveur') }}<span class="copyrow"><input readonly value="{{ \App\Terrain\Growth\MuxLive::RTMP }}" onclick="this.select()"><button type="button" class="btn ghost sm" data-copy="{{ \App\Terrain\Growth\MuxLive::RTMP }}">{{ __('Copier') }}</button></span>
             <small>{{ __('Si ton application refuse « rtmps », utilise :u', ['u' => \App\Terrain\Growth\MuxLive::RTMP_PLAIN]) }}</small></label>
           <label>{{ __('Clé de diffusion (secrète)') }}<span class="copyrow"><input readonly type="password" value="{{ $s->stream_key }}" onfocus="this.type='text';this.select()" onblur="this.type='password'"><button type="button" class="btn ghost sm" data-copy="{{ $s->stream_key }}">{{ __('Copier') }}</button></span>
@@ -48,7 +48,7 @@
       @endif
       <h2>{{ __('Informations du match') }}</h2>
     @else
-      <p class="pub-lead">{{ __('Lance ton direct sur YouTube Live, Facebook Live ou ton service de diffusion, puis colle le lien ici. MyFootPro l’affiche avec le score en direct.') }}</p>
+      <p class="pub-lead">{{ __('Lance ton direct sur YouTube Live, Facebook Live ou ton service de diffusion, puis colle le lien ici. FootProWorld l’affiche avec le score en direct.') }}</p>
     @endif
 
     <form method="POST" action="{{ $s ? route('live.update', $s->id) : route('live.store') }}" class="card">@csrf
@@ -69,7 +69,7 @@
       @if (! $s && $muxReady)
         <fieldset class="langfs"><legend><b>{{ __('Comment tu diffuses ?') }}</b></legend>
           <div class="plans">
-            <label class="opt"><input type="radio" name="mode" value="frikip" @checked(old('mode', 'frikip') === 'frikip') onchange="document.getElementById('urlbox').hidden=true;document.getElementById('stream_url').required=false"><span>{{ __('Avec MyFootPro') }}</span><span class="meta">{{ __('Filme avec ton téléphone ou ta caméra : MyFootPro te donne une clé de diffusion.') }}</span></label>
+            <label class="opt"><input type="radio" name="mode" value="frikip" @checked(old('mode', 'frikip') === 'frikip') onchange="document.getElementById('urlbox').hidden=true;document.getElementById('stream_url').required=false"><span>{{ __('Avec FootProWorld') }}</span><span class="meta">{{ __('Filme avec ton téléphone ou ta caméra : FootProWorld te donne une clé de diffusion.') }}</span></label>
             <label class="opt"><input type="radio" name="mode" value="lien" @checked(old('mode') === 'lien') onchange="document.getElementById('urlbox').hidden=false;document.getElementById('stream_url').required=true"><span>{{ __('J’ai déjà un lien') }}</span><span class="meta">{{ __('YouTube Live, Facebook Live, Vimeo…') }}</span></label>
           </div>
         </fieldset>

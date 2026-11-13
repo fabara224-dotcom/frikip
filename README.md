@@ -1,4 +1,4 @@
-# MyFootPro
+# FootProWorld
 
 Plateforme de recrutement sportif pour l'Afrique de l'Ouest. Les sportifs publient leurs compilations vidéo. Les clubs, académies, agents et universités les trouvent et les contactent.
 
@@ -19,7 +19,7 @@ Site web en **Laravel 11** (PHP 8.2 ou plus récent), base **SQLite** par défau
   - scores en direct des grands championnats (API-Football) ;
   - matchs locaux diffusés par les clubs (YouTube, Facebook, Mux) ;
   - « Où regarder » vers les diffuseurs officiels ;
-  - lecture dans MyFootPro avec l'API d'un diffuseur partenaire.
+  - lecture dans FootProWorld avec l'API d'un diffuseur partenaire.
 - **Paiements Mobile Money** (CinetPay) : Premium, Boost, Structure Pro, montage vidéo, coaching, « Sans pub ».
 - **Publicités vidéo** gérées dans l'admin, avec ciblage par pays et par sport.
 - **Modération** : mots interdits, signalements, sanctions automatiques, détection de la nudité (Sightengine).

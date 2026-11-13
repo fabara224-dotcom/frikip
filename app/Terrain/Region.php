@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 
 /**
- * Pays couverts par MyFootPro : les 16 pays d'Afrique de l'Ouest (et quelques voisins).
+ * Pays couverts par FootProWorld : les 16 pays d'Afrique de l'Ouest (et quelques voisins).
  * Pour chaque pays : code ISO, indicatif téléphonique, monnaie, langue du site, vague d'ouverture
  * et moyen de paiement en ligne disponible.
  *

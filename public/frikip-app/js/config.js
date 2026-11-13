@@ -8,11 +8,11 @@
 window.Frikip = window.Frikip || {};
 Frikip.config = Object.assign({
   mode: 'demo',                 // 'demo' | 'api'
-  apiBase: '/api/v1',           // ex. 'https://myfootpro.com/api/v1' une fois l'API Laravel en ligne
+  apiBase: '/api/v1',           // ex. 'https://footproworld.com/api/v1' une fois l'API Laravel en ligne
   pollMessagesMs: 4000,         // rafraîchissement des messages en mode api
   pollScoresMs: 30000,          // rafraîchissement des scores en direct (API-Football côté serveur)
-  appName: 'MyFootPro',
+  appName: 'FootProWorld',
   tagline: 'Le réseau foot',
   loginUrl: null,               // page de connexion du site (mode api)
-  shareBase: 'https://myfootpro.com/v/'
+  shareBase: 'https://footproworld.com/v/'
 }, window.FRIKIP_CONFIG || {});   // le site Laravel peut fournir ses réglages (voir web/app-v2.blade.php)

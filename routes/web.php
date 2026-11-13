@@ -43,7 +43,7 @@ Route::match(['get', 'post'], '/paiement/notification', [PaymentController::clas
     ->withoutMiddleware([ValidateCsrfToken::class, \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->middleware(Throttle::class.':120,1')->name('payments.notify');
 
-// Diffusion MyFootPro (Mux) : le direct démarre et s'arrête tout seul
+// Diffusion FootProWorld (Mux) : le direct démarre et s'arrête tout seul
 Route::post('/webhooks/mux', [\App\Http\Controllers\LiveController::class, 'muxWebhook'])
     ->withoutMiddleware([ValidateCsrfToken::class, \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->middleware(Throttle::class.':240,1')->name('webhooks.mux');
@@ -70,7 +70,7 @@ Route::middleware(SetLocale::class)->group(function () {
     });
     Route::post('/suppression-compte/annuler', [AccountDeletionController::class, 'cancel'])->name('deletion.cancel');
 
-    // ---- Design MyFootPro (application web /app) et son API JSON
+    // ---- Design FootProWorld (application web /app) et son API JSON
     Route::get('/app', [\App\Http\Controllers\AppShellController::class, 'show'])->name('app.v2');
     Route::prefix('api/v1')->name('v1.')->middleware(Throttle::class.':240,1')->group(function () {
         Route::get('/me', [\App\Http\Controllers\ApiController::class, 'me'])->name('me');

@@ -1,7 +1,7 @@
 @extends('layouts.web')
 
 @section('title', __('Créer un compte').' – '.config('terrain.app_name'))
-@section('description', __('Crée ton compte MyFootPro en 1 minute : joueur, supporter, club, recruteur, agent, entraîneur, arbitre, médecin… Avec Google, Facebook, TikTok, ton numéro ou ton e-mail.'))
+@section('description', __('Crée ton compte FootProWorld en 1 minute : joueur, supporter, club, recruteur, agent, entraîneur, arbitre, médecin… Avec Google, Facebook, TikTok, ton numéro ou ton e-mail.'))
 
 @php
   // Erreurs après envoi du formulaire e-mail : on rouvre l'étape 3 ; type déjà choisi : étape 2
@@ -11,8 +11,8 @@
 @section('content')
 <div class="page gut">
   <div class="narrow signup" style="max-width:680px">
-    <h1>{{ __('Créer mon compte MyFootPro') }}</h1>
-    <p class="pub-lead">{{ __('C’est gratuit et ça prend une minute. MyFootPro réunit tout le monde du football : joueurs, supporters, clubs, recruteurs, agents, entraîneurs, arbitres, médecins…') }}</p>
+    <h1>{{ __('Créer mon compte FootProWorld') }}</h1>
+    <p class="pub-lead">{{ __('C’est gratuit et ça prend une minute. FootProWorld réunit tout le monde du football : joueurs, supporters, clubs, recruteurs, agents, entraîneurs, arbitres, médecins…') }}</p>
 
     <ol class="steps" aria-label="{{ __('Étapes') }}">
       <li class="on"><span>1</span>{{ __('Qui es-tu ?') }}</li>
@@ -40,7 +40,7 @@
         <button class="authbtn mail" type="button" data-goto="3">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
           {{ __('Avec mon adresse e-mail') }}</button>
-        <p class="meta" style="margin:12px 0 0">🔒 {{ __('Ton numéro et ton e-mail ne sont jamais affichés sur ton profil. Personne ne peut te demander d’argent pour un essai sur MyFootPro.') }}</p>
+        <p class="meta" style="margin:12px 0 0">🔒 {{ __('Ton numéro et ton e-mail ne sont jamais affichés sur ton profil. Personne ne peut te demander d’argent pour un essai sur FootProWorld.') }}</p>
         <button class="linkbtn" type="button" data-goto="1" style="margin-top:12px">← {{ __('Retour') }}</button>
       </section>
 

@@ -19,7 +19,7 @@ use Throwable;
  *   LIVE_PARTNER_FIELD=data.hls_url          (où se trouve le lien dans la réponse JSON)
  *
  * Variables disponibles dans l'adresse : {fixture} (numéro API-Football), {league}, {home}, {away}, {date} (AAAA-MM-JJ), {country}.
- * Le lien renvoyé (HLS .m3u8, MP4 ou page d'intégration) est lu dans le lecteur de MyFootPro, sur la page du match.
+ * Le lien renvoyé (HLS .m3u8, MP4 ou page d'intégration) est lu dans le lecteur de FootProWorld, sur la page du match.
  */
 class PartnerStreams
 {

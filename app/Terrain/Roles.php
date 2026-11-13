@@ -3,7 +3,7 @@
 namespace App\Terrain;
 
 /**
- * Types de comptes MyFootPro :
+ * Types de comptes FootProWorld :
  *  - athlete   : sportif (ou profil d'un sportif tenu par un proche : frère, parent, ami…)
  *  - recruiter : club, académie, agent, université, sélection
  *  - fan       : supporter qui regarde, aime, commente, suit et vote (ne publie pas, n'écrit pas en premier)
