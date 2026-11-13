@@ -898,7 +898,7 @@ body { font-size: 15px; font-weight: 500; }
    V8 — mise en page Instagram : logo écrit, cœur + messagerie en haut,
    barre du bas en icônes seules, publications « Instagram ».
    ===================================================================== */
-.ig-logo { font: 400 34px/1 "Grand Hotel", "Brush Script MT", cursive; color: var(--fg); letter-spacing: .01em; }
+.ig-logo { font: 800 28px/1 "Jost", "Nunito", system-ui, sans-serif; letter-spacing: -.035em; color: var(--fg); }
 .home-top { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px 4px 14px; }
 .feed-switch { display: inline-flex; align-items: center; gap: 4px; color: var(--fg); }
 .feed-switch svg.chev { width: 16px; height: 16px; transform: rotate(-90deg); stroke-width: 2.6; transition: transform .2s; }
@@ -962,7 +962,7 @@ body { font-size: 15px; font-weight: 500; }
   .home-top { display: none; }
   .home-tabs, .feed-open .home-tabs { display: flex; position: static; flex-direction: row; box-shadow: none; background: none; padding: 18px 0 0; min-width: 0; }
   .nav-a svg.i { stroke-width: 1.9; }
-  .side .brand b { font: 400 34px/1 "Grand Hotel", "Brush Script MT", cursive; }
+  .side .brand b { font: 800 28px/1 "Jost", "Nunito", system-ui, sans-serif; letter-spacing: -.035em; }
 }
 .feed-open .home-tabs { position: fixed; top: calc(54px + env(safe-area-inset-top, 0px)); }
 .home-top .dot-badge { top: 5px; right: 4px; min-width: 17px; height: 17px; font-size: 10px; line-height: 17px; padding: 0 4px; box-shadow: 0 0 0 2px #fff; }
