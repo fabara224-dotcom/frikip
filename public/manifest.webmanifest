@@ -1,6 +1,6 @@
 {
-  "name": "MyFootPro",
-  "short_name": "MyFootPro",
+  "name": "FootProWorld",
+  "short_name": "FootProWorld",
   "description": "Montre ton talent en vidéo. Les clubs, agents et universités te trouvent.",
   "start_url": "/fil",
   "scope": "/",

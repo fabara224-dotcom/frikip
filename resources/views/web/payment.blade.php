@@ -3,7 +3,7 @@
 @section('title', 'Paiement – '.config('terrain.app_name'))
 
 @php
-  $title = ['premium' => 'Recruteur Premium', 'structure' => 'Abonnement Structure Pro', 'boost' => 'Booster mon profil', 'sans_pub' => __('MyFootPro sans pub')][$product];
+  $title = ['premium' => 'Recruteur Premium', 'structure' => 'Abonnement Structure Pro', 'boost' => 'Booster mon profil', 'sans_pub' => __('FootProWorld sans pub')][$product];
   $perks = [
       'premium' => ['Contacts illimités avec les sportifs', 'Alertes de nouveaux profils', 'Statistiques de tes offres', 'Badge Premium sur tes offres'],
       'structure' => ['Page de ta structure en tête de la liste des clubs, avec le badge Structure Pro', 'Contacts illimités avec les sportifs (Premium inclus)', 'Tes détections mises en avant', 'Statistiques de visites de ta page'],

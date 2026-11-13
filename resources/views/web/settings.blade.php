@@ -37,7 +37,7 @@
           <button class="btn sm" type="button" id="push-enable">{{ __('Activer sur cet appareil') }}</button>
           <button class="btn ghost sm" type="button" id="push-test">{{ __('Envoyer une notification d’essai') }}</button>
         </div>
-        <p class="meta" style="margin:0;font-size:12.5px">{{ __('Sur iPhone : ouvre le site dans Safari, touche Partager puis « Sur l’écran d’accueil », ouvre MyFootPro depuis l’écran d’accueil et active ici.') }}</p>
+        <p class="meta" style="margin:0;font-size:12.5px">{{ __('Sur iPhone : ouvre le site dans Safari, touche Partager puis « Sur l’écran d’accueil », ouvre FootProWorld depuis l’écran d’accueil et active ici.') }}</p>
       @else
         <p class="meta" style="margin:0">{{ __('Bientôt disponible : l’administrateur doit lancer « php artisan terrain:cles-push ».') }}</p>
       @endif

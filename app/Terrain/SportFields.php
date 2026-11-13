@@ -81,7 +81,7 @@ class SportFields
         'Sierra Leone', 'Gambie', 'Guinée-Bissau', 'Cap-Vert', 'Mauritanie', 'Cameroun', 'Maroc', 'RDC'];
 
     /**
-     * Sports ouverts sur le site. MyFootPro est 100 % football : les autres sports restent dans la base
+     * Sports ouverts sur le site. FootProWorld est 100 % football : les autres sports restent dans la base
      * (anciens profils) mais ne s'affichent plus nulle part. Réglage : TERRAIN_SPORTS dans .env.
      *
      * @return list<string>

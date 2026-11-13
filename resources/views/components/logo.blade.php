@@ -1,4 +1,4 @@
-{{-- Logo MyFootPro : pastille ballon + mot « MYFOOTPRO » en italique, avec le slogan en petit. --}}
+{{-- Logo FootProWorld : pastille ballon + mot « FOOTPROWORLD » en italique, avec le slogan en petit. --}}
 @props(['tagline' => true])
 <span {{ $attributes->merge(['class' => 'fklogo']) }}>
   <svg class="fklogo-mark" viewBox="0 0 40 40" aria-hidden="true">

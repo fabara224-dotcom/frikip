@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 /**
- * Actu : le côté « Facebook » de MyFootPro. Les membres publient un texte et/ou une photo,
+ * Actu : le côté « Facebook » de FootProWorld. Les membres publient un texte et/ou une photo,
  * les autres aiment et commentent. Le fil vidéo vertical (côté « TikTok ») reste sur /fil.
  */
 class PostController extends Controller

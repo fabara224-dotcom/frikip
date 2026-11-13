@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('title', 'Découvrir – Admin')
 @section('content')
-@include('admin._nav', ['title' => 'Découvrir', 'lead' => 'Des vidéos de foot YouTube pour que les visiteurs comprennent MyFootPro dès leur arrivée : exercices, gestes techniques, gardiens, arbitrage, santé… Seules les vidéos dont la chaîne autorise l’intégration sont gardées, lues avec le lecteur officiel de YouTube, avec le nom de la chaîne.'])
+@include('admin._nav', ['title' => 'Découvrir', 'lead' => 'Des vidéos de foot YouTube pour que les visiteurs comprennent FootProWorld dès leur arrivée : exercices, gestes techniques, gardiens, arbitrage, santé… Seules les vidéos dont la chaîne autorise l’intégration sont gardées, lues avec le lecteur officiel de YouTube, avec le nom de la chaîne.'])
 
 @unless ($ready)
   <p class="note">Ajoute <code>YOUTUBE_API_KEY</code> dans le fichier <code>.env</code> (clé gratuite sur console.cloud.google.com, « YouTube Data API v3 »), puis clique « Ajouter des vidéos ».</p>
@@ -10,7 +10,7 @@
 <div class="kpis">
   <div class="kpi"><span>Vidéos visibles</span><b>{{ number_format($total, 0, ',', ' ') }}</b><small>objectif {{ number_format($values['disc_max'], 0, ',', ' ') }}</small></div>
   <div class="kpi"><span>Cachées</span><b>{{ $hidden }}</b><small>par toi</small></div>
-  <div class="kpi"><span>Lectures</span><b>{{ number_format($plays, 0, ',', ' ') }}</b><small>sur MyFootPro</small></div>
+  <div class="kpi"><span>Lectures</span><b>{{ number_format($plays, 0, ',', ' ') }}</b><small>sur FootProWorld</small></div>
   <div class="kpi"><span>Dernier ajout</span><b style="font-size:18px">{{ $last ? \Illuminate\Support\Carbon::parse($last['at'])->format('d/m H:i') : '–' }}</b><small>{{ $last ? $last['added'].' vidéo(s)' : 'jamais' }}</small></div>
 </div>
 

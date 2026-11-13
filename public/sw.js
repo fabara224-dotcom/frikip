@@ -1,16 +1,16 @@
-/* MyFootPro – service worker : notifications sur le téléphone même quand le site est fermé (messages, appels…). */
+/* FootProWorld – service worker : notifications sur le téléphone même quand le site est fermé (messages, appels…). */
 self.addEventListener('install', function () { self.skipWaiting(); });
 self.addEventListener('activate', function (e) { e.waitUntil(self.clients.claim()); });
 
 self.addEventListener('push', function (e) {
   var d = {};
-  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { title: 'MyFootPro', body: e.data ? e.data.text() : '' }; }
+  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { title: 'FootProWorld', body: e.data ? e.data.text() : '' }; }
   var call = d.type === 'call';
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
     // Site ouvert et visible : la page affiche déjà l'alerte (sauf pour un appel, toujours affiché)
     var visible = list.some(function (c) { return c.visibilityState === 'visible'; });
     if (visible && !call && d.type !== 'test') return;
-    return self.registration.showNotification(d.title || 'MyFootPro', {
+    return self.registration.showNotification(d.title || 'FootProWorld', {
       body: d.body || '', icon: d.icon || '/icons/icon-192.png', badge: '/icons/badge-96.png',
       tag: d.tag || d.type || 'terrain', renotify: true, data: { url: d.url || '/' },
       requireInteraction: call, vibrate: call ? [400, 200, 400, 200, 400] : [120, 60, 120]

@@ -20,7 +20,7 @@
     </a>
   @empty
     <div class="empty-state">
-      <p>{{ $metier ? __('Pas encore de :m sur MyFootPro.', ['m' => mb_strtolower(__($metier))]) : __('Pas encore d’acteur du foot inscrit.') }}</p>
+      <p>{{ $metier ? __('Pas encore de :m sur FootProWorld.', ['m' => mb_strtolower(__($metier))]) : __('Pas encore d’acteur du foot inscrit.') }}</p>
       @unless ($me)<a class="btn" href="{{ route('register', ['type' => 'acteur']) }}">{{ __('Je suis un acteur du foot : je m’inscris') }}</a>@endunless
     </div>
   @endforelse

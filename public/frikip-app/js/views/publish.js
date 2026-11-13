@@ -8,7 +8,7 @@ Frikip.views = Frikip.views || {};
 (function () {
   var U = Frikip.ui, api = Frikip.api;
   var root, file = null, duration = 0;
-  var SUGGEST = ['#Buts', '#Dribble', '#Entrainement', '#Freestyle', '#JeunesTalents', '#DéfiMyFootPro', '#FootFéminin', '#Guinée'];
+  var SUGGEST = ['#Buts', '#Dribble', '#Entrainement', '#Freestyle', '#JeunesTalents', '#DéfiFootProWorld', '#FootFéminin', '#Guinée'];
 
   function render() {
     file = null; duration = 0;

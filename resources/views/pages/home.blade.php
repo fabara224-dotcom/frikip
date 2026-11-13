@@ -13,7 +13,7 @@
       <div>
         <span class="eyebrow">Le réseau social du foot · Afrique de l'Ouest</span>
         <h1>Ton talent mérite <em>d'être vu.</em></h1>
-        <p>Publie tes compilations en vidéo verticale. Les clubs, agents, académies et universités te trouvent, regardent tes actions et te contactent directement dans {{ config('terrain.app_name', 'MyFootPro') }}.</p>
+        <p>Publie tes compilations en vidéo verticale. Les clubs, agents, académies et universités te trouvent, regardent tes actions et te contactent directement dans {{ config('terrain.app_name', 'FootProWorld') }}.</p>
         <div class="row" style="margin-bottom:14px">
           <a class="btn" href="{{ route('feed') }}">Voir les vidéos</a>
           <a class="btn ghost" href="{{ route('posts') }}" style="background:rgba(255,255,255,.12);color:#fff">{{ __('L’actu du foot') }}</a>

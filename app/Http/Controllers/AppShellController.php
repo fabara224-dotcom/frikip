@@ -6,7 +6,7 @@ use App\Terrain\DataSource;
 use Illuminate\View\View;
 
 /**
- * Page unique du design MyFootPro (/app) : Accueil, Reels, Explorer, Matchs et lives, Messages, Profil, Menu.
+ * Page unique du design FootProWorld (/app) : Accueil, Reels, Explorer, Matchs et lives, Messages, Profil, Menu.
  * L'interface (public/frikip-app) charge tout par l'API JSON /api/v1 (ApiController).
  */
 class AppShellController extends Controller
@@ -25,7 +25,7 @@ class AppShellController extends Controller
                 'chunkUrl' => route('publish.chunk'),
                 'publishUrl' => route('publish'),
                 'shareBase' => url('/fil?v='),
-                'appName' => config('terrain.app_name', 'MyFootPro'),
+                'appName' => config('terrain.app_name', 'FootProWorld'),
                 'pollScoresMs' => 30000,
                 'pollMessagesMs' => 4000,
                 // Pages du site ouvertes depuis l'interface (même design grâce à css/frikip-v5.css)

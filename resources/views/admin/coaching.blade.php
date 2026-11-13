@@ -12,7 +12,7 @@
 <div class="kpis">
   <div class="kpi"><span>Programmes gratuits</span><b>{{ number_format($stats['plans'], 0, ',', ' ') }}</b><small>calculés pour des membres</small></div>
   <div class="kpi"><span>Suivis payés</span><b>{{ $stats['paid'] }}</b><small>depuis le début</small></div>
-  <div class="kpi"><span>Coachs actifs</span><b>{{ $coaches->where('active', true)->count() }}</b><small>{{ $coaches->whereNotNull('user_key')->count() }} avec un compte MyFootPro</small></div>
+  <div class="kpi"><span>Coachs actifs</span><b>{{ $coaches->where('active', true)->count() }}</b><small>{{ $coaches->whereNotNull('user_key')->count() }} avec un compte FootProWorld</small></div>
   <div class="kpi accent"><span>Encaissé</span><b>{{ number_format($revenue, 0, ',', ' ') }}</b><small>GNF de coaching</small></div>
 </div>
 
@@ -32,7 +32,7 @@
           <label>Pays<input name="country" value="{{ old('country', $c->country ?? '') }}" maxlength="60" placeholder="Guinée"></label>
           <label class="wide">Spécialité<input name="specialty" value="{{ old('specialty', $c->specialty ?? '') }}" maxlength="160" placeholder="ex. Finition et attaquants, préparation physique"></label>
           <label class="wide">Présentation<textarea name="bio" rows="3" maxlength="1000">{{ old('bio', $c->bio ?? '') }}</textarea></label>
-          <label class="wide">E-mail ou téléphone de son compte MyFootPro<input name="contact" value="{{ old('contact', $c->contact ?? '') }}" maxlength="120"><small>Avec un compte rattaché, le coach répond lui-même depuis « Espace coach ». Sinon, tu réponds pour lui ici.</small></label>
+          <label class="wide">E-mail ou téléphone de son compte FootProWorld<input name="contact" value="{{ old('contact', $c->contact ?? '') }}" maxlength="120"><small>Avec un compte rattaché, le coach répond lui-même depuis « Espace coach ». Sinon, tu réponds pour lui ici.</small></label>
           <label class="check wide"><input type="hidden" name="active" value="0"><input type="checkbox" name="active" value="1" @checked(old('active', $c->active ?? true))> Coach actif</label>
         </div>
         <div class="formbar"><button class="btn" type="submit">{{ $c ? 'Enregistrer' : 'Ajouter le coach' }}</button>@if ($c)<a class="btn ghost" href="{{ route('admin.coaching', ['statut' => 'coachs']) }}">Annuler</a>@endif</div>
