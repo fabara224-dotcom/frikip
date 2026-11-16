@@ -77,6 +77,7 @@ class PostController extends Controller
                 return $request->expectsJson() ? response()->json(['message' => $msg], 422) : back()->withInput()->withErrors(['photo' => $msg]);
             }
             $photo = 'uploads/posts/'.$name;
+            \App\Support\Media::push($photo);
         }
 
         DB::table('posts')->insert([
@@ -125,7 +126,7 @@ class PostController extends Controller
         $post = DB::table('posts')->where('id', $id)->first();
         abort_unless($post && $post->user_key === $me['id'], 403);
         if ($post->photo && str_starts_with($post->photo, 'uploads/posts/')) {
-            @unlink(public_path($post->photo));
+            \App\Support\Media::delete($post->photo);
         }
         DB::table('post_comments')->where('post_id', $id)->delete();
         DB::table('post_likes')->where('post_id', $id)->delete();

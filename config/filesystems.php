@@ -28,6 +28,14 @@ return [
     |
     */
 
+    /*
+    | Stockage permanent des fichiers des membres (voir App\Support\Media).
+    | MEDIA_DISK : nom du disque (bucket). Par défaut « s3 » dès que AWS_BUCKET est rempli.
+    | MEDIA_SIGNED_URLS=true si le bucket est privé (liens signés temporaires).
+    */
+    'media_disk' => env('MEDIA_DISK', env('AWS_BUCKET') ? 's3' : null),
+    'media_signed' => (bool) env('MEDIA_SIGNED_URLS', false),
+
     'disks' => [
 
         'local' => [

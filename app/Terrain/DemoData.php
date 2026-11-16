@@ -401,6 +401,7 @@ class DemoData implements DataSource
             $name = $id.'.'.(strtolower($file->getClientOriginalExtension()) ?: 'mp4');
             $file->move($dir, $name);
             $url = 'uploads/videos/'.$name;
+            \App\Support\Media::push($url);
         }
         \Illuminate\Support\Facades\DB::table('local_videos')->insert([
             'id' => $id, 'athlete_id' => $me, 'title' => $meta['title'], 'caption' => $meta['caption'] ?? null,
@@ -417,7 +418,7 @@ class DemoData implements DataSource
     {
         $url = \Illuminate\Support\Facades\DB::table('local_videos')->where('id', $videoId)->value('url');
 
-        return $url && ! str_starts_with($url, 'http') && is_file(public_path($url)) ? public_path($url) : null;
+        return $url ? \App\Support\Media::ensureLocal($url) : null;
     }
 
     // ------------------------------------------------------------------ matchs

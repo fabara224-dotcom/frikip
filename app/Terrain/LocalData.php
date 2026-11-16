@@ -215,10 +215,10 @@ class LocalData extends DemoData
             if ($athleteId) {
                 foreach (DB::table('local_videos')->where('athlete_id', $athleteId)->get() as $v) {
                     if (! str_starts_with($v->url, 'http')) {
-                        @unlink(public_path($v->url));
+                        \App\Support\Media::delete($v->url);
                     }
                     if ($v->poster && ! str_starts_with($v->poster, 'http')) {
-                        @unlink(public_path($v->poster));
+                        \App\Support\Media::delete($v->poster);
                     }
                 }
                 DB::table('local_videos')->where('athlete_id', $athleteId)->delete();

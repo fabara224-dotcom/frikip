@@ -180,7 +180,7 @@ class AdminManageController extends Controller
         $id = $v->id;
         foreach ([$v->url, $v->poster] as $f) {
             if ($f && ! str_starts_with($f, 'http')) {
-                @unlink(public_path($f));
+                \App\Support\Media::delete($f);
             }
         }
         DB::table('local_videos')->where('id', $id)->delete();

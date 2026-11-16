@@ -71,7 +71,7 @@ class AdminActuController extends Controller
                 return back()->with('saved', 'Publication masquée.');
             case 'supprimer':
                 if ($post->photo && str_starts_with($post->photo, 'uploads/posts/')) {
-                    @unlink(public_path($post->photo));
+                    \App\Support\Media::delete($post->photo);
                 }
                 foreach (['post_comments', 'post_likes', 'post_reports'] as $t) {
                     DB::table($t)->where('post_id', $id)->delete();
