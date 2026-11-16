@@ -330,11 +330,12 @@ class ApiController extends Controller
         $name = Str::slug($u['id']).'-'.$data['kind'].'-'.Str::lower(Str::random(6)).'.'.$request->file('image')->extension();
         $request->file('image')->move($dir, $name);
         $rel = 'uploads/profils/'.$name;
+        \App\Support\Media::push($rel);
         $col = $data['kind'] === 'photo' ? 'avatar_url' : 'cover_url';
         $old = DB::table('accounts')->where('id', $u['id'])->value($col);
         DB::table('accounts')->where('id', $u['id'])->update([$col => $rel, 'updated_at' => now()]);
         if ($old && str_starts_with($old, 'uploads/profils/')) {
-            @unlink(public_path($old));
+            \App\Support\Media::delete($old);
         }
         session()->forget('terrain.user');
 

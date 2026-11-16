@@ -102,6 +102,7 @@ class StoryController extends Controller
 
             return $this->fail($request, 'Ce contenu n’est pas autorisé sur '.config('terrain.app_name').'.');
         }
+        \App\Support\Media::push('uploads/stories/'.$name);
         self::purgeExpired();
         DB::table('fk_stories')->insert([
             'user_key' => $me['id'], 'author_name' => $me['name'] ?? 'Membre', 'athlete_id' => $me['athlete_id'] ?? null,
@@ -157,7 +158,7 @@ class StoryController extends Controller
     public static function remove(object $s): void
     {
         if (str_starts_with((string) $s->media, 'uploads/stories/')) {
-            @unlink(public_path($s->media));
+            \App\Support\Media::delete($s->media);
         }
         DB::table('fk_story_views')->where('story_id', $s->id)->delete();
         DB::table('fk_story_reports')->where('story_id', $s->id)->delete();

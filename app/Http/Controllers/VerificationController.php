@@ -63,12 +63,16 @@ class VerificationController extends Controller
         ]);
         $this->members->touch();
         $dir = 'verifications/'.Str::slug($u['id']);
+        $doc = $request->file('document')->store($dir, 'local');
+        $guardianDoc = $minor ? $request->file('guardian_document')->store($dir, 'local') : null;
+        \App\Support\Media::push($doc, true);
+        \App\Support\Media::push($guardianDoc, true);
         DB::table('verification_requests')->insert([
             'user_key' => $u['id'], 'role' => $u['role'], 'full_name' => $data['full_name'], 'document_type' => $data['document_type'],
-            'document_path' => $request->file('document')->store($dir, 'local'),
+            'document_path' => $doc,
             'licence_number' => $data['licence_number'] ?? null, 'organization' => $data['organization'] ?? null,
             'guardian_name' => $data['guardian_name'] ?? null, 'guardian_phone' => $data['guardian_phone'] ?? null,
-            'guardian_document_path' => $minor ? $request->file('guardian_document')->store($dir, 'local') : null,
+            'guardian_document_path' => $guardianDoc,
             'guardian_consent' => $minor && $request->boolean('guardian_consent'),
             'status' => 'en_attente', 'created_at' => now(), 'updated_at' => now(),
         ]);

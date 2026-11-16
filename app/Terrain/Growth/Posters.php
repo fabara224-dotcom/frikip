@@ -31,8 +31,8 @@ class Posters
             if (! $row || $row->poster || str_starts_with((string) $row->url, 'http')) {
                 return $row->poster ?? null;
             }
-            $src = public_path($row->url);
-            if (! is_file($src)) {
+            $src = \App\Support\Media::ensureLocal($row->url);
+            if (! $src) {
                 return null;
             }
             $dir = public_path('uploads/posters');
@@ -47,6 +47,7 @@ class Posters
                 @exec('ffmpeg -loglevel error -y -i '.escapeshellarg($src).' -frames:v 1 -vf scale=540:-2 -q:v 4 '.escapeshellarg(public_path($rel)).' 2>&1', $out, $code);
             }
             if (is_file(public_path($rel))) {
+                \App\Support\Media::push($rel);
                 DB::table('local_videos')->where('id', $videoId)->update(['poster' => $rel]);
 
                 return $rel;

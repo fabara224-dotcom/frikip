@@ -39,6 +39,17 @@ use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 // Paiement : notification serveur de CinetPay (sans jeton CSRF, sans session utilisateur)
+
+// Fichiers des membres (vidéos, photos, stories) : si le fichier n'est pas sur ce serveur
+// (Laravel Cloud, redéploiement…), on renvoie vers le stockage permanent (bucket). Voir App\Support\Media.
+Route::get('/uploads/{path}', function (string $path) {
+    abort_if(str_contains($path, '..'), 404);
+    $url = \App\Support\Media::url('uploads/'.$path);
+    abort_unless($url, 404);
+
+    return redirect()->away($url, 302)->header('Cache-Control', 'public, max-age=3600');
+})->where('path', '.*')->name('uploads.media');
+
 Route::match(['get', 'post'], '/paiement/notification', [PaymentController::class, 'notify'])
     ->withoutMiddleware([ValidateCsrfToken::class, \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->middleware(Throttle::class.':120,1')->name('payments.notify');

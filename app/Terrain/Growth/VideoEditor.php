@@ -102,8 +102,8 @@ class VideoEditor
         if (! $bin || ! $row || str_starts_with((string) $row->url, 'http')) {
             return false;
         }
-        $src = public_path($row->url);
-        if (! is_file($src)) {
+        $src = \App\Support\Media::ensureLocal($row->url);
+        if (! $src) {
             return false;
         }
         $e = self::decode($row->edit ?? null) ?? [];
@@ -147,6 +147,10 @@ class VideoEditor
         $poster = 'uploads/posters/'.$videoId.'.jpg';
         @shell_exec(escapeshellarg($bin).' -v error -y -ss 1 -i '.escapeshellarg($dest).' -frames:v 1 -vf '.escapeshellarg('scale=480:-2').' -q:v 4 '.escapeshellarg(public_path($poster)).' 2>/dev/null');
         $dur = (float) trim((string) @shell_exec('ffprobe -v error -show_entries format=duration -of csv=p=0 '.escapeshellarg($dest).' 2>/dev/null'));
+        \App\Support\Media::push('uploads/videos/'.$name);
+        if (is_file(public_path($poster))) {
+            \App\Support\Media::push($poster);
+        }
         $e['baked'] = true;
         try {
             DB::table('local_videos')->where('id', $videoId)->update([

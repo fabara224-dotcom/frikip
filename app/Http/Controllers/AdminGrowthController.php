@@ -112,9 +112,10 @@ class AdminGrowthController extends Controller
     {
         $v = DB::table('verification_requests')->find($id);
         $path = $v ? ($which === 'tuteur' ? $v->guardian_document_path : $v->document_path) : null;
-        abort_unless($path && Storage::disk('local')->exists($path), 404);
+        $local = $path ? \App\Support\Media::ensureLocal($path, true) : null;
+        abort_unless($local, 404);
 
-        return response()->file(Storage::disk('local')->path($path), ['Cache-Control' => 'no-store']);
+        return response()->file($local, ['Cache-Control' => 'no-store']);
     }
 
     // ------------------------------------------------------------------ témoignages, partenaires, paiements, clubs

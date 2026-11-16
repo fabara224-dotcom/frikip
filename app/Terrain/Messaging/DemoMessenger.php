@@ -180,6 +180,7 @@ class DemoMessenger implements Messenger
             $ext = $kind === 'voice' ? 'webm' : 'jpg';
         }
         $path = $file->storeAs('demo-media/'.$this->room(), Str::uuid().'.'.$ext, 'local');
+        \App\Support\Media::push($path, true);
         $id = $this->insert($partnerId, $kind, null, $path, $duration);
         $this->fakeReply($partnerId, $kind);
 
@@ -192,7 +193,7 @@ class DemoMessenger implements Messenger
         $r = DB::table('demo_messages')->where('room', $this->room())->where('id', (int) $messageId)
             ->where(fn ($q) => $q->where('sender', $me)->orWhere('recipient', $me))->first();
 
-        return $r && $r->media_path && Storage::disk('local')->exists($r->media_path) ? Storage::disk('local')->path($r->media_path) : null;
+        return $r && $r->media_path ? \App\Support\Media::ensureLocal($r->media_path, true) : null;
     }
 
     protected function insert(string $to, string $kind, ?string $body, ?string $media = null, ?int $duration = null, ?string $from = null, ?Carbon $at = null): int

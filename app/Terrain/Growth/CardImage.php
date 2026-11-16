@@ -34,7 +34,7 @@ class CardImage
         }
         // Image de la première compilation (si elle est sur le serveur)
         $poster = $a['videos'][0]['poster'] ?? null;
-        $local = $poster ? public_path(ltrim((string) parse_url($poster, PHP_URL_PATH), '/')) : null;
+        $local = $poster ? \App\Support\Media::ensureLocal(ltrim((string) parse_url($poster, PHP_URL_PATH), '/')) : null;
         if ($local && is_file($local) && ($src = @imagecreatefromjpeg($local))) {
             $sw = imagesx($src);
             $sh = imagesy($src);
