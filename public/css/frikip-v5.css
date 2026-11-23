@@ -161,3 +161,8 @@ body.webapp .bub { background: var(--sunk); border: 0; border-radius: 18px; }
 .ig-logo .lb { width: .66em; height: .66em; margin: 0 .02em; flex: none; position: relative; top: .04em; }
 .brand .ig-logo, .brand .ig-logo > span { display: inline-flex !important; flex-direction: row !important; align-items: baseline; }
 .brand .ig-logo .lb { display: block; }
+
+/* Choix par pastilles (inscription, publication : poste, pied fort, type de club…) : la pastille choisie doit se voir */
+body.webapp .pickchips .chip:has(input:checked),
+body.webapp .pickchips .chip.is-on { background: #000 !important; border-color: #000 !important; color: #fff !important; }
+body.webapp .pickchips .chip:has(input:focus-visible) { outline: 2px solid #000; outline-offset: 2px; }
