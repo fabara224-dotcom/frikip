@@ -77,6 +77,8 @@
   <p>Ces recommandations ne produisent aucune décision qui vous concerne légalement : la décision de recruter appartient toujours à un recruteur humain. Nous pouvons analyser automatiquement les vidéos publiées pour repérer les actions (buts, arrêts, sprints) et pour détecter les contenus interdits.</p>
   <p>Vous pouvez demander la suppression de votre historique d'activité à tout moment en écrivant à <x-cfg key="privacy_email" mailto />. Les données d'activité utilisées pour entraîner nos modèles sont dissociées de votre identité (pseudonymisées).</p>
 
+  <p><b>Coach IA.</b> Les messages que vous écrivez au Coach IA, avec votre prénom et votre profil sportif (poste, âge, club, statistiques), sont envoyés à notre fournisseur d'intelligence artificielle (Google Gemini ou Anthropic Claude) pour produire la réponse. Avec la version gratuite de Google Gemini, Google peut utiliser ces échanges pour améliorer ses services. N'écrivez donc pas au coach d'informations personnelles sensibles (téléphone, adresse, santé détaillée). Vous pouvez effacer la conversation à tout moment avec le bouton « Nouvelle ».</p>
+
   <h2 id="visibilite">5. Qui voit vos données</h2>
   <ul>
     <li><b>Tout le monde dans l'app</b> : votre profil sportif (sans votre e-mail, votre téléphone ni votre pièce d'identité), vos vidéos publiées, vos commentaires.</li>
@@ -96,6 +98,7 @@
       <tr><td>Google Firebase Cloud Messaging et Apple Push Notification</td><td>Envoi des notifications</td></tr>
       <tr><td>Passerelle de paiement mobile (Orange Money, MTN MoMo, cartes)</td><td>Traitement des paiements</td></tr>
       <tr><td>Opérateur SMS</td><td>Codes de connexion et confirmation du tuteur</td></tr>
+      <tr><td>Google Gemini ou Anthropic Claude</td><td>Réponses du Coach IA (voir la partie 4)</td></tr>
     </tbody>
   </table></div>
   <p>La liste à jour des prestataires est disponible sur simple demande.</p>
