@@ -14,7 +14,7 @@
         ['profil', $me ? __('Profil') : __('Connexion'), 'user', '', $me ? $appUrl('profil') : route('login')],
     ];
     $more = [
-        ['live', __('Matchs en direct'), 'live'], ['matches', __('Matchs et scores'), 'score'], ['posts', __('Actu'), 'news'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'], ['rankings', __('Meilleurs joueurs'), 'star'], ['events', __('Détections'), 'calendar'],
+        ['live', __('Matchs en direct'), 'live'], ['matches', __('Matchs et scores'), 'score'], ['posts', __('Actu'), 'news'], ['challenges', __('Défis'), 'trophy'], ['coaching', __('Coaching'), 'coach'], ['coach.ia', __('Coach IA'), 'whistle'], ['rankings', __('Meilleurs joueurs'), 'star'], ['events', __('Détections'), 'calendar'],
         ['clubs', __('Clubs et académies'), 'stadium'], ['stories', __('Ils ont été recrutés'), 'party'],
     ];
     if ($me) {
@@ -68,7 +68,7 @@
         $c = (string) $current;
         return match ($tab) {
             'accueil' => in_array($c, ['feed', 'app.v2'], true),
-            'explorer' => (bool) preg_match('/^(explore|challenges|coaching|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', $c),
+            'explorer' => (bool) preg_match('/^(explore|challenges|coaching|coach\.ia|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', $c),
             'matchs' => (bool) preg_match('/^(matches|live|watch)/', $c),
             'messages' => str_starts_with($c, 'messages') || str_starts_with($c, 'calls'),
             'publier' => in_array($c, ['publish', 'create'], true) || str_starts_with($c, 'live.go') || str_starts_with($c, 'live.studio'),
@@ -79,7 +79,7 @@
     $active = fn ($name) => $current === $name || ($name === 'matches' && str_starts_with((string) $current, 'matches')) || ($name === 'search' && $current === 'compare')
         || ($name === 'challenges' && str_starts_with((string) $current, 'challenges')) || ($name === 'coaching' && str_starts_with((string) $current, 'coaching'))
         // Explorer reste allumé sur toutes les pages qu'il ouvre
-        || ($name === 'explore' && preg_match('/^(matches|challenges|coaching|live|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', (string) $current))
+        || ($name === 'explore' && preg_match('/^(matches|challenges|coaching|coach\.ia|live|rankings|events|clubs|actors|discover|stories|offers|search|compare|athletes)/', (string) $current))
         || ($name === 'messages' && str_starts_with((string) $current, 'messages'))
         || ($name === 'publish' && in_array($current, ['publish', 'create'], true));
 @endphp

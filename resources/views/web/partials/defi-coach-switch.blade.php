@@ -2,4 +2,5 @@
 <nav class="dcswitch" aria-label="{{ __('Défis et coaching') }}">
   <a href="{{ route('challenges') }}" @if ($on === 'defis') aria-current="page" @endif><x-ico name="trophy" />{{ __('Défis') }}</a>
   <a href="{{ route('coaching') }}" @if ($on === 'coaching') aria-current="page" @endif><x-ico name="coach" />{{ __('Coaching') }}</a>
+  <a href="{{ route('coach.ia') }}" @if ($on === 'coach-ia') aria-current="page" @endif><x-ico name="whistle" />{{ __('Coach IA') }}</a>
 </nav>

@@ -102,6 +102,14 @@ return [
     // de la dernière saison seulement. Les durées de cache protègent le quota du fournisseur.
     // ---- Étoile bleue : affichée à côté du nom quand le sportif atteint ce nombre d'abonnés
     'badge_followers' => (int) (env('TERRAIN_BADGE_FOLLOWERS') ?: 1000),
+    // ---- Coach IA : coach personnel des joueurs, propulsé par Claude (https://console.anthropic.com)
+    'ai_coach' => [
+        'key' => env('ANTHROPIC_API_KEY', ''),
+        'model' => env('AI_COACH_MODEL', 'claude-sonnet-5-5'),
+        'free_per_day' => (int) env('AI_COACH_FREE_PER_DAY', 3),      // messages gratuits par jour ; illimité avec Premium
+        'premium_per_day' => (int) env('AI_COACH_PREMIUM_PER_DAY', 60), // garde-fou anti-abus pour les abonnés
+        'fake' => (bool) env('AI_COACH_FAKE', false),                  // tests en local : réponses simulées, sans clé
+    ],
     // ---- Sous-titres et titres traduits automatiquement (facultatif, https://platform.openai.com)
     'openai' => [
         'key' => env('OPENAI_API_KEY', ''),
