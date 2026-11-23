@@ -166,9 +166,10 @@ class AiCoach
             'contents' => $contents,
             'generationConfig' => ['maxOutputTokens' => 1500, 'temperature' => 0.7],
         ];
-        $model = (string) config('terrain.ai_coach.gemini_model', 'gemini-2.5-flash');
+        $model = (string) config('terrain.ai_coach.gemini_model', 'gemini-4-hydrogen');
         $r = null;
-        foreach (array_unique([$model, 'gemini-flash-latest']) as $m) {
+        // si le modèle n'existe pas (Google renomme souvent ses modèles), on essaie les suivants
+        foreach (array_unique([$model, 'gemini-4-hydrogen', 'gemini-flash-latest', 'gemini-2.5-flash']) as $m) {
             try {
                 $r = Http::timeout(60)->acceptJson()->withHeaders(['x-goog-api-key' => (string) config('terrain.ai_coach.gemini_key')])
                     ->post(self::GEMINI_API.rawurlencode($m).':generateContent', $body);
@@ -176,7 +177,7 @@ class AiCoach
                 report($e);
                 throw new RuntimeException(__('Le coach ne répond pas pour le moment. Réessaie dans un instant.'));
             }
-            if ($r->status() !== 404) {   // modèle inconnu : on essaie le modèle Flash le plus récent
+            if ($r->status() !== 404) {
                 break;
             }
         }

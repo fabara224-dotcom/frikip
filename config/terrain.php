@@ -107,7 +107,7 @@ return [
         'key' => env('ANTHROPIC_API_KEY', ''),
         'model' => env('AI_COACH_MODEL', 'claude-sonnet-5-5'),
         'gemini_key' => env('GEMINI_API_KEY', ''),                    // Google Gemini (gratuit possible) : https://aistudio.google.com
-        'gemini_model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+        'gemini_model' => env('GEMINI_MODEL', 'gemini-4-hydrogen'),
         'provider' => env('AI_COACH_PROVIDER', ''),                   // vide = Claude si sa clé est remplie, sinon Gemini
         'free_per_day' => (int) env('AI_COACH_FREE_PER_DAY', 3),      // messages gratuits par jour ; illimité avec Premium
         'premium_per_day' => (int) env('AI_COACH_PREMIUM_PER_DAY', 60), // garde-fou anti-abus pour les abonnés
