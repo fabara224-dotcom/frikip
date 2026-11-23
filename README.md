@@ -150,6 +150,6 @@ php artisan terrain:diagnostic               # vérifier la configuration
 
 ## Contact
 
-frikip@gmail.com · 00224 625112022 · 00224 626432276
+fabara224@gmail.com · 00224 625112022 · 00224 626432276
 
 © Fabara – Conakry.

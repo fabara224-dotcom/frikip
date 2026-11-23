@@ -19,7 +19,7 @@
       @if ($errors->any())<p class="field-error" style="margin:0">{{ $errors->first() }}</p>@endif
       <button class="btn" type="submit">Se connecter</button>
     </form>
-    <p class="meta">Mot de passe oublié ? Un autre administrateur peut le changer dans Admin &gt; Admins, ou sur le serveur : <code>php artisan frikip:admin frikip@gmail.com</code></p>
+    <p class="meta">Mot de passe oublié ? Un autre administrateur peut le changer dans Admin &gt; Admins, ou sur le serveur : <code>php artisan frikip:admin fabara224@gmail.com</code></p>
   </div>
 </div>
 @endsection
