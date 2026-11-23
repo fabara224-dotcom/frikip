@@ -183,6 +183,7 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/coaching', [CoachingController::class, 'index'])->name('coaching');
     Route::post('/coaching/programme', [CoachingController::class, 'plan'])->middleware(Throttle::class.':20,1')->name('coaching.plan');
     Route::get('/coaching/mon-programme', [CoachingController::class, 'showPlan'])->name('coaching.plan.show');
+    Route::get('/coach-ia', [\App\Http\Controllers\AiCoachController::class, 'index'])->name('coach.ia');
     Route::get('/direct', [LiveController::class, 'index'])->name('live');
     Route::get('/direct/tous-les-matchs', [LiveController::class, 'partner'])->name('live.partner');
     Route::get('/direct/{id}', [LiveController::class, 'show'])->whereNumber('id')->name('live.show');
@@ -282,6 +283,10 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::get('/paiement/simulation/{ref}', [PaymentController::class, 'simulation'])->name('payments.simulation');
         Route::post('/paiement/simulation/{ref}', [PaymentController::class, 'confirmSimulation'])->middleware(Throttle::class.':10,1');
         Route::get('/paiement/retour/{ref}', [PaymentController::class, 'back'])->name('payments.return');
+
+        // Coach IA (Claude) : 3 messages gratuits par jour, illimité avec Premium
+        Route::post('/coach-ia', [\App\Http\Controllers\AiCoachController::class, 'send'])->middleware(Throttle::class.':8,1')->name('coach.ia.send');
+        Route::post('/coach-ia/nouvelle', [\App\Http\Controllers\AiCoachController::class, 'reset'])->middleware(Throttle::class.':10,1')->name('coach.ia.reset');
 
         // Coaching payant : réservation, suivi, espace coach
         Route::get('/coaching/reserver/{package}', [CoachingController::class, 'reserve'])->whereNumber('package')->name('coaching.reserve');

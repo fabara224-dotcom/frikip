@@ -20,6 +20,10 @@
     @endif
   </div>
 
+  <a class="aic-promo" href="{{ route('coach.ia') }}"><span class="aic-av" aria-hidden="true"><x-ico name="coach" /></span>
+    <span><b>{{ __('Nouveau : ton Coach IA') }}</b>{{ __('Discute avec ton coach personnel : séances sur mesure, conseils de poste, suivi de tes progrès.') }}</span>
+    <span class="btn sm">{{ __('Essayer') }}</span></a>
+
   <div class="coachgrid">
     <form method="POST" action="{{ route('coaching.plan') }}" class="card coachform" id="plan">@csrf
       <h2>{{ __('Mon programme gratuit') }}</h2>
