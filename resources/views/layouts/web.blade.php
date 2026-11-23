@@ -340,6 +340,18 @@
 })();
 </script>
 @endif
+<script>
+/* Pastilles de choix (poste, pied fort…) : marque la pastille choisie, aussi sur les anciens téléphones */
+(function () {
+  function sync(root) {
+    (root || document).querySelectorAll('.pickchips input[type=radio], .pickchips input[type=checkbox]').forEach(function (i) {
+      var l = i.closest('.chip'); if (l) l.classList.toggle('is-on', i.checked);
+    });
+  }
+  document.addEventListener('change', function (e) { if (e.target.closest && e.target.closest('.pickchips')) sync(); });
+  sync();
+})();
+</script>
 @stack('scripts')
 </body>
 </html>
