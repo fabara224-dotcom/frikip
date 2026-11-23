@@ -65,6 +65,7 @@
     <p class="aic-note">
       <span id="aic-left">@if ($premium){{ __('Premium : messages illimités') }}@else{{ trans_choice('{0} Plus de message gratuit aujourd’hui|{1} 1 message gratuit restant aujourd’hui|[2,*] :count messages gratuits restants aujourd’hui', $remaining, ['count' => $remaining]) }}@endif</span>
       · {{ __('Le coach IA peut se tromper. En cas de douleur ou de blessure, consulte un médecin.') }}
+      {{ __('N’écris pas d’informations personnelles (téléphone, adresse).') }} <a href="{{ route('privacy') }}#recommandations">{{ __('Confidentialité') }}</a>
     </p>
   @endif
 </div>

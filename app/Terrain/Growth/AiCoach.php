@@ -14,12 +14,17 @@ use Throwable;
  * Il connaît le profil du joueur (poste, pied fort, âge, club) et son dernier diagnostic du coaching gratuit,
  * construit des séances adaptées et suit ses progrès au fil de la conversation.
  *
- * Réglages (.env) : ANTHROPIC_API_KEY, AI_COACH_MODEL, AI_COACH_FREE_PER_DAY (3 par défaut).
+ * Deux fournisseurs possibles (.env) :
+ *  - Claude (Anthropic) : ANTHROPIC_API_KEY (payant, prioritaire s'il est rempli) ;
+ *  - Google Gemini : GEMINI_API_KEY (version gratuite possible, clé sur aistudio.google.com).
+ * AI_COACH_PROVIDER=anthropic|gemini force le choix. AI_COACH_FREE_PER_DAY : messages gratuits par jour (3).
  * Gratuit : quelques messages par jour. Premium : illimité (avec un garde-fou anti-abus).
  */
 class AiCoach
 {
     private const API = 'https://api.anthropic.com/v1/messages';
+
+    private const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
     /** Nombre de messages précédents renvoyés à l'IA pour garder le fil. */
     private const HISTORY = 24;
@@ -30,7 +35,24 @@ class AiCoach
 
     public static function ready(): bool
     {
-        return (string) config('terrain.ai_coach.key') !== '' || self::fake();
+        return self::provider() !== null || self::fake();
+    }
+
+    /** Fournisseur utilisé : « anthropic », « gemini » ou null si aucune clé. */
+    public static function provider(): ?string
+    {
+        $keys = ['anthropic' => (string) config('terrain.ai_coach.key'), 'gemini' => (string) config('terrain.ai_coach.gemini_key')];
+        $forced = (string) config('terrain.ai_coach.provider');
+        if (isset($keys[$forced])) {
+            return $keys[$forced] !== '' ? $forced : null;
+        }
+        foreach ($keys as $name => $key) {
+            if ($key !== '') {
+                return $name;
+            }
+        }
+
+        return null;
     }
 
     private static function fake(): bool
@@ -89,7 +111,11 @@ class AiCoach
         }
         $messages = $this->alternate($messages);
 
-        [$reply, $tokens] = self::fake() ? [$this->fakeReply($message), 0] : $this->call($this->system($me), $messages);
+        [$reply, $tokens] = match (true) {
+            self::fake() && self::provider() === null => [$this->fakeReply($message), 0],
+            self::provider() === 'gemini' => $this->callGemini($this->system($me), $messages),
+            default => $this->call($this->system($me), $messages),
+        };
 
         $now = now();
         DB::table('ai_coach_messages')->insert([
@@ -129,6 +155,44 @@ class AiCoach
         }
 
         return [trim($text), (int) $r->json('usage.input_tokens', 0) + (int) $r->json('usage.output_tokens', 0)];
+    }
+
+    /** Google Gemini (version gratuite possible). @return array{0: string, 1: int} */
+    private function callGemini(string $system, array $messages): array
+    {
+        $contents = array_map(fn ($m) => ['role' => $m['role'] === 'assistant' ? 'model' : 'user', 'parts' => [['text' => $m['content']]]], $messages);
+        $body = [
+            'system_instruction' => ['parts' => [['text' => $system]]],
+            'contents' => $contents,
+            'generationConfig' => ['maxOutputTokens' => 1500, 'temperature' => 0.7],
+        ];
+        $model = (string) config('terrain.ai_coach.gemini_model', 'gemini-2.5-flash');
+        $r = null;
+        foreach (array_unique([$model, 'gemini-flash-latest']) as $m) {
+            try {
+                $r = Http::timeout(60)->acceptJson()->withHeaders(['x-goog-api-key' => (string) config('terrain.ai_coach.gemini_key')])
+                    ->post(self::GEMINI_API.rawurlencode($m).':generateContent', $body);
+            } catch (Throwable $e) {
+                report($e);
+                throw new RuntimeException(__('Le coach ne répond pas pour le moment. Réessaie dans un instant.'));
+            }
+            if ($r->status() !== 404) {   // modèle inconnu : on essaie le modèle Flash le plus récent
+                break;
+            }
+        }
+        if (! $r->successful()) {
+            Log::warning('Coach IA (Gemini) '.$r->status().' : '.$r->body());
+            throw new RuntimeException($r->status() === 429 || $r->status() === 503
+                ? __('Le coach est très demandé en ce moment. Réessaie dans une minute.')
+                : __('Le coach ne répond pas pour le moment. Réessaie dans un instant.'));
+        }
+        $text = collect($r->json('candidates.0.content.parts', []))->pluck('text')->filter()->implode('');
+        if (trim($text) === '') {
+            Log::warning('Coach IA (Gemini) réponse vide : '.$r->body());
+            throw new RuntimeException(__('Le coach n’a pas pu répondre à ce message. Reformule ta question.'));
+        }
+
+        return [trim($text), (int) $r->json('usageMetadata.totalTokenCount', 0)];
     }
 
     /** Fusionne deux messages consécutifs du même rôle (ex. après une erreur). */
@@ -181,7 +245,7 @@ TXT;
 
     private function profile(array $me): string
     {
-        $lines = ['- Prénom ou nom : '.($me['name'] ?? 'inconnu')];
+        $lines = ['- Prénom : '.(explode(' ', trim((string) ($me['name'] ?? '')))[0] ?: 'inconnu')];
         $roles = ['athlete' => 'joueur', 'fan' => 'supporter', 'recruiter' => 'recruteur / club / agent'];
         if (! empty($me['role'])) {
             $lines[] = '- Type de compte : '.($roles[$me['role']] ?? $me['role']);
