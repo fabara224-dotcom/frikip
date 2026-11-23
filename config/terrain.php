@@ -18,12 +18,12 @@ return [
     'editor' => env('TERRAIN_EDITOR', 'Fabara'),
     'editor_address' => env('TERRAIN_EDITOR_ADDRESS', ''),
     'country' => env('TERRAIN_COUNTRY', 'Guinée'),
-    'email' => env('TERRAIN_EMAIL') ?: 'frikip@gmail.com',
+    'email' => env('TERRAIN_EMAIL') ?: 'fabara224@gmail.com',
     // Numéros de contact affichés sur le site (aide, pied de page, WhatsApp)
     'phones' => array_values(array_filter(array_map('trim', explode(',', (string) (env('TERRAIN_TELEPHONES') ?: '00224 625112022,00224 626432276'))))),
-    'privacy_email' => env('TERRAIN_PRIVACY_EMAIL') ?: 'frikip@gmail.com',
+    'privacy_email' => env('TERRAIN_PRIVACY_EMAIL') ?: 'fabara224@gmail.com',
     'safety_contact_name' => env('TERRAIN_SAFETY_CONTACT_NAME', ''),
-    'safety_email' => env('TERRAIN_SAFETY_EMAIL') ?: 'frikip@gmail.com',
+    'safety_email' => env('TERRAIN_SAFETY_EMAIL') ?: 'fabara224@gmail.com',
     'last_update' => env('TERRAIN_LAST_UPDATE', '20 octobre 2026'),
     'min_age' => (int) env('TERRAIN_MIN_AGE', 13),
 
@@ -124,7 +124,7 @@ return [
     'push' => [
         'public_key' => env('VAPID_PUBLIC_KEY', ''),
         'private_key' => env('VAPID_PRIVATE_KEY', ''),
-        'subject' => env('VAPID_SUBJECT') ?: 'mailto:frikip@gmail.com',   // mailto:ton@email ou adresse du site
+        'subject' => env('VAPID_SUBJECT') ?: 'mailto:fabara224@gmail.com',   // mailto:ton@email ou adresse du site
     ],
     // ---- Offres pour les structures et services (prix en GNF, multiples de 5) : [libellé, prix, durée en jours, précision]
     'offers' => [
