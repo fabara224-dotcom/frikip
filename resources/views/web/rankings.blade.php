@@ -1,7 +1,7 @@
 @extends('layouts.web')
 
 @section('title', __('Meilleurs sportifs').' – '.config('terrain.app_name'))
-@section('description', __('Le classement des meilleurs sportifs de Guinée et d’Afrique de l’Ouest, par sport, poste, âge et ville.'))
+@section('description', __('Le classement des meilleurs sportifs, par sport, poste, âge et ville.'))
 
 @section('content')
 <div class="page gut">

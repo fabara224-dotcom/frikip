@@ -1,7 +1,7 @@
 {
     "name": "fabara/frikip",
     "type": "project",
-    "description": "FootProWorld : plateforme de recrutement sportif pour l'Afrique de l'Ouest (Laravel).",
+    "description": "FootProWorld : plateforme de réseau social et recrutement du football (Laravel).",
     "keywords": [
         "frikip",
         "recrutement",

@@ -1,7 +1,7 @@
 @extends('layouts.web')
 
 @section('title', __('Explorer').' – '.config('terrain.app_name'))
-@section('description', __('Joueurs, entraîneurs, arbitres, clubs, détections, matchs en direct, défis et vidéos de foot : tout le football d’Afrique de l’Ouest sur FootProWorld.'))
+@section('description', __('Joueurs, entraîneurs, arbitres, clubs, détections, matchs en direct, défis et vidéos de foot : tout le football sur FootProWorld.'))
 
 @php
   $tiles = [

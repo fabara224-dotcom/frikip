@@ -7,7 +7,7 @@
     <path d="M20 12.5V6.5M26.6 17.3l5.6-2M24.1 25.1l3.6 4.8M15.9 25.1l-3.6 4.8M13.4 17.3l-5.6-2" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
   </svg>
   <span class="fklogo-txt">
-    <span class="fklogo-word">FRIK<em>IP</em></span>
+    <span class="fklogo-word">FOOTPRO<em>WORLD</em></span>
     @if ($tagline)<span class="fklogo-tag">{{ __('Le réseau foot') }}</span>@endif
   </span>
 </span>

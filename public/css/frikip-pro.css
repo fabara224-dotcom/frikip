@@ -418,3 +418,6 @@ body.feedpage{background:var(--bg);padding-bottom:0}
 .sview-ft{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,rgba(0,0,0,.6));color:#D5DED9;font-size:13.5px}
 .sview-ft form{margin:0}
 .sview-ft button{border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.35);color:#fff;font:inherit;font-weight:600;font-size:13px;padding:6px 14px;border-radius:999px;cursor:pointer}
+/* Logo FOOTPROWORLD (mot plus long que l'ancien) */
+.fklogo-word{font-size:24px;white-space:nowrap}
+@media (max-width:560px){.fklogo-word{font-size:19px}.fklogo-tag{font-size:9px}}

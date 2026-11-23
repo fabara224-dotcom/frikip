@@ -11,7 +11,7 @@
 <section class="hero">
     <div class="wrap gut">
       <div>
-        <span class="eyebrow">Le réseau social du foot · Afrique de l'Ouest</span>
+        <span class="eyebrow">Le réseau social du foot</span>
         <h1>Ton talent mérite <em>d'être vu.</em></h1>
         <p>Publie tes compilations en vidéo verticale. Les clubs, agents, académies et universités te trouvent, regardent tes actions et te contactent directement dans {{ config('terrain.app_name', 'FootProWorld') }}.</p>
         <div class="row" style="margin-bottom:14px">
