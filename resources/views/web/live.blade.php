@@ -1,7 +1,7 @@
 @extends('layouts.web')
 
 @section('title', __('Matchs en direct').' – '.config('terrain.app_name'))
-@section('description', __('Regarde en direct les matchs des clubs et académies d’Afrique de l’Ouest.'))
+@section('description', __('Regarde en direct les matchs des clubs et académies.'))
 
 @php
   $when = fn ($s) => $s->starts_at ? \Illuminate\Support\Carbon::parse($s->starts_at)->translatedFormat('D j M · H\hi') : '';

@@ -1,7 +1,7 @@
 @extends('layouts.web')
 
 @section('title', __('Acteurs du foot').' – '.config('terrain.app_name'))
-@section('description', __('Entraîneurs, arbitres, médecins du sport, kinés, préparateurs physiques et analystes du football en Afrique de l’Ouest.'))
+@section('description', __('Entraîneurs, arbitres, médecins du sport, kinés, préparateurs physiques et analystes du football.'))
 
 @section('content')
 <div class="page gut">

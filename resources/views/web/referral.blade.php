@@ -6,7 +6,7 @@
   $isRecruiter = $me['role'] === 'recruiter';
   $left = $per - ($count % $per);
   $msg = $isRecruiter
-      ? __('Rejoins :app, la plateforme pour recruter les talents d’Afrique de l’Ouest', ['app' => config('terrain.app_name')])
+      ? __('Rejoins :app, la plateforme pour recruter les talents du foot', ['app' => config('terrain.app_name')])
       : __('Inscris-toi sur :app pour montrer tes compilations aux clubs ! Mon lien', ['app' => config('terrain.app_name')]);
 @endphp
 

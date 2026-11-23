@@ -14,7 +14,7 @@
 <link rel="preload" href="{{ asset('fonts/barlow-condensed-800-italic.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ asset('css/terrain.css') }}">
 <link rel="stylesheet" href="{{ asset('css/frikip.css') }}?v=2">
-<link rel="stylesheet" href="{{ asset('css/frikip-pro.css') }}?v=1">
+<link rel="stylesheet" href="{{ asset('css/frikip-pro.css') }}?v=2">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
 <meta name="theme-color" content="#07100B">
